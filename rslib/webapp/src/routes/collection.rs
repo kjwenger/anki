@@ -1,5 +1,5 @@
 use axum::{extract::State, response::IntoResponse, Extension, Json};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use crate::auth::AuthUser;
 use crate::error::Result;

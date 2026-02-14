@@ -22,6 +22,8 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()>
     let protected_routes = Router::new()
         .route("/api/v1/auth/logout", post(logout))
         .route("/api/v1/auth/me", get(me))
+        .route("/api/v1/auth/profile", get(me))
+        .route("/api/v1/collection", get(get_collection_info))
         .route("/api/v1/collection/info", get(get_collection_info))
         .route("/api/v1/collection/close", post(close_collection))
         .route("/api/v1/decks", get(get_deck_tree))
@@ -95,8 +97,9 @@ async fn root_handler() -> Html<&'static str> {
     <h3>Protected Endpoints (Require Authentication)</h3>
     <ul>
         <li><code>GET /api/v1/auth/me</code> - Get current user info</li>
+        <li><code>GET /api/v1/auth/profile</code> - Get current user info (alias)</li>
         <li><code>POST /api/v1/auth/logout</code> - Logout user</li>
-        <li><code>GET /api/v1/collection/info</code> - Get collection info</li>
+        <li><code>GET /api/v1/collection</code> - Get collection info</li>
         <li><code>POST /api/v1/collection/close</code> - Close collection</li>
         <li><code>GET /api/v1/decks</code> - Get deck tree</li>
         <li><code>POST /api/v1/decks</code> - Create deck</li>
