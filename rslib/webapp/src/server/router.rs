@@ -11,7 +11,7 @@ use axum::{
 use serde_json::json;
 
 use crate::auth::{require_auth, AuthState};
-use crate::routes::{get_collection_info, login, logout, me, register, AuthRouteState};
+use crate::routes::{close_collection, get_collection_info, login, logout, me, register, AuthRouteState};
 use crate::WebAppConfig;
 
 pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()> {
@@ -20,6 +20,7 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()>
         .route("/api/v1/auth/logout", post(logout))
         .route("/api/v1/auth/me", get(me))
         .route("/api/v1/collection/info", get(get_collection_info))
+        .route("/api/v1/collection/close", post(close_collection))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,
@@ -89,6 +90,7 @@ async fn root_handler() -> Html<&'static str> {
         <li><code>GET /api/v1/auth/me</code> - Get current user info</li>
         <li><code>POST /api/v1/auth/logout</code> - Logout user</li>
         <li><code>GET /api/v1/collection/info</code> - Get collection info</li>
+        <li><code>POST /api/v1/collection/close</code> - Close collection</li>
     </ul>
     
     <h2>Status</h2>
