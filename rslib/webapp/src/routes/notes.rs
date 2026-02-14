@@ -53,7 +53,7 @@ pub async fn get_note(
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
-    let mut col = backend.lock().unwrap();
+    let col = backend.lock().unwrap();
 
     let note = col
         .storage
@@ -199,7 +199,7 @@ pub async fn get_note_cards(
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
-    let mut col = backend.lock().unwrap();
+    let col = backend.lock().unwrap();
 
     let cards = col
         .storage
