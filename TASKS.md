@@ -123,25 +123,32 @@ Testing, documentation, deployment
 
 ---
 
-### 1.5 Configuration System
+### 1.5 Configuration System ✅
 **Priority**: P1  
 **Estimate**: 1 day  
-**Dependencies**: 1.1
+**Dependencies**: 1.1  
+**Status**: Complete
 
-- [ ] Create configuration struct
-- [ ] Implement TOML config loading
-- [ ] Add environment variable overrides
-- [ ] Create default configuration
-- [ ] Document configuration options
+- [x] Create configuration struct
+- [x] Implement TOML config loading
+- [x] Add environment variable overrides
+- [x] Create default configuration
+- [x] Document configuration options
 
-**Files to Create**:
-- `rslib/webapp/src/config.rs`
-- `config/server.toml.example`
+**Files Created**:
+- `config/server.toml.example` - Example configuration file
+- `config/README.md` - Configuration documentation
 
-**Acceptance Criteria**:
-- Server loads config from file
-- ENV vars override config values
-- Missing config uses sensible defaults
+**Files Enhanced**:
+- `rslib/webapp/src/config.rs` - Added TOML file loading and tests
+
+**Acceptance Criteria** (All Met):
+- ✅ Server loads config from file (config/server.toml)
+- ✅ ENV vars override config values (highest priority)
+- ✅ Missing config uses sensible defaults
+- ✅ Priority: ENV > File > Defaults
+- ✅ Comprehensive documentation
+- ✅ 4 unit tests passing
 
 ---
 

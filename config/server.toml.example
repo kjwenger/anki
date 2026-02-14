@@ -1,0 +1,24 @@
+# Anki Web App Server Configuration
+# Copy this file to config/server.toml and customize as needed
+# Environment variables will override these settings
+
+# Server network settings
+# host = "127.0.0.1"  # Bind address (use "0.0.0.0" for all interfaces)
+# port = 8080          # Server port
+
+# Data storage
+# data_dir = "./data"  # Directory for user data and collections
+
+# Security settings
+# jwt_secret = "change-this-secret-in-production"  # JWT signing secret (REQUIRED in production!)
+# session_timeout_hours = 24                       # Session expiration time in hours
+
+# Example production configuration:
+# host = "0.0.0.0"
+# port = 8080
+# data_dir = "/var/lib/anki-webapp"
+# jwt_secret = "your-very-long-random-secret-here"
+# session_timeout_hours = 168  # 7 days
+
+# Note: All settings are optional and will use defaults if not specified
+# Priority: Environment Variables > Config File > Defaults
