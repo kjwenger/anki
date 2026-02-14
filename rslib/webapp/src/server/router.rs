@@ -9,8 +9,10 @@ use axum::{
     Router,
 };
 use serde_json::json;
+use utoipa::OpenApi;
 
 use crate::auth::{require_auth, AuthState};
+use crate::openapi;
 use crate::routes::{
     close_collection, create_deck, create_note, delete_deck, delete_note, get_collection_info,
     get_deck, get_deck_tree, get_note, get_note_cards, login, logout, me, register,
@@ -18,7 +20,7 @@ use crate::routes::{
 };
 use crate::WebAppConfig;
 
-pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()> {
+pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
     // Routes that require authentication
     let protected_routes = Router::new()
         .route("/api/v1/auth/logout", post(logout))
@@ -53,13 +55,18 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()>
         .route("/", get(root_handler))
         .route("/health", get(health_handler))
         .route("/api/v1/info", get(info_handler))
+        .route("/api-docs/openapi.json", get(openapi_spec_handler))
         .route("/api/v1/auth/register", post(register))
         .route("/api/v1/auth/login", post(login));
 
-    // Combine routes
+    // Combine all routes with state
     public_routes
         .merge(protected_routes)
         .with_state(auth_route_state)
+}
+
+async fn openapi_spec_handler() -> Json<utoipa::openapi::OpenApi> {
+    Json(openapi::ApiDoc::openapi())
 }
 
 async fn root_handler() -> Html<&'static str> {
@@ -78,6 +85,18 @@ async fn root_handler() -> Html<&'static str> {
             line-height: 1.6;
         }
         h1 { color: #0a84ff; }
+        .swagger-link {
+            display: inline-block;
+            background: #0a84ff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .swagger-link:hover {
+            background: #0066cc;
+        }
         code {
             background: #f5f5f5;
             padding: 2px 6px;
@@ -89,6 +108,18 @@ async fn root_handler() -> Html<&'static str> {
 <body>
     <h1>🎴 Anki Web App</h1>
     <p class="status">✅ Server is running!</p>
+    
+    <a href="https://petstore.swagger.io/?url=http://localhost:8080/api-docs/openapi.json" class="swagger-link" target="_blank">
+        📚 View API Documentation (Swagger UI)
+    </a>
+    
+    <h2>Quick Links</h2>
+    <ul>
+        <li><a href="/api-docs/openapi.json">OpenAPI Spec (JSON)</a> - Machine-readable API specification</li>
+        <li><a href="https://petstore.swagger.io/?url=http://localhost:8080/api-docs/openapi.json" target="_blank">Swagger UI</a> - Interactive API documentation</li>
+        <li><a href="/health">Health Check</a> - Server status</li>
+        <li><a href="/api/v1/info">API Info</a> - Server information (JSON)</li>
+    </ul>
     
     <h2>Available Endpoints</h2>
     <h3>Public Endpoints</h3>
