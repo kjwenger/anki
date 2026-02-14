@@ -152,25 +152,29 @@ Testing, documentation, deployment
 
 ---
 
-### 1.6 Error Handling
+### 1.6 Error Handling ✅
 **Priority**: P1  
 **Estimate**: 1 day  
-**Dependencies**: 1.1
+**Dependencies**: 1.1  
+**Status**: Complete
 
-- [ ] Create error types for webapp
-- [ ] Implement error to HTTP status mapping
-- [ ] Add error response formatting
-- [ ] Create custom error middleware
-- [ ] Add error logging
+- [x] Create error types for webapp
+- [x] Implement error to HTTP status mapping
+- [x] Add error response formatting
+- [x] Create custom error middleware (IntoResponse trait)
+- [x] Add error logging
 
-**Files to Create**:
-- `rslib/webapp/src/error.rs`
+**Files Enhanced**:
+- `rslib/webapp/src/error.rs` - Added logging and comprehensive tests
 
-**Acceptance Criteria**:
-- Consistent error response format
-- Appropriate HTTP status codes
-- Errors logged with context
-- No sensitive info in error messages
+**Acceptance Criteria** (All Met):
+- ✅ Consistent error response format (JSON with success: false)
+- ✅ Appropriate HTTP status codes (500, 400, 401, 404, 409, 403)
+- ✅ Errors logged with context (error/warn/debug levels)
+- ✅ No sensitive info in error messages (internal errors sanitized)
+- ✅ 9 comprehensive error tests passing
+- ✅ Helper constructors for each error type
+- ✅ anyhow::Error conversion support
 
 ---
 

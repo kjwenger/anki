@@ -62,13 +62,33 @@ impl std::error::Error for WebAppError {}
 
 impl IntoResponse for WebAppError {
     fn into_response(self) -> Response {
-        let (status, error_message) = match self {
-            WebAppError::Internal(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),
-            WebAppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),
-            WebAppError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, msg),
-            WebAppError::NotFound(msg) => (StatusCode::NOT_FOUND, msg),
-            WebAppError::Conflict(msg) => (StatusCode::CONFLICT, msg),
-            WebAppError::Forbidden(msg) => (StatusCode::FORBIDDEN, msg),
+        let (status, error_message) = match &self {
+            WebAppError::Internal(msg) => {
+                // Log internal errors with full context
+                tracing::error!("Internal server error: {}", msg);
+                // Don't expose internal error details to clients
+                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error".to_string())
+            }
+            WebAppError::BadRequest(msg) => {
+                tracing::warn!("Bad request: {}", msg);
+                (StatusCode::BAD_REQUEST, msg.clone())
+            }
+            WebAppError::Unauthorized(msg) => {
+                tracing::warn!("Unauthorized access attempt: {}", msg);
+                (StatusCode::UNAUTHORIZED, msg.clone())
+            }
+            WebAppError::NotFound(msg) => {
+                tracing::debug!("Not found: {}", msg);
+                (StatusCode::NOT_FOUND, msg.clone())
+            }
+            WebAppError::Conflict(msg) => {
+                tracing::warn!("Conflict: {}", msg);
+                (StatusCode::CONFLICT, msg.clone())
+            }
+            WebAppError::Forbidden(msg) => {
+                tracing::warn!("Forbidden access attempt: {}", msg);
+                (StatusCode::FORBIDDEN, msg.clone())
+            }
         };
 
         let body = Json(json!({
@@ -87,3 +107,144 @@ impl From<anyhow::Error> for WebAppError {
         WebAppError::Internal(err.to_string())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use axum::response::IntoResponse;
+    use serde_json::Value;
+
+    async fn response_to_json(response: Response) -> Value {
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        serde_json::from_slice(&body).unwrap()
+    }
+
+    #[tokio::test]
+    async fn test_internal_error_response() {
+        let error = WebAppError::internal("Database connection failed");
+        let response = error.into_response();
+        
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        // Internal errors should not expose details
+        assert_eq!(json["error"]["message"], "Internal server error");
+    }
+
+    #[tokio::test]
+    async fn test_bad_request_response() {
+        let error = WebAppError::bad_request("Invalid username format");
+        let response = error.into_response();
+        
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        assert_eq!(json["error"]["message"], "Invalid username format");
+    }
+
+    #[tokio::test]
+    async fn test_unauthorized_response() {
+        let error = WebAppError::unauthorized("Invalid credentials");
+        let response = error.into_response();
+        
+        assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        assert_eq!(json["error"]["message"], "Invalid credentials");
+    }
+
+    #[tokio::test]
+    async fn test_not_found_response() {
+        let error = WebAppError::not_found("User not found");
+        let response = error.into_response();
+        
+        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        assert_eq!(json["error"]["message"], "User not found");
+    }
+
+    #[tokio::test]
+    async fn test_conflict_response() {
+        let error = WebAppError::conflict("Username already exists");
+        let response = error.into_response();
+        
+        assert_eq!(response.status(), StatusCode::CONFLICT);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        assert_eq!(json["error"]["message"], "Username already exists");
+    }
+
+    #[tokio::test]
+    async fn test_forbidden_response() {
+        let error = WebAppError::forbidden("Access denied");
+        let response = error.into_response();
+        
+        assert_eq!(response.status(), StatusCode::FORBIDDEN);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        assert_eq!(json["error"]["message"], "Access denied");
+    }
+
+    #[tokio::test]
+    async fn test_anyhow_error_conversion() {
+        let anyhow_err = anyhow::anyhow!("Something went wrong");
+        let webapp_err: WebAppError = anyhow_err.into();
+        
+        let response = webapp_err.into_response();
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+        
+        let json = response_to_json(response).await;
+        assert_eq!(json["success"], false);
+        // Anyhow errors are treated as internal errors
+        assert_eq!(json["error"]["message"], "Internal server error");
+    }
+
+    #[test]
+    fn test_error_display() {
+        assert_eq!(
+            WebAppError::internal("test").to_string(),
+            "Internal error: test"
+        );
+        assert_eq!(
+            WebAppError::bad_request("test").to_string(),
+            "Bad request: test"
+        );
+        assert_eq!(
+            WebAppError::unauthorized("test").to_string(),
+            "Unauthorized: test"
+        );
+    }
+
+    #[test]
+    fn test_helper_constructors() {
+        let err = WebAppError::internal("test");
+        assert!(matches!(err, WebAppError::Internal(_)));
+        
+        let err = WebAppError::bad_request("test");
+        assert!(matches!(err, WebAppError::BadRequest(_)));
+        
+        let err = WebAppError::unauthorized("test");
+        assert!(matches!(err, WebAppError::Unauthorized(_)));
+        
+        let err = WebAppError::not_found("test");
+        assert!(matches!(err, WebAppError::NotFound(_)));
+        
+        let err = WebAppError::conflict("test");
+        assert!(matches!(err, WebAppError::Conflict(_)));
+        
+        let err = WebAppError::forbidden("test");
+        assert!(matches!(err, WebAppError::Forbidden(_)));
+    }
+}
+
