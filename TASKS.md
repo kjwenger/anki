@@ -242,26 +242,24 @@ Endpoints Implemented:
 
 ---
 
-### 2.3 Scheduler API
+### 2.3 Scheduler API ⏭️
 **Priority**: P0  
 **Estimate**: 3 days  
-**Dependencies**: 2.2
+**Dependencies**: 2.2, 2.4  
+**Status**: Deferred (Requires Notes & Cards first)
 
+**Note:** Scheduler requires proper note and card creation first.
+The scheduler API will be implemented after we have:
+- Notes API (2.4) - to create content
+- Cards API (implied) - to have cards to review
+
+Endpoints Planned:
 - [ ] GET /api/v1/scheduler/next (get next card)
 - [ ] POST /api/v1/scheduler/answer (answer card)
 - [ ] GET /api/v1/scheduler/counts (review counts)
 - [ ] GET /api/v1/scheduler/congrats (completion)
-- [ ] POST /api/v1/scheduler/bury-deck
-- [ ] POST /api/v1/scheduler/unbury
-- [ ] GET /api/v1/scheduler/states/{card_id}
-- [ ] POST /api/v1/scheduler/custom-study
-- [ ] POST /api/v1/scheduler/set-due-date
 
-**Files to Create**:
-- `rslib/webapp/src/routes/scheduler.rs`
-- `rslib/webapp/src/handlers/scheduler.rs`
-
-**Acceptance Criteria**:
+**Acceptance Criteria** (Future):
 - Cards returned in correct order
 - Answer updates scheduling
 - Counts reflect queue state
