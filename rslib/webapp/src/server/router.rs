@@ -5,15 +5,16 @@ use axum::{
     http::StatusCode,
     middleware,
     response::{Html, IntoResponse, Json},
-    routing::{delete, get, post},
+    routing::{delete, get, post, put},
     Router,
 };
 use serde_json::json;
 
 use crate::auth::{require_auth, AuthState};
 use crate::routes::{
-    close_collection, create_deck, delete_deck, get_collection_info, get_deck, get_deck_tree,
-    login, logout, me, register, AuthRouteState,
+    close_collection, create_deck, create_note, delete_deck, delete_note, get_collection_info,
+    get_deck, get_deck_tree, get_note, get_note_cards, login, logout, me, register,
+    update_note, AuthRouteState,
 };
 use crate::WebAppConfig;
 
@@ -30,6 +31,11 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()>
         .route("/api/v1/decks", post(create_deck))
         .route("/api/v1/decks/{id}", get(get_deck))
         .route("/api/v1/decks/{id}", delete(delete_deck))
+        .route("/api/v1/notes", post(create_note))
+        .route("/api/v1/notes/{id}", get(get_note))
+        .route("/api/v1/notes/{id}", put(update_note))
+        .route("/api/v1/notes/{id}", delete(delete_note))
+        .route("/api/v1/notes/{id}/cards", get(get_note_cards))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,
@@ -105,6 +111,11 @@ async fn root_handler() -> Html<&'static str> {
         <li><code>POST /api/v1/decks</code> - Create deck</li>
         <li><code>GET /api/v1/decks/{id}</code> - Get deck by ID</li>
         <li><code>DELETE /api/v1/decks/{id}</code> - Delete deck</li>
+        <li><code>POST /api/v1/notes</code> - Create note</li>
+        <li><code>GET /api/v1/notes/{id}</code> - Get note by ID</li>
+        <li><code>PUT /api/v1/notes/{id}</code> - Update note</li>
+        <li><code>DELETE /api/v1/notes/{id}</code> - Delete note</li>
+        <li><code>GET /api/v1/notes/{id}/cards</code> - Get cards for note</li>
     </ul>
     
     <h2>Status</h2>
