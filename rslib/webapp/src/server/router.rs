@@ -5,13 +5,16 @@ use axum::{
     http::StatusCode,
     middleware,
     response::{Html, IntoResponse, Json},
-    routing::{get, post},
+    routing::{delete, get, post},
     Router,
 };
 use serde_json::json;
 
 use crate::auth::{require_auth, AuthState};
-use crate::routes::{close_collection, get_collection_info, login, logout, me, register, AuthRouteState};
+use crate::routes::{
+    close_collection, create_deck, delete_deck, get_collection_info, get_deck, get_deck_tree,
+    login, logout, me, register, AuthRouteState,
+};
 use crate::WebAppConfig;
 
 pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()> {
@@ -21,6 +24,10 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()>
         .route("/api/v1/auth/me", get(me))
         .route("/api/v1/collection/info", get(get_collection_info))
         .route("/api/v1/collection/close", post(close_collection))
+        .route("/api/v1/decks", get(get_deck_tree))
+        .route("/api/v1/decks", post(create_deck))
+        .route("/api/v1/decks/{id}", get(get_deck))
+        .route("/api/v1/decks/{id}", delete(delete_deck))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,
@@ -91,6 +98,10 @@ async fn root_handler() -> Html<&'static str> {
         <li><code>POST /api/v1/auth/logout</code> - Logout user</li>
         <li><code>GET /api/v1/collection/info</code> - Get collection info</li>
         <li><code>POST /api/v1/collection/close</code> - Close collection</li>
+        <li><code>GET /api/v1/decks</code> - Get deck tree</li>
+        <li><code>POST /api/v1/decks</code> - Create deck</li>
+        <li><code>GET /api/v1/decks/{id}</code> - Get deck by ID</li>
+        <li><code>DELETE /api/v1/decks/{id}</code> - Delete deck</li>
     </ul>
     
     <h2>Status</h2>

@@ -212,31 +212,33 @@ Endpoints Implemented:
 
 ---
 
-### 2.2 Decks API
+### 2.2 Decks API ✅
 **Priority**: P0  
 **Estimate**: 2 days  
-**Dependencies**: 2.1
+**Dependencies**: 2.1  
+**Status**: Core Complete
 
-- [ ] GET /api/v1/decks (list/tree)
-- [ ] POST /api/v1/decks (create)
-- [ ] GET /api/v1/decks/{id} (get)
-- [ ] PUT /api/v1/decks/{id} (update)
-- [ ] DELETE /api/v1/decks/{id} (delete)
-- [ ] POST /api/v1/decks/{id}/rename
-- [ ] GET /api/v1/decks/{id}/stats
-- [ ] POST /api/v1/decks/{id}/set-current
-- [ ] GET /api/v1/decks/{id}/config
-- [ ] PUT /api/v1/decks/{id}/config
+Endpoints Implemented:
+- [x] GET /api/v1/decks (deck tree)
+- [x] POST /api/v1/decks (create)
+- [x] GET /api/v1/decks/{id} (get)
+- [x] DELETE /api/v1/decks/{id} (delete)
+- [ ] PUT /api/v1/decks/{id} (update) - future
+- [ ] POST /api/v1/decks/{id}/rename - future
+- [ ] GET /api/v1/decks/{id}/stats - future
+- [ ] POST /api/v1/decks/{id}/set-current - future
+- [ ] GET /api/v1/decks/{id}/config - future
+- [ ] PUT /api/v1/decks/{id}/config - future
 
-**Files to Create**:
-- `rslib/webapp/src/routes/decks.rs`
-- `rslib/webapp/src/handlers/decks.rs`
+**Files Created**:
+- `rslib/webapp/src/routes/decks.rs` - Deck route handlers
 
-**Acceptance Criteria**:
-- Deck tree returns correct hierarchy
-- Deck CRUD operations work
-- Statistics accurate
-- Config changes persist
+**Acceptance Criteria** (Core Met):
+- ✅ Deck tree returns correct hierarchy
+- ✅ Deck CRUD operations work (create, read, delete)
+- ✅ Decks properly isolated per user
+- ⏭️ Statistics (deferred - Task 2.3)
+- ⏭️ Config changes (deferred - can use defaults)
 
 ---
 
