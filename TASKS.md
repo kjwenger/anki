@@ -39,27 +39,28 @@ Testing, documentation, deployment
 
 ---
 
-### 1.2 Database Schema for Users
+### 1.2 Database Schema for Users ✅
 **Priority**: P0  
 **Estimate**: 1 day  
-**Dependencies**: 1.1
+**Dependencies**: 1.1  
+**Status**: Complete
 
-- [ ] Create SQLite schema for users table
-- [ ] Create sessions table
-- [ ] Implement migration system
-- [ ] Add database initialization code
-- [ ] Write database helper functions
+- [x] Create SQLite schema for users table
+- [x] Create sessions table
+- [x] Implement migration system
+- [x] Add database initialization code
+- [x] Write database helper functions
 
-**Files to Create**:
+**Files Created**:
 - `rslib/webapp/src/db/schema.sql`
 - `rslib/webapp/src/db/mod.rs`
 - `rslib/webapp/src/db/users.rs`
 - `rslib/webapp/src/db/sessions.rs`
 
-**Acceptance Criteria**:
-- Database creates on first run
-- Users can be added/queried
-- Sessions can be stored/retrieved
+**Acceptance Criteria** (All Met):
+- ✅ Database creates on first run
+- ✅ Users can be added/queried
+- ✅ Sessions can be stored/retrieved
 
 ---
 
