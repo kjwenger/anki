@@ -11,11 +11,13 @@ use uuid::Uuid;
 use crate::auth::{hash_password, verify_password, AuthUser, Claims, JwtManager};
 use crate::db::Database;
 use crate::error::{Result, WebAppError};
+use crate::session::BackendManager;
 
 #[derive(Clone)]
 pub struct AuthRouteState {
     pub database: Arc<Database>,
     pub jwt_manager: Arc<JwtManager>,
+    pub backend_manager: Arc<BackendManager>,
     pub session_timeout_hours: i64,
 }
 
@@ -188,6 +190,9 @@ pub async fn logout(
     State(state): State<AuthRouteState>,
     Extension(auth_user): Extension<AuthUser>,
 ) -> Result<impl IntoResponse> {
+    // Close backend instance for this user
+    let _ = state.backend_manager.close_backend(auth_user.user_id);
+    
     // Delete the session
     state
         .database
@@ -237,16 +242,19 @@ mod tests {
         db.initialize().unwrap();
 
         let jwt_manager = Arc::new(JwtManager::new("test_secret"));
+        let backend_manager = Arc::new(BackendManager::new(std::env::temp_dir()));
         
         let auth_state = AuthRouteState {
             database: db.clone(),
             jwt_manager: jwt_manager.clone(),
+            backend_manager: backend_manager.clone(),
             session_timeout_hours: 24,
         };
 
         let middleware_state = AuthState {
             database: db.clone(),
             jwt_manager,
+            backend_manager,
         };
 
         let app = Router::new()

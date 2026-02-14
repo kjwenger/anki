@@ -7,6 +7,7 @@ use crate::auth::{AuthState, JwtManager};
 use crate::config::WebAppConfig;
 use crate::db::Database;
 use crate::error::Result;
+use crate::session::BackendManager;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use tokio::net::TcpListener;
@@ -50,10 +51,15 @@ impl WebAppServer {
         // Initialize JWT manager
         let jwt_manager = Arc::new(JwtManager::new(&self.config.jwt_secret));
         
+        // Initialize backend manager
+        let backend_manager = Arc::new(BackendManager::new(self.config.data_dir.clone()));
+        tracing::info!("📋 Backend manager initialized");
+        
         // Create auth state
         let auth_state = AuthState {
             database,
             jwt_manager,
+            backend_manager,
         };
         
         // Build router

@@ -43,6 +43,7 @@ rusqlite.workspace = true
 [dev-dependencies]
 tokio.workspace = true
 tower = { version = "0.5", features = ["util"] }
+tempfile = "3.8"
 
 [[bin]]
 name = "anki-webapp"

@@ -96,27 +96,30 @@ Testing, documentation, deployment
 
 ---
 
-### 1.4 Session Management
+### 1.4 Session Management ✅
 **Priority**: P0  
 **Estimate**: 2 days  
-**Dependencies**: 1.3
+**Dependencies**: 1.3  
+**Status**: Complete
 
-- [ ] Implement session store
-- [ ] Create session middleware
-- [ ] Add per-user Backend instance management
-- [ ] Implement collection opening/closing
-- [ ] Add session cleanup/timeout
+- [x] Implement session store (completed in 1.2)
+- [x] Create session middleware (completed in 1.3)
+- [x] Add per-user Backend instance management
+- [x] Implement collection opening/closing
+- [x] Add session cleanup/timeout (completed in 1.2)
 
-**Files to Create**:
+**Files Created**:
 - `rslib/webapp/src/session/mod.rs`
-- `rslib/webapp/src/session/store.rs`
-- `rslib/webapp/src/session/middleware.rs`
+- `rslib/webapp/src/session/backend.rs`
+- `rslib/webapp/src/routes/collection.rs`
 
-**Acceptance Criteria**:
-- Each user gets isolated Backend instance
-- Sessions timeout after inactivity
-- Collections properly closed on logout
-- Concurrent requests handled correctly
+**Acceptance Criteria** (All Met):
+- ✅ Each user gets isolated Backend instance
+- ✅ Sessions timeout after inactivity (database-based)
+- ✅ Collections properly closed on logout
+- ✅ Concurrent requests handled correctly (Mutex-based locking)
+- ✅ Backend instances cached and reused per user
+- ✅ Collection files created in user-specific directories
 
 ---
 

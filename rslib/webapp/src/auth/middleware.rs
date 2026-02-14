@@ -9,11 +9,13 @@ use std::sync::Arc;
 use crate::auth::jwt::JwtManager;
 use crate::db::Database;
 use crate::error::WebAppError;
+use crate::session::BackendManager;
 
 #[derive(Clone)]
 pub struct AuthState {
     pub jwt_manager: Arc<JwtManager>,
     pub database: Arc<Database>,
+    pub backend_manager: Arc<BackendManager>,
 }
 
 /// Extension type to hold authenticated user info
@@ -138,10 +140,12 @@ mod tests {
         db.users().create("testuser", "hash", None).unwrap();
         
         let jwt_manager = Arc::new(JwtManager::new("test_secret"));
+        let backend_manager = Arc::new(BackendManager::new(std::env::temp_dir()));
         
         AuthState {
             jwt_manager,
             database: db,
+            backend_manager,
         }
     }
 
