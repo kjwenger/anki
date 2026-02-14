@@ -1,6 +1,7 @@
 use anyhow::Result;
 use rusqlite::{params, Connection};
 use std::path::Path;
+use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub mod sessions;
@@ -12,36 +13,46 @@ pub use users::{User, UserStore};
 const SCHEMA_SQL: &str = include_str!("schema.sql");
 
 pub struct Database {
-    conn: Connection,
+    conn: Mutex<Connection>,
 }
 
 impl Database {
     pub fn open<P: AsRef<Path>>(path: P) -> Result<Self> {
         let conn = Connection::open(path)?;
         conn.execute("PRAGMA foreign_keys = ON", [])?;
-        Ok(Self { conn })
+        Ok(Self { conn: Mutex::new(conn) })
     }
 
     pub fn initialize(&self) -> Result<()> {
-        self.conn.execute_batch(SCHEMA_SQL)?;
+        let conn = self.conn.lock().unwrap();
+        conn.execute_batch(SCHEMA_SQL)?;
         Ok(())
     }
 
     pub fn users(&self) -> UserStore<'_> {
-        UserStore::new(&self.conn)
+        UserStore::new(self)
     }
 
     pub fn sessions(&self) -> SessionStore<'_> {
-        SessionStore::new(&self.conn)
+        SessionStore::new(self)
     }
 
     pub fn cleanup_expired_sessions(&self) -> Result<usize> {
         let now = current_timestamp();
-        let count = self.conn.execute(
+        let conn = self.conn.lock().unwrap();
+        let count = conn.execute(
             "DELETE FROM sessions WHERE expires_at < ?1",
             params![now],
         )?;
         Ok(count)
+    }
+
+    pub(crate) fn with_conn<F, R>(&self, f: F) -> Result<R>
+    where
+        F: FnOnce(&Connection) -> Result<R>,
+    {
+        let conn = self.conn.lock().unwrap();
+        f(&*conn)
     }
 }
 
@@ -62,14 +73,14 @@ mod tests {
         db.initialize().unwrap();
 
         // Verify tables exist
-        let table_count: i64 = db
-            .conn
-            .query_row(
+        let table_count: i64 = db.with_conn(|conn| {
+            conn.query_row(
                 "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('users', 'sessions', 'schema_version')",
                 [],
                 |row| row.get(0),
             )
-            .unwrap();
+            .map_err(Into::into)
+        }).unwrap();
         assert_eq!(table_count, 3);
     }
 
@@ -79,19 +90,17 @@ mod tests {
         db.initialize().unwrap();
 
         // Insert expired session
-        db.conn
-            .execute(
+        db.with_conn(|conn| {
+            conn.execute(
                 "INSERT INTO users (username, password_hash, created_at, updated_at) VALUES ('test', 'hash', 0, 0)",
                 [],
-            )
-            .unwrap();
-
-        db.conn
-            .execute(
+            )?;
+            conn.execute(
                 "INSERT INTO sessions (id, user_id, created_at, expires_at, last_accessed) VALUES ('expired', 1, 0, 0, 0)",
                 [],
-            )
-            .unwrap();
+            )?;
+            Ok(())
+        }).unwrap();
 
         let count = db.cleanup_expired_sessions().unwrap();
         assert_eq!(count, 1);

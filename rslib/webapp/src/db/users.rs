@@ -1,8 +1,8 @@
 use anyhow::Result;
-use rusqlite::{params, Connection, OptionalExtension, Row};
+use rusqlite::{params, OptionalExtension, Row};
 use serde::{Deserialize, Serialize};
 
-use super::current_timestamp;
+use super::{current_timestamp, Database};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
@@ -33,89 +33,103 @@ impl User {
 }
 
 pub struct UserStore<'a> {
-    conn: &'a Connection,
+    db: &'a Database,
 }
 
 impl<'a> UserStore<'a> {
-    pub fn new(conn: &'a Connection) -> Self {
-        Self { conn }
+    pub fn new(db: &'a Database) -> Self {
+        Self { db }
     }
 
     pub fn create(&self, username: &str, password_hash: &str, email: Option<&str>) -> Result<User> {
         let now = current_timestamp();
-        self.conn.execute(
-            "INSERT INTO users (username, password_hash, email, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5)",
-            params![username, password_hash, email, now, now],
-        )?;
+        let id = self.db.with_conn(|conn| {
+            conn.execute(
+                "INSERT INTO users (username, password_hash, email, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5)",
+                params![username, password_hash, email, now, now],
+            )?;
+            Ok(conn.last_insert_rowid())
+        })?;
 
-        let id = self.conn.last_insert_rowid();
         self.get_by_id(id)?.ok_or_else(|| anyhow::anyhow!("Failed to retrieve created user"))
     }
 
     pub fn get_by_id(&self, id: i64) -> Result<Option<User>> {
-        self.conn
-            .query_row(
+        self.db.with_conn(|conn| {
+            conn.query_row(
                 "SELECT id, username, password_hash, email, created_at, updated_at, is_active, collection_path FROM users WHERE id = ?1",
                 params![id],
                 User::from_row,
             )
             .optional()
             .map_err(Into::into)
+        })
     }
 
     pub fn get_by_username(&self, username: &str) -> Result<Option<User>> {
-        self.conn
-            .query_row(
+        self.db.with_conn(|conn| {
+            conn.query_row(
                 "SELECT id, username, password_hash, email, created_at, updated_at, is_active, collection_path FROM users WHERE username = ?1",
                 params![username],
                 User::from_row,
             )
             .optional()
             .map_err(Into::into)
+        })
     }
 
     pub fn update_password(&self, user_id: i64, password_hash: &str) -> Result<()> {
         let now = current_timestamp();
-        self.conn.execute(
-            "UPDATE users SET password_hash = ?1, updated_at = ?2 WHERE id = ?3",
-            params![password_hash, now, user_id],
-        )?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute(
+                "UPDATE users SET password_hash = ?1, updated_at = ?2 WHERE id = ?3",
+                params![password_hash, now, user_id],
+            )?;
+            Ok(())
+        })
     }
 
     pub fn update_collection_path(&self, user_id: i64, path: &str) -> Result<()> {
         let now = current_timestamp();
-        self.conn.execute(
-            "UPDATE users SET collection_path = ?1, updated_at = ?2 WHERE id = ?3",
-            params![path, now, user_id],
-        )?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute(
+                "UPDATE users SET collection_path = ?1, updated_at = ?2 WHERE id = ?3",
+                params![path, now, user_id],
+            )?;
+            Ok(())
+        })
     }
 
     pub fn set_active(&self, user_id: i64, is_active: bool) -> Result<()> {
         let now = current_timestamp();
-        self.conn.execute(
-            "UPDATE users SET is_active = ?1, updated_at = ?2 WHERE id = ?3",
-            params![is_active as i64, now, user_id],
-        )?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute(
+                "UPDATE users SET is_active = ?1, updated_at = ?2 WHERE id = ?3",
+                params![is_active as i64, now, user_id],
+            )?;
+            Ok(())
+        })
     }
 
     pub fn delete(&self, user_id: i64) -> Result<()> {
-        self.conn.execute("DELETE FROM users WHERE id = ?1", params![user_id])?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute("DELETE FROM users WHERE id = ?1", params![user_id])?;
+            Ok(())
+        })
     }
 
     pub fn list_all(&self) -> Result<Vec<User>> {
-        let mut stmt = self.conn.prepare(
-            "SELECT id, username, password_hash, email, created_at, updated_at, is_active, collection_path FROM users ORDER BY username",
-        )?;
+        self.db.with_conn(|conn| {
+            let mut stmt = conn.prepare(
+                "SELECT id, username, password_hash, email, created_at, updated_at, is_active, collection_path FROM users ORDER BY username",
+            )?;
 
-        let users = stmt
-            .query_map([], User::from_row)?
-            .collect::<rusqlite::Result<Vec<_>>>()?;
+            let users = stmt
+                .query_map([], User::from_row)?
+                .collect::<rusqlite::Result<Vec<_>>>()?;
 
-        Ok(users)
+            Ok(users)
+        })
     }
 }
 

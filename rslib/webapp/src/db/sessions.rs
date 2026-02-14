@@ -1,8 +1,8 @@
 use anyhow::Result;
-use rusqlite::{params, Connection, OptionalExtension, Row};
+use rusqlite::{params, OptionalExtension, Row};
 use serde::{Deserialize, Serialize};
 
-use super::current_timestamp;
+use super::{current_timestamp, Database};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Session {
@@ -30,22 +30,25 @@ impl Session {
 }
 
 pub struct SessionStore<'a> {
-    conn: &'a Connection,
+    db: &'a Database,
 }
 
 impl<'a> SessionStore<'a> {
-    pub fn new(conn: &'a Connection) -> Self {
-        Self { conn }
+    pub fn new(db: &'a Database) -> Self {
+        Self { db }
     }
 
     pub fn create(&self, session_id: &str, user_id: i64, ttl_seconds: i64) -> Result<Session> {
         let now = current_timestamp();
         let expires_at = now + ttl_seconds;
 
-        self.conn.execute(
-            "INSERT INTO sessions (id, user_id, created_at, expires_at, last_accessed) VALUES (?1, ?2, ?3, ?4, ?5)",
-            params![session_id, user_id, now, expires_at, now],
-        )?;
+        self.db.with_conn(|conn| {
+            conn.execute(
+                "INSERT INTO sessions (id, user_id, created_at, expires_at, last_accessed) VALUES (?1, ?2, ?3, ?4, ?5)",
+                params![session_id, user_id, now, expires_at, now],
+            )?;
+            Ok(())
+        })?;
 
         Ok(Session {
             id: session_id.to_string(),
@@ -57,54 +60,65 @@ impl<'a> SessionStore<'a> {
     }
 
     pub fn get(&self, session_id: &str) -> Result<Option<Session>> {
-        self.conn
-            .query_row(
+        self.db.with_conn(|conn| {
+            conn.query_row(
                 "SELECT id, user_id, created_at, expires_at, last_accessed FROM sessions WHERE id = ?1",
                 params![session_id],
                 Session::from_row,
             )
             .optional()
             .map_err(Into::into)
+        })
     }
 
     pub fn update_access_time(&self, session_id: &str) -> Result<()> {
         let now = current_timestamp();
-        self.conn.execute(
-            "UPDATE sessions SET last_accessed = ?1 WHERE id = ?2",
-            params![now, session_id],
-        )?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute(
+                "UPDATE sessions SET last_accessed = ?1 WHERE id = ?2",
+                params![now, session_id],
+            )?;
+            Ok(())
+        })
     }
 
     pub fn delete(&self, session_id: &str) -> Result<()> {
-        self.conn.execute("DELETE FROM sessions WHERE id = ?1", params![session_id])?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute("DELETE FROM sessions WHERE id = ?1", params![session_id])?;
+            Ok(())
+        })
     }
 
     pub fn delete_by_user(&self, user_id: i64) -> Result<()> {
-        self.conn.execute("DELETE FROM sessions WHERE user_id = ?1", params![user_id])?;
-        Ok(())
+        self.db.with_conn(|conn| {
+            conn.execute("DELETE FROM sessions WHERE user_id = ?1", params![user_id])?;
+            Ok(())
+        })
     }
 
     pub fn cleanup_expired(&self) -> Result<usize> {
         let now = current_timestamp();
-        let count = self.conn.execute(
-            "DELETE FROM sessions WHERE expires_at < ?1",
-            params![now],
-        )?;
-        Ok(count)
+        self.db.with_conn(|conn| {
+            let count = conn.execute(
+                "DELETE FROM sessions WHERE expires_at < ?1",
+                params![now],
+            )?;
+            Ok(count)
+        })
     }
 
     pub fn get_user_sessions(&self, user_id: i64) -> Result<Vec<Session>> {
-        let mut stmt = self.conn.prepare(
-            "SELECT id, user_id, created_at, expires_at, last_accessed FROM sessions WHERE user_id = ?1 ORDER BY created_at DESC",
-        )?;
+        self.db.with_conn(|conn| {
+            let mut stmt = conn.prepare(
+                "SELECT id, user_id, created_at, expires_at, last_accessed FROM sessions WHERE user_id = ?1 ORDER BY created_at DESC",
+            )?;
 
-        let sessions = stmt
-            .query_map(params![user_id], Session::from_row)?
-            .collect::<rusqlite::Result<Vec<_>>>()?;
+            let sessions = stmt
+                .query_map(params![user_id], Session::from_row)?
+                .collect::<rusqlite::Result<Vec<_>>>()?;
 
-        Ok(sessions)
+            Ok(sessions)
+        })
     }
 }
 

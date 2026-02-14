@@ -34,7 +34,7 @@ tracing-subscriber.workspace = true
 
 # Additional dependencies for webapp
 jsonwebtoken = "9.2"
-argon2 = "0.5"
+argon2 = { version = "0.5", features = ["std"] }
 uuid = { version = "1.6", features = ["v4", "serde"] }
 chrono.workspace = true
 toml = "0.8"
@@ -42,6 +42,7 @@ rusqlite.workspace = true
 
 [dev-dependencies]
 tokio.workspace = true
+tower = { version = "0.5", features = ["util"] }
 
 [[bin]]
 name = "anki-webapp"

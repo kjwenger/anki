@@ -16,6 +16,33 @@ pub enum WebAppError {
     Unauthorized(String),
     NotFound(String),
     Conflict(String),
+    Forbidden(String),
+}
+
+impl WebAppError {
+    pub fn internal(msg: &str) -> Self {
+        WebAppError::Internal(msg.to_string())
+    }
+
+    pub fn bad_request(msg: &str) -> Self {
+        WebAppError::BadRequest(msg.to_string())
+    }
+
+    pub fn unauthorized(msg: &str) -> Self {
+        WebAppError::Unauthorized(msg.to_string())
+    }
+
+    pub fn not_found(msg: &str) -> Self {
+        WebAppError::NotFound(msg.to_string())
+    }
+
+    pub fn conflict(msg: &str) -> Self {
+        WebAppError::Conflict(msg.to_string())
+    }
+
+    pub fn forbidden(msg: &str) -> Self {
+        WebAppError::Forbidden(msg.to_string())
+    }
 }
 
 impl fmt::Display for WebAppError {
@@ -26,6 +53,7 @@ impl fmt::Display for WebAppError {
             WebAppError::Unauthorized(msg) => write!(f, "Unauthorized: {}", msg),
             WebAppError::NotFound(msg) => write!(f, "Not found: {}", msg),
             WebAppError::Conflict(msg) => write!(f, "Conflict: {}", msg),
+            WebAppError::Forbidden(msg) => write!(f, "Forbidden: {}", msg),
         }
     }
 }
@@ -40,6 +68,7 @@ impl IntoResponse for WebAppError {
             WebAppError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, msg),
             WebAppError::NotFound(msg) => (StatusCode::NOT_FOUND, msg),
             WebAppError::Conflict(msg) => (StatusCode::CONFLICT, msg),
+            WebAppError::Forbidden(msg) => (StatusCode::FORBIDDEN, msg),
         };
 
         let body = Json(json!({

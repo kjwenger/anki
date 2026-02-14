@@ -3,17 +3,45 @@
 
 use axum::{
     http::StatusCode,
+    middleware,
     response::{Html, IntoResponse, Json},
-    routing::get,
+    routing::{get, post},
     Router,
 };
 use serde_json::json;
 
-pub fn create_router() -> Router {
-    Router::new()
+use crate::auth::{require_auth, AuthState};
+use crate::routes::{login, logout, me, register, AuthRouteState};
+use crate::WebAppConfig;
+
+pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router<()> {
+    // Routes that require authentication
+    let protected_routes = Router::new()
+        .route("/api/v1/auth/logout", post(logout))
+        .route("/api/v1/auth/me", get(me))
+        .layer(middleware::from_fn_with_state(
+            auth_state.clone(),
+            require_auth,
+        ));
+
+    // Public auth routes  
+    let auth_route_state = AuthRouteState {
+        database: auth_state.database.clone(),
+        jwt_manager: auth_state.jwt_manager.clone(),
+        session_timeout_hours: config.session_timeout_hours as i64,
+    };
+
+    let public_routes = Router::new()
         .route("/", get(root_handler))
         .route("/health", get(health_handler))
         .route("/api/v1/info", get(info_handler))
+        .route("/api/v1/auth/register", post(register))
+        .route("/api/v1/auth/login", post(login));
+
+    // Combine routes
+    public_routes
+        .merge(protected_routes)
+        .with_state(auth_route_state)
 }
 
 async fn root_handler() -> Html<&'static str> {
@@ -45,15 +73,30 @@ async fn root_handler() -> Html<&'static str> {
     <p class="status">✅ Server is running!</p>
     
     <h2>Available Endpoints</h2>
+    <h3>Public Endpoints</h3>
     <ul>
         <li><code>GET /</code> - This page</li>
         <li><code>GET /health</code> - Health check</li>
         <li><code>GET /api/v1/info</code> - Server info (JSON)</li>
+        <li><code>POST /api/v1/auth/register</code> - Register new user</li>
+        <li><code>POST /api/v1/auth/login</code> - Login user</li>
     </ul>
     
-    <h2>Next Steps</h2>
-    <p>The server is running but authentication and API endpoints are not yet implemented.</p>
-    <p>See <code>TASKS.md</code> for the implementation roadmap.</p>
+    <h3>Protected Endpoints (Require Authentication)</h3>
+    <ul>
+        <li><code>GET /api/v1/auth/me</code> - Get current user info</li>
+        <li><code>POST /api/v1/auth/logout</code> - Logout user</li>
+    </ul>
+    
+    <h2>Status</h2>
+    <p>✅ Authentication system is now active!</p>
+    <p>Features available:</p>
+    <ul>
+        <li>✅ User registration with password hashing (Argon2)</li>
+        <li>✅ JWT-based authentication</li>
+        <li>✅ Session management with expiration</li>
+        <li>✅ Protected routes with middleware</li>
+    </ul>
     
     <h2>Configuration</h2>
     <p>Configure via environment variables:</p>
@@ -82,11 +125,11 @@ async fn info_handler() -> impl IntoResponse {
             "version": env!("CARGO_PKG_VERSION"),
             "status": "running",
             "features": {
-                "authentication": false,
+                "authentication": true,
                 "api": false,
                 "ui": false,
             },
-            "message": "Server is running. API endpoints not yet implemented."
+            "message": "Server is running. Authentication enabled."
         }
     }))
 }

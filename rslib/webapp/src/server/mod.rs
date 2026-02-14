@@ -3,9 +3,12 @@
 
 mod router;
 
+use crate::auth::{AuthState, JwtManager};
 use crate::config::WebAppConfig;
+use crate::db::Database;
 use crate::error::Result;
 use std::net::SocketAddr;
+use std::sync::Arc;
 use tokio::net::TcpListener;
 
 pub struct WebAppServer {
@@ -34,8 +37,27 @@ impl WebAppServer {
         tracing::info!("  Port: {}", self.config.port);
         tracing::info!("  Data directory: {}", self.config.data_dir.display());
         
+        // Ensure data directory exists
+        std::fs::create_dir_all(&self.config.data_dir)
+            .map_err(|e| anyhow::anyhow!("Failed to create data directory: {}", e))?;
+        
+        // Initialize database
+        let db_path = self.config.data_dir.join("webapp.db");
+        let database = Arc::new(Database::open(&db_path)?);
+        database.initialize()?;
+        tracing::info!("📦 Database initialized at {}", db_path.display());
+        
+        // Initialize JWT manager
+        let jwt_manager = Arc::new(JwtManager::new(&self.config.jwt_secret));
+        
+        // Create auth state
+        let auth_state = AuthState {
+            database,
+            jwt_manager,
+        };
+        
         // Build router
-        let app = router::create_router();
+        let app = router::create_router(&self.config, auth_state);
         
         // Create listener
         let listener = TcpListener::bind(addr)
