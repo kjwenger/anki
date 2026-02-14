@@ -5,7 +5,6 @@ mod router;
 
 use crate::config::WebAppConfig;
 use crate::error::Result;
-use axum::Router;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 
@@ -39,7 +38,9 @@ impl WebAppServer {
         let app = router::create_router();
         
         // Create listener
-        let listener = TcpListener::bind(addr).await?;
+        let listener = TcpListener::bind(addr)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to bind to {}: {}", addr, e))?;
         
         tracing::info!("🚀 Anki Web App listening on http://{}", addr);
         tracing::info!("📚 Ready to serve!");
