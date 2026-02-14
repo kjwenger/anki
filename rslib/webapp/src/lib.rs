@@ -9,6 +9,7 @@ pub mod openapi;
 pub mod routes;
 pub mod server;
 pub mod session;
+pub mod swagger_ui;
 
 pub use auth::{AuthState, AuthUser, JwtManager};
 pub use config::WebAppConfig;

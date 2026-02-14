@@ -18,6 +18,7 @@ use crate::routes::{
     get_deck, get_deck_tree, get_note, get_note_cards, login, logout, me, register,
     update_note, AuthRouteState,
 };
+use crate::swagger_ui;
 use crate::WebAppConfig;
 
 pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
@@ -56,6 +57,8 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/health", get(health_handler))
         .route("/api/v1/info", get(info_handler))
         .route("/api-docs/openapi.json", get(openapi_spec_handler))
+        .route("/swagger-ui", get(swagger_ui::swagger_ui_handler))
+        .route("/swagger-ui/", get(swagger_ui::swagger_ui_handler))
         .route("/api/v1/auth/register", post(register))
         .route("/api/v1/auth/login", post(login));
 
@@ -109,14 +112,14 @@ async fn root_handler() -> Html<&'static str> {
     <h1>🎴 Anki Web App</h1>
     <p class="status">✅ Server is running!</p>
     
-    <a href="https://petstore.swagger.io/?url=http://localhost:8080/api-docs/openapi.json" class="swagger-link" target="_blank">
+    <a href="/swagger-ui" class="swagger-link">
         📚 View API Documentation (Swagger UI)
     </a>
     
     <h2>Quick Links</h2>
     <ul>
+        <li><a href="/swagger-ui">Swagger UI</a> - Interactive API documentation</li>
         <li><a href="/api-docs/openapi.json">OpenAPI Spec (JSON)</a> - Machine-readable API specification</li>
-        <li><a href="https://petstore.swagger.io/?url=http://localhost:8080/api-docs/openapi.json" target="_blank">Swagger UI</a> - Interactive API documentation</li>
         <li><a href="/health">Health Check</a> - Server status</li>
         <li><a href="/api/v1/info">API Info</a> - Server information (JSON)</li>
     </ul>
