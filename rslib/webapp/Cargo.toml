@@ -37,6 +37,7 @@ regex.workspace = true
 argon2 = { version = "0.5", features = ["std"] }
 chrono.workspace = true
 jsonwebtoken = "9.2"
+mime_guess = "2.0"
 rusqlite.workspace = true
 toml = "0.8"
 uuid = { version = "1.6", features = ["v4", "serde"] }

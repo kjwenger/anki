@@ -2,6 +2,7 @@ pub mod auth;
 pub mod cards;
 pub mod collection;
 pub mod decks;
+pub mod media;
 pub mod notes;
 pub mod search;
 
@@ -33,3 +34,7 @@ pub use notes::update_note;
 pub use search::find_and_replace;
 pub use search::search_cards;
 pub use search::search_notes;
+pub use media::add_media;
+pub use media::check_media;
+pub use media::delete_media;
+pub use media::get_media;

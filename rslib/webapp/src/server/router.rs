@@ -24,13 +24,17 @@ use crate::routes::create_deck;
 use crate::routes::create_note;
 use crate::routes::delete_card;
 use crate::routes::delete_deck;
+use crate::routes::delete_media;
 use crate::routes::delete_note;
 use crate::routes::find_and_replace;
 use crate::routes::flag_card;
+use crate::routes::add_media;
+use crate::routes::check_media;
 use crate::routes::get_card;
 use crate::routes::get_collection_info;
 use crate::routes::get_deck;
 use crate::routes::get_deck_tree;
+use crate::routes::get_media;
 use crate::routes::get_note;
 use crate::routes::get_note_cards;
 use crate::routes::login;
@@ -77,6 +81,10 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/search/cards", post(search_cards))
         .route("/api/v1/search/notes", post(search_notes))
         .route("/api/v1/search/find-replace", post(find_and_replace))
+        .route("/api/v1/media/check", get(check_media))
+        .route("/api/v1/media/{filename}", get(get_media))
+        .route("/api/v1/media", post(add_media))
+        .route("/api/v1/media", delete(delete_media))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,

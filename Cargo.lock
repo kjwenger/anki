@@ -183,6 +183,7 @@ dependencies = [
  "axum-extra",
  "chrono",
  "jsonwebtoken",
+ "mime_guess",
  "prost",
  "regex",
  "rusqlite",

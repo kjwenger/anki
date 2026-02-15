@@ -45,6 +45,10 @@ impl WebAppError {
     pub fn forbidden(msg: &str) -> Self {
         WebAppError::Forbidden(msg.to_string())
     }
+
+    pub fn not_implemented(msg: &str) -> Self {
+        WebAppError::Internal(format!("Not implemented: {}", msg))
+    }
 }
 
 impl fmt::Display for WebAppError {
