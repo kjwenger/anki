@@ -1,4 +1,6 @@
-use anki::services::SchedulerService;
+use anki::scheduler::answering::CardAnswer;
+use anki::scheduler::answering::Rating;
+use anki::timestamp::TimestampMillis;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::IntoResponse;
@@ -17,6 +19,7 @@ pub struct QueuedCardResponse {
     pub card_id: i64,
     pub question_html: String,
     pub answer_html: String,
+    pub css: String,
     pub counts: StudyCounts,
 }
 
@@ -50,42 +53,27 @@ pub async fn get_next_card(
 
     let mut col = backend.lock().unwrap();
 
-    // Get next card(s) from the queue using the service
     let queued_cards = col
-        .get_queued_cards(anki_proto::scheduler::GetQueuedCardsRequest {
-            fetch_limit: 1,
-            intraday_learning_only: false,
-        })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        .get_queued_cards(1, false)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     if let Some(queued_card) = queued_cards.cards.first() {
-        let card_id = queued_card.card.as_ref().map(|c| c.id).unwrap_or(0);
-        
-        // Render the card HTML using the protobuf card
-        let question = col
-            .render_card(anki_proto::scheduler::RenderCardRequest {
-                card_id,
-                browser: false,
-                question_side: true,
-            })
-            .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        let card_id = queued_card.card.id();
 
-        let answer = col
-            .render_card(anki_proto::scheduler::RenderCardRequest {
-                card_id,
-                browser: false,
-                question_side: false,
-            })
-            .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        // Render the card HTML
+        let rendered = col
+            .render_existing_card(card_id, false, false)
+            .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
         let response = QueuedCardResponse {
-            card_id,
-            question_html: question.question_and_style,
-            answer_html: answer.answer_and_style,
+            card_id: card_id.0,
+            question_html: rendered.question().into_owned(),
+            answer_html: rendered.answer().into_owned(),
+            css: rendered.css.clone(),
             counts: StudyCounts {
-                new: queued_cards.new_count as usize,
-                learning: queued_cards.learning_count as usize,
-                review: queued_cards.review_count as usize,
+                new: queued_cards.new_count,
+                learning: queued_cards.learning_count,
+                review: queued_cards.review_count,
             },
         };
 
@@ -119,39 +107,53 @@ pub async fn answer_card(
 
     // Get the queued card to get its states
     let queued_cards = col
-        .get_queued_cards(anki_proto::scheduler::GetQueuedCardsRequest {
-            fetch_limit: 1,
-            intraday_learning_only: false,
-        })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        .get_queued_cards(1, false)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     if let Some(queued) = queued_cards.cards.first() {
-        let queued_card_id = queued.card.as_ref().map(|c| c.id).unwrap_or(0);
-        
-        if queued_card_id != card_id {
+        let queued_card_id = queued.card.id();
+
+        if queued_card_id.0 != card_id {
             drop(col);
             return Err(WebAppError::bad_request(
                 "Card is not the current card in queue",
             ));
         }
 
-        // Validate rating
-        if request.rating > 3 {
-            drop(col);
-            return Err(WebAppError::bad_request("Invalid rating value. Must be 0-3."));
-        }
+        let rating = match request.rating {
+            0 => Rating::Again,
+            1 => Rating::Hard,
+            2 => Rating::Good,
+            3 => Rating::Easy,
+            _ => {
+                drop(col);
+                return Err(WebAppError::bad_request(
+                    "Invalid rating value. Must be 0-3.",
+                ));
+            }
+        };
 
-        // Answer the card using the service
-        let _ = col
-            .answer_card(anki_proto::scheduler::CardAnswer {
-                card_id,
-                current_state: queued.states.clone(),
-                new_state: queued.states.clone(), // Will be calculated by next_states
-                rating: request.rating as i32,
-                answered_at_millis: 0, // Use current time
-                milliseconds_taken: 0, // TODO: track this in UI
-            })
-            .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        // Pick the new state based on the rating
+        let new_state = match rating {
+            Rating::Again => queued.states.again,
+            Rating::Hard => queued.states.hard,
+            Rating::Good => queued.states.good,
+            Rating::Easy => queued.states.easy,
+        };
+
+        let mut answer = CardAnswer {
+            card_id: queued_card_id,
+            current_state: queued.states.current,
+            new_state,
+            rating,
+            answered_at: TimestampMillis::now(),
+            milliseconds_taken: 0,
+            custom_data: None,
+            from_queue: true,
+        };
+
+        col.answer_card(&mut answer)
+            .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
         drop(col);
 
@@ -177,20 +179,16 @@ pub async fn get_deck_counts(
 
     let mut col = backend.lock().unwrap();
 
-    // Get current counts
     let queued_cards = col
-        .get_queued_cards(anki_proto::scheduler::GetQueuedCardsRequest {
-            fetch_limit: 0, // Just get counts
-            intraday_learning_only: false,
-        })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        .get_queued_cards(0, false)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     drop(col);
 
     Ok(Json(StudyCounts {
-        new: queued_cards.new_count as usize,
-        learning: queued_cards.learning_count as usize,
-        review: queued_cards.review_count as usize,
+        new: queued_cards.new_count,
+        learning: queued_cards.learning_count,
+        review: queued_cards.review_count,
     }))
 }
 
@@ -205,16 +203,23 @@ pub async fn undo(
 
     let mut col = backend.lock().unwrap();
 
-    let _ = col
-        .undo()
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
-
-    drop(col);
-
-    Ok(Json(MessageResponse {
-        success: true,
-        message: "Action undone successfully".to_string(),
-    }))
+    match col.undo() {
+        Ok(_) => {
+            drop(col);
+            Ok(Json(MessageResponse {
+                success: true,
+                message: "Action undone successfully".to_string(),
+            }))
+        }
+        Err(e) => {
+            drop(col);
+            if e.to_string().is_empty() || matches!(e, anki::error::AnkiError::UndoEmpty) {
+                Err(WebAppError::bad_request("Nothing to undo"))
+            } else {
+                Err(WebAppError::internal(&e.to_string()))
+            }
+        }
+    }
 }
 
 /// Redo the last undone operation
@@ -228,14 +233,21 @@ pub async fn redo(
 
     let mut col = backend.lock().unwrap();
 
-    let _ = col
-        .redo()
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
-
-    drop(col);
-
-    Ok(Json(MessageResponse {
-        success: true,
-        message: "Action redone successfully".to_string(),
-    }))
+    match col.redo() {
+        Ok(_) => {
+            drop(col);
+            Ok(Json(MessageResponse {
+                success: true,
+                message: "Action redone successfully".to_string(),
+            }))
+        }
+        Err(e) => {
+            drop(col);
+            if e.to_string().is_empty() || matches!(e, anki::error::AnkiError::UndoEmpty) {
+                Err(WebAppError::bad_request("Nothing to redo"))
+            } else {
+                Err(WebAppError::internal(&e.to_string()))
+            }
+        }
+    }
 }
