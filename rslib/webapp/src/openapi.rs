@@ -30,6 +30,8 @@ pub fn openapi_spec() -> Value {
             { "name": "notes", "description": "Note management" },
             { "name": "cards", "description": "Card management" },
             { "name": "search", "description": "Search and find-replace operations" },
+            { "name": "media", "description": "Media file management" },
+            { "name": "tags", "description": "Tag management" },
             { "name": "health", "description": "Health check endpoints" }
         ],
         "paths": {
@@ -818,6 +820,230 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/media/check": {
+                "get": {
+                    "tags": ["media"],
+                    "summary": "Check media files for unused and missing files",
+                    "operationId": "checkMedia",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Media check results",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/CheckMediaResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/media/{filename}": {
+                "get": {
+                    "tags": ["media"],
+                    "summary": "Get a media file by filename",
+                    "operationId": "getMedia",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "filename",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "string" },
+                            "description": "Media filename (e.g., image.jpg, audio.mp3)"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Media file content",
+                            "content": {
+                                "application/octet-stream": {
+                                    "schema": { "type": "string", "format": "binary" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/media": {
+                "post": {
+                    "tags": ["media"],
+                    "summary": "Upload a media file",
+                    "operationId": "addMedia",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "multipart/form-data": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["file"],
+                                    "properties": {
+                                        "file": {
+                                            "type": "string",
+                                            "format": "binary",
+                                            "description": "The media file to upload"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "File uploaded successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/AddMediaResponse" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                },
+                "delete": {
+                    "tags": ["media"],
+                    "summary": "Delete media files (move to trash)",
+                    "operationId": "deleteMedia",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/DeleteMediaRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Files moved to trash",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/DeleteMediaResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/tags": {
+                "get": {
+                    "tags": ["tags"],
+                    "summary": "List all tags",
+                    "operationId": "getTags",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "List of all tags",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/TagsListResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/tags/tree": {
+                "get": {
+                    "tags": ["tags"],
+                    "summary": "Get tag tree structure",
+                    "operationId": "getTagTree",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Hierarchical tag tree",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/TagTreeResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/tags/rename": {
+                "put": {
+                    "tags": ["tags"],
+                    "summary": "Rename a tag across all notes",
+                    "operationId": "renameTag",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/RenameTagRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Tag renamed successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/RenameTagResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/tags/{name}": {
+                "delete": {
+                    "tags": ["tags"],
+                    "summary": "Delete a tag from all notes",
+                    "operationId": "deleteTag",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "name",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "string" },
+                            "description": "Tag name to delete"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Tag deleted successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/DeleteTagResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/tags/clear-unused": {
+                "post": {
+                    "tags": ["tags"],
+                    "summary": "Clear all unused tags",
+                    "operationId": "clearUnusedTags",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Unused tags cleared",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ClearUnusedTagsResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
             "/health": {
                 "get": {
                     "tags": ["health"],
@@ -1218,6 +1444,115 @@ pub fn openapi_spec() -> Value {
                             "type": "integer",
                             "description": "Number of notes modified"
                         }
+                    }
+                },
+                "CheckMediaResponse": {
+                    "type": "object",
+                    "properties": {
+                        "unused": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Files in media folder not referenced by any note"
+                        },
+                        "missing": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Files referenced by notes but not in media folder"
+                        },
+                        "missing_media_notes": {
+                            "type": "array",
+                            "items": { "type": "integer", "format": "int64" },
+                            "description": "Note IDs that reference missing media"
+                        },
+                        "report": { "type": "string", "description": "Human-readable summary report" },
+                        "have_trash": { "type": "boolean", "description": "Whether the trash folder contains files" }
+                    }
+                },
+                "AddMediaResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "filename": { "type": "string", "description": "Actual filename used (may differ from requested if conflict)", "example": "image.jpg" }
+                    }
+                },
+                "DeleteMediaRequest": {
+                    "type": "object",
+                    "required": ["filenames"],
+                    "properties": {
+                        "filenames": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "List of filenames to move to trash",
+                            "example": ["image.jpg", "audio.mp3"]
+                        }
+                    }
+                },
+                "DeleteMediaResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "message": { "type": "string", "example": "Moved 2 file(s) to trash" }
+                    }
+                },
+                "TagsListResponse": {
+                    "type": "object",
+                    "properties": {
+                        "tags": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "All tags in the collection",
+                            "example": ["vocab", "grammar", "languages::spanish"]
+                        }
+                    }
+                },
+                "TagTreeResponse": {
+                    "type": "object",
+                    "properties": {
+                        "root": { "$ref": "#/components/schemas/TagTreeNode" }
+                    }
+                },
+                "TagTreeNode": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "children": {
+                            "type": "array",
+                            "items": { "$ref": "#/components/schemas/TagTreeNode" }
+                        },
+                        "level": { "type": "integer" },
+                        "collapsed": { "type": "boolean" }
+                    }
+                },
+                "RenameTagRequest": {
+                    "type": "object",
+                    "required": ["old_name", "new_name"],
+                    "properties": {
+                        "old_name": { "type": "string", "example": "vocab" },
+                        "new_name": { "type": "string", "example": "vocabulary" }
+                    }
+                },
+                "RenameTagResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "message": { "type": "string", "example": "Tag renamed successfully" },
+                        "count": { "type": "integer", "description": "Number of notes affected" }
+                    }
+                },
+                "DeleteTagResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "message": { "type": "string", "example": "Tag deleted successfully" },
+                        "count": { "type": "integer", "description": "Number of notes affected" }
+                    }
+                },
+                "ClearUnusedTagsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "message": { "type": "string", "example": "Cleared 3 unused tags" },
+                        "removed_count": { "type": "integer", "description": "Number of tags removed" }
                     }
                 },
                 "ErrorResponse": {
