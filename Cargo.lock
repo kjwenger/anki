@@ -184,6 +184,7 @@ dependencies = [
  "chrono",
  "jsonwebtoken",
  "prost",
+ "regex",
  "rusqlite",
  "serde",
  "serde_json",

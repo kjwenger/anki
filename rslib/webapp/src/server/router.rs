@@ -25,6 +25,7 @@ use crate::routes::create_note;
 use crate::routes::delete_card;
 use crate::routes::delete_deck;
 use crate::routes::delete_note;
+use crate::routes::find_and_replace;
 use crate::routes::flag_card;
 use crate::routes::get_card;
 use crate::routes::get_collection_info;
@@ -36,6 +37,8 @@ use crate::routes::login;
 use crate::routes::logout;
 use crate::routes::me;
 use crate::routes::register;
+use crate::routes::search_cards;
+use crate::routes::search_notes;
 use crate::routes::suspend_card;
 use crate::routes::unsuspend_card;
 use crate::routes::update_card;
@@ -71,6 +74,9 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/cards/{id}/bury", post(bury_card))
         .route("/api/v1/cards/batch", post(batch_get_cards))
         .route("/api/v1/cards/batch-update", post(batch_update_cards))
+        .route("/api/v1/search/cards", post(search_cards))
+        .route("/api/v1/search/notes", post(search_notes))
+        .route("/api/v1/search/find-replace", post(find_and_replace))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,
@@ -191,6 +197,9 @@ async fn root_handler() -> Html<&'static str> {
         <li><code>POST /api/v1/cards/{id}/bury</code> - Bury card</li>
         <li><code>POST /api/v1/cards/batch</code> - Get multiple cards</li>
         <li><code>POST /api/v1/cards/batch-update</code> - Update multiple cards</li>
+        <li><code>POST /api/v1/search/cards</code> - Search for cards</li>
+        <li><code>POST /api/v1/search/notes</code> - Search for notes</li>
+        <li><code>POST /api/v1/search/find-replace</code> - Find and replace in notes</li>
     </ul>
     
     <h2>Status</h2>

@@ -29,6 +29,7 @@ pub fn openapi_spec() -> Value {
             { "name": "decks", "description": "Deck management" },
             { "name": "notes", "description": "Note management" },
             { "name": "cards", "description": "Card management" },
+            { "name": "search", "description": "Search and find-replace operations" },
             { "name": "health", "description": "Health check endpoints" }
         ],
         "paths": {
@@ -733,6 +734,90 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/search/cards": {
+                "post": {
+                    "tags": ["search"],
+                    "summary": "Search for cards",
+                    "operationId": "searchCards",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/SearchCardsRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Cards matching the search query",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/SearchCardsResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "400": { "$ref": "#/components/responses/BadRequest" }
+                    }
+                }
+            },
+            "/api/v1/search/notes": {
+                "post": {
+                    "tags": ["search"],
+                    "summary": "Search for notes",
+                    "operationId": "searchNotes",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/SearchNotesRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Notes matching the search query",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/SearchNotesResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "400": { "$ref": "#/components/responses/BadRequest" }
+                    }
+                }
+            },
+            "/api/v1/search/find-replace": {
+                "post": {
+                    "tags": ["search"],
+                    "summary": "Find and replace text in note fields",
+                    "operationId": "findAndReplace",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/FindAndReplaceRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Find and replace completed",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/FindAndReplaceResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "400": { "$ref": "#/components/responses/BadRequest" }
+                    }
+                }
+            },
             "/health": {
                 "get": {
                     "tags": ["health"],
@@ -1013,6 +1098,126 @@ pub fn openapi_spec() -> Value {
                     "properties": {
                         "success": { "type": "boolean", "example": true },
                         "message": { "type": "string", "example": "Operation successful" }
+                    }
+                },
+                "SearchCardsRequest": {
+                    "type": "object",
+                    "required": ["query"],
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "Search query using Anki search syntax",
+                            "example": "deck:Spanish is:due"
+                        },
+                        "sort_column": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Column to sort by (e.g., 'noteFld', 'cardDue')",
+                            "example": "cardDue"
+                        },
+                        "reverse": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Sort in reverse order"
+                        }
+                    }
+                },
+                "SearchCardsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "card_ids": {
+                            "type": "array",
+                            "items": { "type": "integer", "format": "int64" },
+                            "description": "IDs of cards matching the query"
+                        },
+                        "count": {
+                            "type": "integer",
+                            "description": "Number of cards found"
+                        }
+                    }
+                },
+                "SearchNotesRequest": {
+                    "type": "object",
+                    "required": ["query"],
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "Search query using Anki search syntax",
+                            "example": "tag:important added:7"
+                        },
+                        "sort_column": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Column to sort by",
+                            "example": "noteCrt"
+                        },
+                        "reverse": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Sort in reverse order"
+                        }
+                    }
+                },
+                "SearchNotesResponse": {
+                    "type": "object",
+                    "properties": {
+                        "note_ids": {
+                            "type": "array",
+                            "items": { "type": "integer", "format": "int64" },
+                            "description": "IDs of notes matching the query"
+                        },
+                        "count": {
+                            "type": "integer",
+                            "description": "Number of notes found"
+                        }
+                    }
+                },
+                "FindAndReplaceRequest": {
+                    "type": "object",
+                    "required": ["note_ids", "search", "replacement"],
+                    "properties": {
+                        "note_ids": {
+                            "type": "array",
+                            "items": { "type": "integer", "format": "int64" },
+                            "description": "Note IDs to search in (empty array = all notes)"
+                        },
+                        "search": {
+                            "type": "string",
+                            "description": "Text to search for",
+                            "example": "color"
+                        },
+                        "replacement": {
+                            "type": "string",
+                            "description": "Replacement text",
+                            "example": "colour"
+                        },
+                        "regex": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Treat search as regex pattern"
+                        },
+                        "match_case": {
+                            "type": "boolean",
+                            "default": false,
+                            "description": "Case-sensitive matching"
+                        },
+                        "field_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Limit to specific field (empty = all fields)",
+                            "example": "Front"
+                        }
+                    }
+                },
+                "FindAndReplaceResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean" },
+                        "message": { "type": "string" },
+                        "replaced_count": {
+                            "type": "integer",
+                            "description": "Number of notes modified"
+                        }
                     }
                 },
                 "ErrorResponse": {

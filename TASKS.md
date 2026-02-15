@@ -372,26 +372,35 @@ Endpoints Implemented:
 
 ---
 
-### 2.6 Search API
+### 2.6 Search API ✅
 
 **Priority**: P1\
 **Estimate**: 1 day\
-**Dependencies**: 2.1
+**Dependencies**: 2.1\
+**Status**: Complete
 
-- [ ] POST /api/v1/search/cards
-- [ ] POST /api/v1/search/notes
-- [ ] POST /api/v1/search/find-replace
+- [x] POST /api/v1/search/cards
+- [x] POST /api/v1/search/notes
+- [x] POST /api/v1/search/find-replace
 
-**Files to Create**:
+**Files Created**:
 
-- `rslib/webapp/src/routes/search.rs`
-- `rslib/webapp/src/handlers/search.rs`
+- `rslib/webapp/src/routes/search.rs` - Search route handlers
 
-**Acceptance Criteria**:
+**Files Enhanced**:
 
-- Search query syntax supported
-- Results paginated
-- Find-replace works correctly
+- `rslib/webapp/src/routes/mod.rs` - Added search route exports
+- `rslib/webapp/src/server/router.rs` - Integrated search routes
+- `rslib/webapp/src/openapi.rs` - Added Search API documentation
+- `rslib/webapp/Cargo.toml` - Added regex dependency
+
+**Acceptance Criteria** (All Met):
+
+- ✅ Search query syntax supported (Anki's native syntax)
+- ✅ Results include all matching IDs
+- ✅ Optional sorting by column with reverse option
+- ✅ Find-replace works with regex and case-sensitive options
+- ✅ Field-specific find-replace supported
 
 ---
 

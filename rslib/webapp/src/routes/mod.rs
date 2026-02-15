@@ -3,6 +3,7 @@ pub mod cards;
 pub mod collection;
 pub mod decks;
 pub mod notes;
+pub mod search;
 
 pub use auth::login;
 pub use auth::logout;
@@ -29,3 +30,6 @@ pub use notes::delete_note;
 pub use notes::get_note;
 pub use notes::get_note_cards;
 pub use notes::update_note;
+pub use search::find_and_replace;
+pub use search::search_cards;
+pub use search::search_notes;
