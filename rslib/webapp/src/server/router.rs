@@ -59,6 +59,11 @@ use crate::routes::rename_tag;
 use crate::routes::unsuspend_card;
 use crate::routes::update_card;
 use crate::routes::update_note;
+use crate::routes::answer_card;
+use crate::routes::get_deck_counts;
+use crate::routes::get_next_card;
+use crate::routes::redo;
+use crate::routes::undo;
 use crate::routes::AuthRouteState;
 use crate::swagger_ui;
 use crate::WebAppConfig;
@@ -106,6 +111,11 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/stats/collection", get(get_collection_stats))
         .route("/api/v1/stats/graphs", get(get_graphs))
         .route("/api/v1/stats/today", get(get_today_stats))
+        .route("/api/v1/scheduler/decks/{deck_id}/next", get(get_next_card))
+        .route("/api/v1/scheduler/decks/{deck_id}/cards/{card_id}/answer", post(answer_card))
+        .route("/api/v1/scheduler/decks/{deck_id}/counts", get(get_deck_counts))
+        .route("/api/v1/scheduler/undo", post(undo))
+        .route("/api/v1/scheduler/redo", post(redo))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,

@@ -615,12 +615,15 @@ we would need custom protobuf-to-JSON conversion logic.
 
 ---
 
-### 3.4 Reviewer UI
+### 3.4 Reviewer UI 🚧
 
 **Priority**: P0\
 **Estimate**: 5 days\
-**Dependencies**: 2.3, 3.2
+**Dependencies**: 2.3, 3.2\
+**Status**: In Progress - Backend API needs completion
 
+- [x] Scheduler REST API routes created
+- [ ] Card rendering integration (blocked)
 - [ ] Card display component
 - [ ] Question/answer reveal
 - [ ] Answer buttons (Again/Hard/Good/Easy)
@@ -631,6 +634,12 @@ we would need custom protobuf-to-JSON conversion logic.
 - [ ] Undo/redo support
 - [ ] Study completion screen integration
 
+**Files Created (Partial)**:
+
+- `rslib/webapp/src/routes/scheduler.rs` - Scheduler endpoints (needs rendering fix)
+- Updated `rslib/webapp/src/routes/mod.rs` - Added scheduler module
+- Updated `rslib/webapp/src/server/router.rs` - Added scheduler routes
+
 **Files to Create**:
 
 - `ts/routes/webapp/review/+page.svelte`
@@ -638,6 +647,14 @@ we would need custom protobuf-to-JSON conversion logic.
 - `ts/lib/webapp/components/AnswerButtons.svelte`
 - `ts/lib/webapp/components/ReviewProgress.svelte`
 - `ts/lib/webapp/stores/reviewer.ts`
+
+**Blockers**:
+
+Card rendering requires deep integration with Anki's internal APIs (Note, Notetype, CardTemplate).
+Need to either:
+1. Create a simplified service wrapper for card rendering
+2. Return raw card data and render client-side
+3. Use a different rendering approach
 
 **Acceptance Criteria**:
 
