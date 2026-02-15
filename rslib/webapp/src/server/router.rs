@@ -1,6 +1,8 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
+use axum::http::HeaderValue;
+use axum::http::Method;
 use axum::http::StatusCode;
 use axum::middleware;
 use axum::response::Html;
@@ -12,6 +14,7 @@ use axum::routing::post;
 use axum::routing::put;
 use axum::Router;
 use serde_json::json;
+use tower_http::cors::CorsLayer;
 
 use crate::auth::require_auth;
 use crate::auth::AuthState;
@@ -126,10 +129,26 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/auth/register", post(register))
         .route("/api/v1/auth/login", post(login));
 
+    // CORS layer for development (SvelteKit dev server on different port)
+    let cors = CorsLayer::new()
+        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([
+            axum::http::header::CONTENT_TYPE,
+            axum::http::header::AUTHORIZATION,
+        ]);
+
     // Combine all routes with state
     public_routes
         .merge(protected_routes)
         .with_state(auth_route_state)
+        .layer(cors)
 }
 
 async fn openapi_spec_handler() -> Json<serde_json::Value> {

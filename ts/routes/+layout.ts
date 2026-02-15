@@ -9,7 +9,11 @@ import type { LayoutLoad } from "./$types";
 export const ssr = false;
 export const prerender = false;
 
-export const load: LayoutLoad = async () => {
+export const load: LayoutLoad = async ({ url }) => {
+    // Skip desktop-backend-dependent i18n for webapp routes
+    if (url.pathname.startsWith("/webapp")) {
+        return;
+    }
     checkNightMode();
     await setupGlobalI18n();
 };
