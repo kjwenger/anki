@@ -46,8 +46,12 @@ use crate::routes::search_notes;
 use crate::routes::suspend_card;
 use crate::routes::clear_unused_tags;
 use crate::routes::delete_tag;
+use crate::routes::get_card_stats;
+use crate::routes::get_collection_stats;
+use crate::routes::get_graphs;
 use crate::routes::get_tag_tree;
 use crate::routes::get_tags;
+use crate::routes::get_today_stats;
 use crate::routes::rename_tag;
 use crate::routes::unsuspend_card;
 use crate::routes::update_card;
@@ -95,6 +99,10 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/tags/rename", put(rename_tag))
         .route("/api/v1/tags/{name}", delete(delete_tag))
         .route("/api/v1/tags/clear-unused", post(clear_unused_tags))
+        .route("/api/v1/stats/card/{id}", get(get_card_stats))
+        .route("/api/v1/stats/collection", get(get_collection_stats))
+        .route("/api/v1/stats/graphs", get(get_graphs))
+        .route("/api/v1/stats/today", get(get_today_stats))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,

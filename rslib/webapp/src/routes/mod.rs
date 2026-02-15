@@ -5,6 +5,7 @@ pub mod decks;
 pub mod media;
 pub mod notes;
 pub mod search;
+pub mod stats;
 pub mod tags;
 
 pub use auth::login;
@@ -44,3 +45,7 @@ pub use tags::delete_tag;
 pub use tags::get_tag_tree;
 pub use tags::get_tags;
 pub use tags::rename_tag;
+pub use stats::get_card_stats;
+pub use stats::get_collection_stats;
+pub use stats::get_graphs;
+pub use stats::get_today_stats;
