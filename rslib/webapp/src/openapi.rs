@@ -32,6 +32,7 @@ pub fn openapi_spec() -> Value {
             { "name": "search", "description": "Search and find-replace operations" },
             { "name": "media", "description": "Media file management" },
             { "name": "tags", "description": "Tag management" },
+            { "name": "stats", "description": "Statistics and analytics" },
             { "name": "health", "description": "Health check endpoints" }
         ],
         "paths": {
@@ -1044,6 +1045,125 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/stats/card/{id}": {
+                "get": {
+                    "tags": ["stats"],
+                    "summary": "Get statistics for a specific card",
+                    "operationId": "getCardStats",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card statistics",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/CardStatsResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/stats/collection": {
+                "get": {
+                    "tags": ["stats"],
+                    "summary": "Get collection-wide statistics",
+                    "operationId": "getCollectionStats",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "search",
+                            "in": "query",
+                            "required": false,
+                            "schema": { "type": "string" },
+                            "description": "Optional search filter (Anki search syntax)"
+                        },
+                        {
+                            "name": "days",
+                            "in": "query",
+                            "required": false,
+                            "schema": { "type": "integer", "format": "uint32", "default": 1 },
+                            "description": "Number of days to include"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Collection statistics including today's study stats and card counts",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/CollectionStatsResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/stats/today": {
+                "get": {
+                    "tags": ["stats"],
+                    "summary": "Get today's study statistics",
+                    "operationId": "getTodayStats",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Today's study statistics",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/TodayStatsResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/stats/graphs": {
+                "get": {
+                    "tags": ["stats"],
+                    "summary": "Get graphs data (not yet implemented)",
+                    "description": "This endpoint is stubbed. The underlying protobuf GraphsResponse does not implement Serialize. Use /stats/collection or /stats/today instead.",
+                    "operationId": "getGraphs",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "search",
+                            "in": "query",
+                            "required": false,
+                            "schema": { "type": "string" },
+                            "description": "Optional search filter"
+                        },
+                        {
+                            "name": "days",
+                            "in": "query",
+                            "required": false,
+                            "schema": { "type": "integer", "format": "uint32" },
+                            "description": "Number of days to include"
+                        }
+                    ],
+                    "responses": {
+                        "501": {
+                            "description": "Not implemented",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
             "/health": {
                 "get": {
                     "tags": ["health"],
@@ -1545,6 +1665,59 @@ pub fn openapi_spec() -> Value {
                         "success": { "type": "boolean", "example": true },
                         "message": { "type": "string", "example": "Tag deleted successfully" },
                         "count": { "type": "integer", "description": "Number of notes affected" }
+                    }
+                },
+                "CardStatsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "card_id": { "type": "integer", "format": "int64" },
+                        "note_id": { "type": "integer", "format": "int64" },
+                        "deck": { "type": "string", "description": "Deck name" },
+                        "added": { "type": "integer", "format": "int64", "description": "Timestamp when card was added" },
+                        "first_review": { "type": "integer", "format": "int64", "nullable": true },
+                        "latest_review": { "type": "integer", "format": "int64", "nullable": true },
+                        "due_date": { "type": "integer", "format": "int64", "nullable": true },
+                        "interval": { "type": "integer", "format": "uint32", "description": "Current interval in days" },
+                        "ease": { "type": "integer", "format": "uint32", "description": "Ease factor (e.g., 2500 = 250%)" },
+                        "reviews": { "type": "integer", "format": "uint32", "description": "Total review count" },
+                        "lapses": { "type": "integer", "format": "uint32", "description": "Number of lapses" },
+                        "average_secs": { "type": "number", "format": "float", "description": "Average seconds per review" },
+                        "total_secs": { "type": "number", "format": "float", "description": "Total seconds spent reviewing" },
+                        "card_type": { "type": "string", "description": "Card type (e.g., New, Learn, Review)" },
+                        "notetype": { "type": "string", "description": "Note type name" }
+                    }
+                },
+                "TodayStatsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "answer_count": { "type": "integer", "format": "uint32", "description": "Total answers today" },
+                        "answer_millis": { "type": "integer", "format": "uint32", "description": "Total time spent answering (ms)" },
+                        "correct_count": { "type": "integer", "format": "uint32" },
+                        "mature_correct": { "type": "integer", "format": "uint32" },
+                        "mature_count": { "type": "integer", "format": "uint32" },
+                        "learn_count": { "type": "integer", "format": "uint32" },
+                        "review_count": { "type": "integer", "format": "uint32" },
+                        "relearn_count": { "type": "integer", "format": "uint32" },
+                        "early_review_count": { "type": "integer", "format": "uint32" }
+                    }
+                },
+                "CardCountsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "new_cards": { "type": "integer", "format": "uint32" },
+                        "learn": { "type": "integer", "format": "uint32" },
+                        "relearn": { "type": "integer", "format": "uint32" },
+                        "young": { "type": "integer", "format": "uint32" },
+                        "mature": { "type": "integer", "format": "uint32" },
+                        "suspended": { "type": "integer", "format": "uint32" },
+                        "buried": { "type": "integer", "format": "uint32" }
+                    }
+                },
+                "CollectionStatsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "today": { "$ref": "#/components/schemas/TodayStatsResponse" },
+                        "card_counts": { "$ref": "#/components/schemas/CardCountsResponse" }
                     }
                 },
                 "ClearUnusedTagsResponse": {
