@@ -1,6 +1,8 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
+#![recursion_limit = "512"]
+
 pub mod auth;
 pub mod config;
 pub mod db;

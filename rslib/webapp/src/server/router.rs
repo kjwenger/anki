@@ -9,7 +9,6 @@ use axum::{
     Router,
 };
 use serde_json::json;
-use utoipa::OpenApi;
 
 use crate::auth::{require_auth, AuthState};
 use crate::openapi;
@@ -68,8 +67,8 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .with_state(auth_route_state)
 }
 
-async fn openapi_spec_handler() -> Json<utoipa::openapi::OpenApi> {
-    Json(openapi::ApiDoc::openapi())
+async fn openapi_spec_handler() -> Json<serde_json::Value> {
+    Json(openapi::openapi_spec())
 }
 
 async fn root_handler() -> Html<&'static str> {
