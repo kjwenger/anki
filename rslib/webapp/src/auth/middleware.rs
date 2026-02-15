@@ -1,10 +1,10 @@
-use axum::{
-    extract::{Request, State},
-    http::header,
-    middleware::Next,
-    response::Response,
-};
 use std::sync::Arc;
+
+use axum::extract::Request;
+use axum::extract::State;
+use axum::http::header;
+use axum::middleware::Next;
+use axum::response::Response;
 
 use crate::auth::jwt::JwtManager;
 use crate::db::Database;
@@ -71,7 +71,9 @@ pub async fn require_auth(
 
     // Store auth info in request extensions
     let auth_user = AuthUser {
-        user_id: claims.user_id().map_err(|e| WebAppError::internal(&e.to_string()))?,
+        user_id: claims
+            .user_id()
+            .map_err(|e| WebAppError::internal(&e.to_string()))?,
         username: claims.username.clone(),
         session_id: claims.session_id.clone(),
     };
@@ -101,9 +103,12 @@ pub async fn optional_auth(
                                     session_id: claims.session_id.clone(),
                                 };
                                 request.extensions_mut().insert(auth_user);
-                                
+
                                 // Update session access time (ignore errors)
-                                let _ = state.database.sessions().update_access_time(&claims.session_id);
+                                let _ = state
+                                    .database
+                                    .sessions()
+                                    .update_access_time(&claims.session_id);
                             }
                         }
                     }
@@ -117,16 +122,17 @@ pub async fn optional_auth(
 
 #[cfg(test)]
 mod tests {
+    use axum::body::Body;
+    use axum::http::Request;
+    use axum::http::StatusCode;
+    use axum::middleware;
+    use axum::routing::get;
+    use axum::Extension;
+    use axum::Router;
+    use tower::ServiceExt as _;
+
     use super::*;
     use crate::auth::jwt::Claims;
-    use axum::{
-        body::Body,
-        http::{Request, StatusCode},
-        middleware,
-        routing::get,
-        Extension, Router,
-    };
-    use tower::ServiceExt as _;
 
     async fn protected_handler(Extension(user): Extension<AuthUser>) -> String {
         format!("Hello, {}! User ID: {}", user.username, user.user_id)
@@ -135,13 +141,13 @@ mod tests {
     async fn setup_test_state() -> AuthState {
         let db = Arc::new(Database::open(":memory:").unwrap());
         db.initialize().unwrap();
-        
+
         // Create test user
         db.users().create("testuser", "hash", None).unwrap();
-        
+
         let jwt_manager = Arc::new(JwtManager::new("test_secret"));
         let backend_manager = Arc::new(BackendManager::new(std::env::temp_dir()));
-        
+
         AuthState {
             jwt_manager,
             database: db,
@@ -152,20 +158,24 @@ mod tests {
     #[tokio::test]
     async fn test_require_auth_success() {
         let state = setup_test_state().await;
-        
+
         // Create session for test user
-        let session = state.database.sessions().create("sess_123", 1, 3600).unwrap();
-        
+        let session = state
+            .database
+            .sessions()
+            .create("sess_123", 1, 3600)
+            .unwrap();
+
         // Generate token
         let claims = Claims::new(1, "testuser".to_string(), session.id.clone(), 1);
         let token = state.jwt_manager.generate_token(&claims).unwrap();
-        
+
         // Create router with auth middleware
         let app = Router::new()
             .route("/protected", get(protected_handler))
             .layer(middleware::from_fn_with_state(state.clone(), require_auth))
             .with_state(state);
-        
+
         // Make request with valid token
         let response = app
             .oneshot(
@@ -177,19 +187,19 @@ mod tests {
             )
             .await
             .unwrap();
-        
+
         assert_eq!(response.status(), StatusCode::OK);
     }
 
     #[tokio::test]
     async fn test_require_auth_no_header() {
         let state = setup_test_state().await;
-        
+
         let app = Router::new()
             .route("/protected", get(protected_handler))
             .layer(middleware::from_fn_with_state(state.clone(), require_auth))
             .with_state(state);
-        
+
         let response = app
             .oneshot(
                 Request::builder()
@@ -199,7 +209,7 @@ mod tests {
             )
             .await
             .unwrap();
-        
+
         assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
     }
 }

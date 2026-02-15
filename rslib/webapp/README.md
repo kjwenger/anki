@@ -7,12 +7,14 @@ RESTful API server and web interface for Anki.
 🚧 **Under Development** - Phase 1.1 Complete
 
 Currently implemented:
+
 - ✅ Basic server structure
 - ✅ Configuration from environment variables
 - ✅ Health check endpoint
 - ✅ Hello world page
 
 Coming next (see [TASKS.md](../../TASKS.md)):
+
 - Authentication system
 - Database for users
 - Session management

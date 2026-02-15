@@ -1,12 +1,14 @@
-use axum::{
-    extract::{Path, State},
-    response::IntoResponse,
-    Extension, Json,
-};
-use serde::{Deserialize, Serialize};
+use axum::extract::Path;
+use axum::extract::State;
+use axum::response::IntoResponse;
+use axum::Extension;
+use axum::Json;
+use serde::Deserialize;
+use serde::Serialize;
 
 use crate::auth::AuthUser;
-use crate::error::{Result, WebAppError};
+use crate::error::Result;
+use crate::error::WebAppError;
 use crate::routes::AuthRouteState;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -93,7 +95,7 @@ pub async fn create_note(
 
     // Create a new note
     let mut note = anki::notes::Note::new(&notetype);
-    
+
     // Set fields
     for (idx, field_value) in request.fields.iter().enumerate() {
         if idx < note.fields().len() {
@@ -101,7 +103,7 @@ pub async fn create_note(
                 .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
         }
     }
-    
+
     // Set tags
     note.tags = request.tags;
 
@@ -117,7 +119,10 @@ pub async fn create_note(
     Ok(Json(CreateNoteResponse {
         success: true,
         note_id,
-        message: format!("Note created successfully ({} cards generated)", output.output),
+        message: format!(
+            "Note created successfully ({} cards generated)",
+            output.output
+        ),
     }))
 }
 
@@ -148,7 +153,7 @@ pub async fn update_note(
                 .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
         }
     }
-    
+
     // Update tags
     note.tags = request.tags;
 
@@ -185,7 +190,10 @@ pub async fn delete_note(
 
     Ok(Json(MessageResponse {
         success: true,
-        message: format!("Note deleted successfully ({} cards removed)", output.output),
+        message: format!(
+            "Note deleted successfully ({} cards removed)",
+            output.output
+        ),
     }))
 }
 
@@ -212,4 +220,3 @@ pub async fn get_note_cards(
         "card_ids": cards.into_iter().map(|card| card.id().0).collect::<Vec<_>>(),
     })))
 }
-

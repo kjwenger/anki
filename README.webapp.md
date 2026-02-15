@@ -52,6 +52,7 @@ Anki Web App provides a complete Anki experience accessible through any modern w
 ## Features
 
 ### Core Functionality
+
 - ✅ **Study Cards**: Full reviewer with keyboard shortcuts
 - ✅ **Add Cards**: Rich text editor with media support
 - ✅ **Deck Management**: Create, organize, configure decks
@@ -61,6 +62,7 @@ Anki Web App provides a complete Anki experience accessible through any modern w
 - ✅ **Media**: Upload and manage images, audio, video
 
 ### Web App Specific
+
 - 🔐 **Multi-User**: Separate accounts and collections
 - 🌐 **Remote Access**: Study from anywhere
 - 📱 **Responsive**: Works on desktop, tablet, mobile
@@ -71,6 +73,7 @@ Anki Web App provides a complete Anki experience accessible through any modern w
 ## Requirements
 
 ### Server Requirements
+
 - **OS**: Linux, macOS, or Windows
 - **RAM**: 512 MB minimum, 1 GB recommended
 - **Disk**: 100 MB for app + space for collections
@@ -78,6 +81,7 @@ Anki Web App provides a complete Anki experience accessible through any modern w
 - **Node.js**: 18+ (for building frontend)
 
 ### Client Requirements
+
 - **Browser**: Chrome 77+, Firefox 78+, Safari 14.5+, Edge 79+
 - **JavaScript**: Enabled
 - **Connection**: HTTP/HTTPS access to server
@@ -233,7 +237,7 @@ Location: `config/server.toml`
 ```toml
 [server]
 # Network binding
-host = "127.0.0.1"  # Use "0.0.0.0" for all interfaces
+host = "127.0.0.1" # Use "0.0.0.0" for all interfaces
 port = 8080
 
 # Worker threads
@@ -269,7 +273,18 @@ auto_backup = true
 max_file_size_mb = 100
 
 # Allowed file extensions
-allowed_extensions = ["jpg", "jpeg", "png", "gif", "svg", "mp3", "mp4", "ogg", "webm", "wav"]
+allowed_extensions = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "svg",
+  "mp3",
+  "mp4",
+  "ogg",
+  "webm",
+  "wav",
+]
 
 [limits]
 # Maximum request size in MB
@@ -395,6 +410,7 @@ anki.example.com {
    - **4** or **Easy**: Too easy
 
 **Keyboard Shortcuts**:
+
 - `Space`: Show answer / Next card
 - `1/2/3/4`: Rate answer
 - `E`: Edit current card
@@ -416,6 +432,7 @@ anki.example.com {
 6. Click **Add** or press `Ctrl+Enter`
 
 **Media Upload**:
+
 - Drag and drop images/audio into fields
 - Or click 📎 icon to browse files
 - Supported: Images (JPG, PNG, GIF), Audio (MP3, OGG), Video (MP4, WEBM)
@@ -423,12 +440,14 @@ anki.example.com {
 #### Managing Decks
 
 **Create Deck**:
+
 1. Go to **Decks** page
 2. Click **Create Deck**
 3. Enter deck name (use `::` for subdecks, e.g., `Languages::French`)
 4. Click **Create**
 
 **Configure Deck**:
+
 1. Click **Options** ⚙️ next to deck name
 2. Adjust settings:
    - Daily new card limit
@@ -438,6 +457,7 @@ anki.example.com {
 3. Click **Save**
 
 **Delete Deck**:
+
 1. Click **⋮** menu next to deck name
 2. Select **Delete**
 3. Confirm (cards will also be deleted)
@@ -478,6 +498,7 @@ Create temporary filtered deck:
 #### Import/Export
 
 **Import**:
+
 1. Navigate to **Import** in menu
 2. Select file type (APKG, CSV, TXT)
 3. Upload file
@@ -485,6 +506,7 @@ Create temporary filtered deck:
 5. Click **Import**
 
 **Export**:
+
 1. Navigate to **Decks** or **Browse**
 2. Select deck or cards to export
 3. Click **Export**
@@ -610,18 +632,21 @@ npm run dev
 ### Running in Development Mode
 
 **Terminal 1** - Backend (with auto-reload):
+
 ```bash
 cd rslib/webapp
 cargo watch -x run
 ```
 
 **Terminal 2** - Frontend (with hot reload):
+
 ```bash
 cd ts
 npm run dev
 ```
 
 **Terminal 3** - API requests:
+
 ```bash
 # Backend API: http://localhost:8080
 # Frontend dev server: http://localhost:5173
@@ -674,6 +699,7 @@ cd ts && npm run check
 ### Backup Strategy
 
 **Automatic Backups**:
+
 ```toml
 # config/server.toml
 [collections]
@@ -682,6 +708,7 @@ backup_retention_days = 30
 ```
 
 **Manual Backup**:
+
 ```bash
 # Backup all user data
 tar czf anki-backup-$(date +%Y%m%d).tar.gz data/
@@ -691,6 +718,7 @@ tar xzf anki-backup-20240214.tar.gz
 ```
 
 **Database Dump**:
+
 ```bash
 # Backup user database
 sqlite3 data/webapp.db .dump > webapp-backup.sql
@@ -702,6 +730,7 @@ sqlite3 data/webapp.db < webapp-backup.sql
 ### Performance Tuning
 
 **Database**:
+
 ```bash
 # Optimize SQLite
 sqlite3 data/webapp.db "VACUUM;"
@@ -709,19 +738,21 @@ sqlite3 data/webapp.db "ANALYZE;"
 ```
 
 **Server**:
+
 ```toml
 # config/server.toml
 [server]
-workers = 4  # Increase for more CPU cores
+workers = 4 # Increase for more CPU cores
 
 [limits]
-max_request_size_mb = 50  # Reduce if low bandwidth
-rate_limit_requests_per_minute = 120  # Adjust based on load
+max_request_size_mb = 50 # Reduce if low bandwidth
+rate_limit_requests_per_minute = 120 # Adjust based on load
 ```
 
 ### Monitoring
 
 **Logs**:
+
 ```bash
 # Follow logs
 tail -f logs/webapp.log
@@ -734,11 +765,13 @@ tail -f logs/webapp.log | grep -E "(ERROR|WARN)"
 ```
 
 **Health Check**:
+
 ```bash
 curl http://localhost:8080/api/v1/health
 ```
 
 **Metrics** (optional):
+
 ```bash
 # Prometheus metrics endpoint
 curl http://localhost:8080/metrics
@@ -749,6 +782,7 @@ curl http://localhost:8080/metrics
 ### Server Won't Start
 
 **Port already in use**:
+
 ```bash
 # Check what's using port 8080
 lsof -i :8080
@@ -757,6 +791,7 @@ lsof -i :8080
 ```
 
 **Permission denied**:
+
 ```bash
 # Check file permissions
 ls -la /opt/anki-webapp
@@ -768,6 +803,7 @@ sudo chown -R anki:anki /opt/anki-webapp
 ### Can't Login
 
 **Forgot password**:
+
 ```bash
 # Reset password via CLI (future feature)
 ./anki-webapp reset-password username
@@ -778,6 +814,7 @@ UPDATE users SET password_hash = '<new_hash>' WHERE username = 'user';
 ```
 
 **Invalid token**:
+
 - Token expired (default 24 hours)
 - JWT secret changed
 - Login again to get new token
@@ -785,10 +822,12 @@ UPDATE users SET password_hash = '<new_hash>' WHERE username = 'user';
 ### Collection Won't Open
 
 **Database locked**:
+
 - Another instance accessing collection
 - Kill other process or close from other session
 
 **Corrupted database**:
+
 ```bash
 # Check database integrity
 sqlite3 collection.anki2 "PRAGMA integrity_check;"
@@ -800,6 +839,7 @@ cp backups/backup-2024-02-14/collection.anki2 .
 ### Poor Performance
 
 **Slow queries**:
+
 ```bash
 # Enable query logging
 export RUST_LOG="sqlx=debug"
@@ -809,6 +849,7 @@ grep "slow query" logs/webapp.log
 ```
 
 **High memory usage**:
+
 ```bash
 # Check memory
 free -h
@@ -818,6 +859,7 @@ free -h
 ```
 
 **Slow media loading**:
+
 - Check media file sizes
 - Use appropriate formats (JPEG instead of PNG)
 - Consider CDN for media files
@@ -825,14 +867,17 @@ free -h
 ### Common Errors
 
 **"Collection not open"**:
+
 - Open collection via UI or API first
 - Check session is valid
 
 **"Permission denied"**:
+
 - Check file permissions on data directory
 - User running server needs read/write access
 
 **"Database disk image is malformed"**:
+
 - Database corrupted
 - Restore from backup
 - Run `PRAGMA integrity_check;`
@@ -842,6 +887,7 @@ free -h
 ### Can I use my existing desktop collection?
 
 Yes! Place your `.anki2` file in the appropriate user data directory:
+
 ```
 data/users/{user_id}/collections/mycollection.anki2
 ```

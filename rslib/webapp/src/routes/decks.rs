@@ -1,12 +1,14 @@
-use axum::{
-    extract::{Path, State},
-    response::IntoResponse,
-    Extension, Json,
-};
-use serde::{Deserialize, Serialize};
+use axum::extract::Path;
+use axum::extract::State;
+use axum::response::IntoResponse;
+use axum::Extension;
+use axum::Json;
+use serde::Deserialize;
+use serde::Serialize;
 
 use crate::auth::AuthUser;
-use crate::error::{Result, WebAppError};
+use crate::error::Result;
+use crate::error::WebAppError;
 use crate::routes::AuthRouteState;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -56,11 +58,12 @@ pub async fn get_deck_tree(
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
-    
+
     // Get deck tree from collection
-    let tree = col.deck_tree(Default::default())
+    let tree = col
+        .deck_tree(Default::default())
         .map_err(|e| WebAppError::internal(&e.to_string()))?;
-    
+
     drop(col);
 
     // Convert to our response format
@@ -80,12 +83,13 @@ pub async fn create_deck(
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
-    
+
     // Create the deck
-    let deck = col.get_or_create_normal_deck(&request.name)
+    let deck = col
+        .get_or_create_normal_deck(&request.name)
         .map_err(|e| WebAppError::internal(&e.to_string()))?;
     let deck_id = deck.id.0;
-    
+
     drop(col);
 
     Ok(Json(MessageResponse {
@@ -106,12 +110,13 @@ pub async fn get_deck(
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
-    
+
     let deck_id = anki::decks::DeckId(deck_id);
-    let deck = col.get_deck(deck_id)
+    let deck = col
+        .get_deck(deck_id)
         .map_err(|e| WebAppError::internal(&e.to_string()))?
         .ok_or_else(|| WebAppError::not_found("Deck not found"))?;
-    
+
     drop(col);
 
     Ok(Json(DeckInfo {
@@ -131,11 +136,11 @@ pub async fn delete_deck(
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
-    
+
     let deck_ids = vec![anki::decks::DeckId(deck_id)];
     col.remove_decks_and_child_decks(&deck_ids)
         .map_err(|e| WebAppError::internal(&e.to_string()))?;
-    
+
     drop(col);
 
     Ok(Json(MessageResponse {

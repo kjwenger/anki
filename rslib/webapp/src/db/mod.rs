@@ -1,14 +1,19 @@
-use anyhow::Result;
-use rusqlite::{params, Connection};
 use std::path::Path;
 use std::sync::Mutex;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::SystemTime;
+use std::time::UNIX_EPOCH;
+
+use anyhow::Result;
+use rusqlite::params;
+use rusqlite::Connection;
 
 pub mod sessions;
 pub mod users;
 
-pub use sessions::{Session, SessionStore};
-pub use users::{User, UserStore};
+pub use sessions::Session;
+pub use sessions::SessionStore;
+pub use users::User;
+pub use users::UserStore;
 
 const SCHEMA_SQL: &str = include_str!("schema.sql");
 
@@ -20,7 +25,9 @@ impl Database {
     pub fn open<P: AsRef<Path>>(path: P) -> Result<Self> {
         let conn = Connection::open(path)?;
         conn.execute("PRAGMA foreign_keys = ON", [])?;
-        Ok(Self { conn: Mutex::new(conn) })
+        Ok(Self {
+            conn: Mutex::new(conn),
+        })
     }
 
     pub fn initialize(&self) -> Result<()> {
@@ -40,10 +47,7 @@ impl Database {
     pub fn cleanup_expired_sessions(&self) -> Result<usize> {
         let now = current_timestamp();
         let conn = self.conn.lock().unwrap();
-        let count = conn.execute(
-            "DELETE FROM sessions WHERE expires_at < ?1",
-            params![now],
-        )?;
+        let count = conn.execute("DELETE FROM sessions WHERE expires_at < ?1", params![now])?;
         Ok(count)
     }
 
@@ -52,7 +56,7 @@ impl Database {
         F: FnOnce(&Connection) -> Result<R>,
     {
         let conn = self.conn.lock().unwrap();
-        f(&*conn)
+        f(&conn)
     }
 }
 

@@ -1,7 +1,8 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-use serde_json::{json, Value};
+use serde_json::json;
+use serde_json::Value;
 
 pub fn openapi_spec() -> Value {
     json!({
@@ -27,6 +28,7 @@ pub fn openapi_spec() -> Value {
             { "name": "collection", "description": "Collection management" },
             { "name": "decks", "description": "Deck management" },
             { "name": "notes", "description": "Note management" },
+            { "name": "cards", "description": "Card management" },
             { "name": "health", "description": "Health check endpoints" }
         ],
         "paths": {
@@ -447,6 +449,290 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/cards/{id}": {
+                "get": {
+                    "tags": ["cards"],
+                    "summary": "Get a card by ID",
+                    "operationId": "getCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card information",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/CardInfo" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                },
+                "put": {
+                    "tags": ["cards"],
+                    "summary": "Update a card",
+                    "operationId": "updateCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/UpdateCardRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Card updated successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                },
+                "delete": {
+                    "tags": ["cards"],
+                    "summary": "Delete a card",
+                    "operationId": "deleteCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card deleted successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/cards/{id}/flag": {
+                "post": {
+                    "tags": ["cards"],
+                    "summary": "Flag a card",
+                    "operationId": "flagCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/FlagCardRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Card flagged successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/cards/{id}/suspend": {
+                "post": {
+                    "tags": ["cards"],
+                    "summary": "Suspend a card",
+                    "operationId": "suspendCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card suspended successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/cards/{id}/unsuspend": {
+                "post": {
+                    "tags": ["cards"],
+                    "summary": "Unsuspend a card",
+                    "operationId": "unsuspendCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card unsuspended successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/cards/{id}/bury": {
+                "post": {
+                    "tags": ["cards"],
+                    "summary": "Bury a card",
+                    "operationId": "buryCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card buried successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/cards/batch": {
+                "post": {
+                    "tags": ["cards"],
+                    "summary": "Get multiple cards by IDs",
+                    "operationId": "batchGetCards",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/BatchGetCardsRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Cards retrieved successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "cards": {
+                                                "type": "array",
+                                                "items": { "$ref": "#/components/schemas/CardInfo" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/cards/batch-update": {
+                "post": {
+                    "tags": ["cards"],
+                    "summary": "Update multiple cards",
+                    "operationId": "batchUpdateCards",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/BatchUpdateCardsRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Cards updated successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "success": { "type": "boolean" },
+                                            "message": { "type": "string" },
+                                            "updated_count": { "type": "integer" }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
             "/health": {
                 "get": {
                     "tags": ["health"],
@@ -650,6 +936,83 @@ pub fn openapi_spec() -> Value {
                             "type": "array",
                             "items": { "type": "string" }
                         }
+                    }
+                },
+                "CardInfo": {
+                    "type": "object",
+                    "properties": {
+                        "id": { "type": "integer", "format": "int64" },
+                        "note_id": { "type": "integer", "format": "int64" },
+                        "deck_id": { "type": "integer", "format": "int64" },
+                        "ordinal": { "type": "integer", "format": "uint16" },
+                        "card_type": { "type": "integer", "format": "uint8", "description": "0=New, 1=Learn, 2=Review, 3=Relearn" },
+                        "queue": { "type": "integer", "format": "int8", "description": "Card queue state" },
+                        "due": { "type": "integer", "format": "int32" },
+                        "interval": { "type": "integer", "format": "uint32" },
+                        "ease_factor": { "type": "integer", "format": "uint16" },
+                        "reps": { "type": "integer", "format": "uint32" },
+                        "lapses": { "type": "integer", "format": "uint32" },
+                        "flags": { "type": "integer", "format": "uint8", "description": "0=None, 1=Red, 2=Orange, 3=Green, 4=Blue" }
+                    }
+                },
+                "UpdateCardRequest": {
+                    "type": "object",
+                    "properties": {
+                        "deck_id": { "type": "integer", "format": "int64", "nullable": true },
+                        "due": { "type": "integer", "format": "int32", "nullable": true },
+                        "flags": { "type": "integer", "format": "uint8", "nullable": true }
+                    }
+                },
+                "FlagCardRequest": {
+                    "type": "object",
+                    "required": ["flag"],
+                    "properties": {
+                        "flag": {
+                            "type": "integer",
+                            "format": "uint8",
+                            "minimum": 0,
+                            "maximum": 4,
+                            "description": "0=None, 1=Red, 2=Orange, 3=Green, 4=Blue",
+                            "example": 1
+                        }
+                    }
+                },
+                "BatchGetCardsRequest": {
+                    "type": "object",
+                    "required": ["card_ids"],
+                    "properties": {
+                        "card_ids": {
+                            "type": "array",
+                            "items": { "type": "integer", "format": "int64" },
+                            "example": [1, 2, 3]
+                        }
+                    }
+                },
+                "BatchUpdateCardsRequest": {
+                    "type": "object",
+                    "required": ["updates"],
+                    "properties": {
+                        "updates": {
+                            "type": "array",
+                            "items": { "$ref": "#/components/schemas/BatchCardUpdate" }
+                        }
+                    }
+                },
+                "BatchCardUpdate": {
+                    "type": "object",
+                    "required": ["card_id"],
+                    "properties": {
+                        "card_id": { "type": "integer", "format": "int64" },
+                        "deck_id": { "type": "integer", "format": "int64", "nullable": true },
+                        "due": { "type": "integer", "format": "int32", "nullable": true },
+                        "flags": { "type": "integer", "format": "uint8", "nullable": true }
+                    }
+                },
+                "MessageResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "message": { "type": "string", "example": "Operation successful" }
                     }
                 },
                 "ErrorResponse": {

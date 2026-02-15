@@ -18,50 +18,50 @@ This document specifies the architecture for converting Anki's desktop applicati
 ### High-Level Components
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Anki Web Application                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │           Web Frontend (SvelteKit)                   │  │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐    │  │
-│  │  │  Reviewer  │  │   Decks    │  │   Editor   │    │  │
-│  │  └────────────┘  └────────────┘  └────────────┘    │  │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐    │  │
-│  │  │   Stats    │  │  Browser   │  │  Settings  │    │  │
-│  │  └────────────┘  └────────────┘  └────────────┘    │  │
-│  └──────────────────────┬───────────────────────────────┘  │
-│                         │ HTTP/JSON                         │
-│  ┌──────────────────────▼───────────────────────────────┐  │
-│  │              REST API Server (Axum)                  │  │
-│  │  ┌──────────────────────────────────────────────┐   │  │
-│  │  │ Authentication (JWT)                         │   │  │
-│  │  │ Session Management                           │   │  │
-│  │  │ Multi-user Collection Routing                │   │  │
-│  │  └──────────────────────────────────────────────┘   │  │
-│  │  ┌──────────────────────────────────────────────┐   │  │
-│  │  │ REST Endpoints                               │   │  │
-│  │  │  - /api/v1/collections/*                     │   │  │
-│  │  │  - /api/v1/decks/*                           │   │  │
-│  │  │  - /api/v1/cards/*                           │   │  │
-│  │  │  - /api/v1/notes/*                           │   │  │
-│  │  │  - /api/v1/scheduler/*                       │   │  │
-│  │  │  - /api/v1/search/*                          │   │  │
-│  │  │  - /api/v1/media/*                           │   │  │
-│  │  └──────────────────────────────────────────────┘   │  │
-│  └──────────────────────┬───────────────────────────────┘  │
-│                         │ Protobuf Messages                 │
-│  ┌──────────────────────▼───────────────────────────────┐  │
-│  │         Anki Backend (Existing Rust Core)            │  │
-│  │  - rslib/src/backend                                 │  │
-│  │  - Collection management                             │  │
-│  │  - Scheduler (FSRS)                                  │  │
-│  │  - SQLite database                                   │  │
-│  │  - Search engine                                     │  │
-│  │  - Media management                                  │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                     Anki Web Application                │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │           Web Frontend (SvelteKit)                │  │
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐   │  │
+│  │  │  Reviewer  │  │   Decks    │  │   Editor   │   │  │
+│  │  └────────────┘  └────────────┘  └────────────┘   │  │
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐   │  │
+│  │  │   Stats    │  │  Browser   │  │  Settings  │   │  │
+│  │  └────────────┘  └────────────┘  └────────────┘   │  │
+│  └──────────────────────┬────────────────────────────┘  │
+│                         │ HTTP/JSON                     │
+│  ┌──────────────────────▼────────────────────────────┐  │
+│  │              REST API Server (Axum)               │  │
+│  │  ┌────────────────────────────────────────────┐   │  │
+│  │  │ Authentication (JWT)                       │   │  │
+│  │  │ Session Management                         │   │  │
+│  │  │ Multi-user Collection Routing              │   │  │
+│  │  └────────────────────────────────────────────┘   │  │
+│  │  ┌────────────────────────────────────────────┐   │  │
+│  │  │ REST Endpoints                             │   │  │
+│  │  │  - /api/v1/collections/*                   │   │  │
+│  │  │  - /api/v1/decks/*                         │   │  │
+│  │  │  - /api/v1/cards/*                         │   │  │
+│  │  │  - /api/v1/notes/*                         │   │  │
+│  │  │  - /api/v1/scheduler/*                     │   │  │
+│  │  │  - /api/v1/search/*                        │   │  │
+│  │  │  - /api/v1/media/*                         │   │  │
+│  │  └────────────────────────────────────────────┘   │  │
+│  └──────────────────────┬────────────────────────────┘  │
+│                         │ Protobuf Messages             │
+│  ┌──────────────────────▼────────────────────────────┐  │
+│  │         Anki Backend (Existing Rust Core)         │  │
+│  │  - rslib/src/backend                              │  │
+│  │  - Collection management                          │  │
+│  │  - Scheduler (FSRS)                               │  │
+│  │  - SQLite database                                │  │
+│  │  - Search engine                                  │  │
+│  │  - Media management                               │  │
+│  └───────────────────────────────────────────────────┘  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## Component Specifications
@@ -73,6 +73,7 @@ This document specifies the architecture for converting Anki's desktop applicati
 **Location**: `rslib/webapp/`
 
 **Key Features**:
+
 - JWT-based authentication
 - Per-user collection management
 - Protobuf ↔ JSON conversion
@@ -80,6 +81,7 @@ This document specifies the architecture for converting Anki's desktop applicati
 - CORS configuration for web clients
 
 **Server Configuration**:
+
 ```rust
 struct WebAppConfig {
     host: String,              // Default: "127.0.0.1"
@@ -94,6 +96,7 @@ struct WebAppConfig {
 ### 2. API Endpoints
 
 #### Authentication
+
 ```
 POST   /api/v1/auth/register        - Register new user
 POST   /api/v1/auth/login           - Login and get JWT token
@@ -104,6 +107,7 @@ POST   /api/v1/auth/refresh         - Refresh JWT token
 ```
 
 #### Collections
+
 ```
 GET    /api/v1/collections                      - List user's collections
 POST   /api/v1/collections                      - Create new collection
@@ -116,6 +120,7 @@ GET    /api/v1/collections/{id}/check           - Run integrity check
 ```
 
 #### Decks
+
 ```
 GET    /api/v1/decks                            - List all decks (tree)
 POST   /api/v1/decks                            - Create deck
@@ -130,6 +135,7 @@ PUT    /api/v1/decks/{id}/config                - Update deck configuration
 ```
 
 #### Cards
+
 ```
 GET    /api/v1/cards/{id}                       - Get card
 PUT    /api/v1/cards/{id}                       - Update card
@@ -144,6 +150,7 @@ DELETE /api/v1/cards                            - Batch delete cards
 ```
 
 #### Notes
+
 ```
 GET    /api/v1/notes/{id}                       - Get note
 POST   /api/v1/notes                            - Create note
@@ -157,6 +164,7 @@ DELETE /api/v1/notes/{id}/tags                  - Remove tags
 ```
 
 #### Scheduler
+
 ```
 GET    /api/v1/scheduler/next                   - Get next card(s) to review
 POST   /api/v1/scheduler/answer                 - Answer card
@@ -172,6 +180,7 @@ POST   /api/v1/scheduler/set-due-date           - Set custom due date
 ```
 
 #### Search
+
 ```
 POST   /api/v1/search/cards                     - Search cards
 POST   /api/v1/search/notes                     - Search notes
@@ -179,6 +188,7 @@ POST   /api/v1/search/find-replace              - Find and replace
 ```
 
 #### Tags
+
 ```
 GET    /api/v1/tags                             - List all tags
 POST   /api/v1/tags                             - Create tag
@@ -188,6 +198,7 @@ POST   /api/v1/tags/clear-unused                - Clear unused tags
 ```
 
 #### Statistics
+
 ```
 GET    /api/v1/stats/deck/{id}                  - Deck statistics
 GET    /api/v1/stats/collection                 - Collection statistics
@@ -196,6 +207,7 @@ GET    /api/v1/stats/studied-today              - Today's study summary
 ```
 
 #### Media
+
 ```
 GET    /api/v1/media/{filename}                 - Get media file
 POST   /api/v1/media                            - Upload media file
@@ -205,6 +217,7 @@ POST   /api/v1/media/sync                       - Sync media
 ```
 
 #### Import/Export
+
 ```
 POST   /api/v1/import/apkg                      - Import .apkg file
 POST   /api/v1/import/csv                       - Import CSV
@@ -216,6 +229,7 @@ GET    /api/v1/export/{job_id}/download         - Download export file
 ```
 
 #### Notetypes
+
 ```
 GET    /api/v1/notetypes                        - List notetypes
 POST   /api/v1/notetypes                        - Create notetype
@@ -236,6 +250,7 @@ DELETE /api/v1/notetypes/{id}/templates/{idx}   - Delete template
 **New Pages Required**:
 
 #### Deck Browser (`ts/routes/decks/+page.svelte`)
+
 - Display deck tree with expand/collapse
 - Show new/learning/review counts
 - Quick study button
@@ -243,6 +258,7 @@ DELETE /api/v1/notetypes/{id}/templates/{idx}   - Delete template
 - Search/filter decks
 
 #### Reviewer (`ts/routes/review/+page.svelte`)
+
 - Card question/answer display
 - Answer buttons (Again/Hard/Good/Easy)
 - Keyboard shortcuts
@@ -253,6 +269,7 @@ DELETE /api/v1/notetypes/{id}/templates/{idx}   - Delete template
 - Undo/redo support
 
 #### Editor (`ts/routes/editor/+page.svelte`)
+
 - Rich text field editing
 - Tag input with autocomplete
 - Deck selector
@@ -262,6 +279,7 @@ DELETE /api/v1/notetypes/{id}/templates/{idx}   - Delete template
 - Duplicate detection
 
 #### Card Browser (`ts/routes/browse/+page.svelte`)
+
 - Search interface
 - Card list with columns
 - Column customization
@@ -271,12 +289,14 @@ DELETE /api/v1/notetypes/{id}/templates/{idx}   - Delete template
 - Preview pane
 
 #### Settings (`ts/routes/settings/+page.svelte`)
+
 - User preferences
 - Collection settings
 - Scheduling options
 - Appearance settings
 
 **Existing Pages** (already implemented):
+
 - ✅ Statistics/Graphs
 - ✅ Deck Options
 - ✅ Import CSV
@@ -287,6 +307,7 @@ DELETE /api/v1/notetypes/{id}/templates/{idx}   - Delete template
 ### 4. Authentication & Multi-User Support
 
 **User Model**:
+
 ```rust
 struct User {
     id: Uuid,
@@ -299,6 +320,7 @@ struct User {
 ```
 
 **Session Model**:
+
 ```rust
 struct Session {
     user_id: Uuid,
@@ -309,6 +331,7 @@ struct Session {
 ```
 
 **JWT Claims**:
+
 ```rust
 struct Claims {
     sub: Uuid,           // user_id
@@ -321,6 +344,7 @@ struct Claims {
 ### 5. Data Storage
 
 **Directory Structure**:
+
 ```
 {data_dir}/
 ├── users/
@@ -337,6 +361,7 @@ struct Claims {
 ```
 
 **Database**: SQLite for user management
+
 ```sql
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
@@ -358,38 +383,41 @@ CREATE TABLE sessions (
 ### 6. API Response Format
 
 **Success Response**:
+
 ```json
 {
-  "success": true,
-  "data": { /* response data */ }
+    "success": true,
+    "data": {/* response data */}
 }
 ```
 
 **Error Response**:
+
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "INVALID_INPUT",
-    "message": "Card not found",
-    "details": { /* optional additional info */ }
-  }
+    "success": false,
+    "error": {
+        "code": "INVALID_INPUT",
+        "message": "Card not found",
+        "details": {/* optional additional info */}
+    }
 }
 ```
 
 **List Response with Pagination**:
+
 ```json
 {
-  "success": true,
-  "data": {
-    "items": [ /* array of items */ ],
-    "pagination": {
-      "total": 100,
-      "page": 1,
-      "per_page": 20,
-      "total_pages": 5
+    "success": true,
+    "data": {
+        "items": [/* array of items */],
+        "pagination": {
+            "total": 100,
+            "page": 1,
+            "per_page": 20,
+            "total_pages": 5
+        }
     }
-  }
 }
 ```
 
@@ -402,14 +430,15 @@ WS /api/v1/ws
 ```
 
 **Message Format**:
+
 ```json
 {
-  "type": "progress",
-  "data": {
-    "operation": "import",
-    "progress": 0.5,
-    "message": "Importing cards..."
-  }
+    "type": "progress",
+    "data": {
+        "operation": "import",
+        "progress": 0.5,
+        "message": "Importing cards..."
+    }
 }
 ```
 
@@ -429,6 +458,7 @@ WS /api/v1/ws
 ## Configuration
 
 **Server Configuration** (`config/server.toml`):
+
 ```toml
 [server]
 host = "127.0.0.1"

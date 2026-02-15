@@ -39,7 +39,7 @@ need a full build with './check' first.
 
 ## Build Tooling
 
-'./check' and './ninja' invoke our build system, which is implemented in build/. 
+'./check' and './ninja' invoke our build system, which is implemented in build/.
 It takes care of downloading required deps and invoking our build steps.
 
 ## Translations
@@ -72,7 +72,7 @@ don't attempt to grep the codebase.
 ## Ignores
 
 The files in out/ are auto-generated. Mostly you should ignore that folder,
-though you may sometimes find it useful to view out/{pylib/anki,qt/_aqt,ts/lib/generated} 
+though you may sometimes find it useful to view out/{pylib/anki,qt/_aqt,ts/lib/generated}
 when dealing with cross-language communication or our other generated sourcecode.
 
 ## Launcher/Installer
@@ -85,7 +85,7 @@ configurations and systemd service files.
 
 ## Rust Dependencies
 
-Prefer adding to the root workspace, and using dep.workspace = true in the 
+Prefer adding to the root workspace, and using dep.workspace = true in the
 individual Rust project.
 
 For the web app (rslib/webapp/), follow the same pattern and add shared
@@ -101,7 +101,7 @@ The web app should also use these utilities for consistency.
 
 ## Rust Error Handling
 
-In rslib, use error/mod.rs's AnkiError/Result and snafu. In our other Rust 
+In rslib, use error/mod.rs's AnkiError/Result and snafu. In our other Rust
 modules, prefer anyhow + additional context where appropriate. Unwrapping
 in build scripts/tests is fine.
 

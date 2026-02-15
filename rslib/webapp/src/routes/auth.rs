@@ -1,16 +1,22 @@
-use axum::{
-    extract::State,
-    http::StatusCode,
-    response::IntoResponse,
-    Extension, Json,
-};
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+
+use axum::extract::State;
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
+use axum::Extension;
+use axum::Json;
+use serde::Deserialize;
+use serde::Serialize;
 use uuid::Uuid;
 
-use crate::auth::{hash_password, verify_password, AuthUser, Claims, JwtManager};
+use crate::auth::hash_password;
+use crate::auth::verify_password;
+use crate::auth::AuthUser;
+use crate::auth::Claims;
+use crate::auth::JwtManager;
 use crate::db::Database;
-use crate::error::{Result, WebAppError};
+use crate::error::Result;
+use crate::error::WebAppError;
 use crate::session::BackendManager;
 
 #[derive(Clone)]
@@ -70,14 +76,23 @@ pub async fn register(
         return Err(WebAppError::bad_request("Username cannot be empty"));
     }
     if payload.password.len() < 8 {
-        return Err(WebAppError::bad_request("Password must be at least 8 characters"));
+        return Err(WebAppError::bad_request(
+            "Password must be at least 8 characters",
+        ));
     }
     if payload.username.len() > 50 {
-        return Err(WebAppError::bad_request("Username must be 50 characters or less"));
+        return Err(WebAppError::bad_request(
+            "Username must be 50 characters or less",
+        ));
     }
 
     // Check if username already exists
-    if state.database.users().get_by_username(&payload.username)?.is_some() {
+    if state
+        .database
+        .users()
+        .get_by_username(&payload.username)?
+        .is_some()
+    {
         return Err(WebAppError::conflict("Username already exists"));
     }
 
@@ -86,17 +101,19 @@ pub async fn register(
         .map_err(|e| WebAppError::internal(&format!("Failed to hash password: {}", e)))?;
 
     // Create user
-    let user = state
-        .database
-        .users()
-        .create(&payload.username, &password_hash, payload.email.as_deref())?;
+    let user = state.database.users().create(
+        &payload.username,
+        &password_hash,
+        payload.email.as_deref(),
+    )?;
 
     // Create session
     let session_id = Uuid::new_v4().to_string();
-    let _session = state
-        .database
-        .sessions()
-        .create(&session_id, user.id, state.session_timeout_hours * 3600)?;
+    let _session = state.database.sessions().create(
+        &session_id,
+        user.id,
+        state.session_timeout_hours * 3600,
+    )?;
 
     // Generate JWT
     let claims = Claims::new(
@@ -154,10 +171,11 @@ pub async fn login(
 
     // Create session
     let session_id = Uuid::new_v4().to_string();
-    let _session = state
-        .database
-        .sessions()
-        .create(&session_id, user.id, state.session_timeout_hours * 3600)?;
+    let _session = state.database.sessions().create(
+        &session_id,
+        user.id,
+        state.session_timeout_hours * 3600,
+    )?;
 
     // Generate JWT
     let claims = Claims::new(
@@ -192,12 +210,9 @@ pub async fn logout(
 ) -> Result<impl IntoResponse> {
     // Close backend instance for this user
     let _ = state.backend_manager.close_backend(auth_user.user_id);
-    
+
     // Delete the session
-    state
-        .database
-        .sessions()
-        .delete(&auth_user.session_id)?;
+    state.database.sessions().delete(&auth_user.session_id)?;
 
     Ok(Json(MessageResponse {
         success: true,
@@ -225,17 +240,17 @@ pub async fn me(
 
 #[cfg(test)]
 mod tests {
+    use axum::body::Body;
+    use axum::http::Request;
+    use axum::http::StatusCode;
+    use axum::middleware;
+    use axum::routing::get;
+    use axum::routing::post;
+    use axum::Router;
+    use tower::ServiceExt;
+
     use super::*;
     use crate::auth::AuthState;
-    use axum::{
-        body::Body,
-        http::{Request, StatusCode},
-        middleware,
-        routing::{get, post},
-        Router,
-    };
-    use tower::ServiceExt as _;
-    use tower::ServiceExt;
 
     async fn setup_test_app() -> (Router, Arc<Database>) {
         let db = Arc::new(Database::open(":memory:").unwrap());
@@ -243,7 +258,7 @@ mod tests {
 
         let jwt_manager = Arc::new(JwtManager::new("test_secret"));
         let backend_manager = Arc::new(BackendManager::new(std::env::temp_dir()));
-        
+
         let auth_state = AuthRouteState {
             database: db.clone(),
             jwt_manager: jwt_manager.clone(),

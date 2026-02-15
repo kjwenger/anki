@@ -1,14 +1,22 @@
 use anyhow::Result;
-use chrono::{Duration, Utc};
-use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
+use chrono::Duration;
+use chrono::Utc;
+use jsonwebtoken::decode;
+use jsonwebtoken::encode;
+use jsonwebtoken::Algorithm;
+use jsonwebtoken::DecodingKey;
+use jsonwebtoken::EncodingKey;
+use jsonwebtoken::Header;
+use jsonwebtoken::Validation;
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: String,      // Subject (user ID)
-    pub username: String, // Username for convenience
-    pub exp: i64,         // Expiration time
-    pub iat: i64,         // Issued at
+    pub sub: String,        // Subject (user ID)
+    pub username: String,   // Username for convenience
+    pub exp: i64,           // Expiration time
+    pub iat: i64,           // Issued at
     pub session_id: String, // Session ID for revocation
 }
 
@@ -27,7 +35,9 @@ impl Claims {
     }
 
     pub fn user_id(&self) -> Result<i64> {
-        self.sub.parse().map_err(|e| anyhow::anyhow!("Invalid user ID in token: {}", e))
+        self.sub
+            .parse()
+            .map_err(|e| anyhow::anyhow!("Invalid user ID in token: {}", e))
     }
 
     pub fn is_expired(&self) -> bool {
@@ -78,7 +88,7 @@ mod tests {
     #[test]
     fn test_claims_creation() {
         let claims = Claims::new(123, "testuser".to_string(), "session_abc".to_string(), 24);
-        
+
         assert_eq!(claims.sub, "123");
         assert_eq!(claims.username, "testuser");
         assert_eq!(claims.session_id, "session_abc");
@@ -123,14 +133,14 @@ mod tests {
     #[test]
     fn test_expired_token() {
         let manager = JwtManager::new("test_secret");
-        
+
         // Create expired claims (0 hours TTL)
         let mut claims = Claims::new(999, "expired_user".to_string(), "sess_exp".to_string(), 0);
         claims.exp = Utc::now().timestamp() - 3600; // 1 hour ago
 
         let token = manager.generate_token(&claims).unwrap();
         let result = manager.verify_token(&token);
-        
+
         // Should fail either with "expired" or JWT decode error
         assert!(result.is_err());
     }

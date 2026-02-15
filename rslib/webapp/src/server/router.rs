@@ -1,22 +1,46 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-use axum::{
-    http::StatusCode,
-    middleware,
-    response::{Html, IntoResponse, Json},
-    routing::{delete, get, post, put},
-    Router,
-};
+use axum::http::StatusCode;
+use axum::middleware;
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::response::Json;
+use axum::routing::delete;
+use axum::routing::get;
+use axum::routing::post;
+use axum::routing::put;
+use axum::Router;
 use serde_json::json;
 
-use crate::auth::{require_auth, AuthState};
+use crate::auth::require_auth;
+use crate::auth::AuthState;
 use crate::openapi;
-use crate::routes::{
-    close_collection, create_deck, create_note, delete_deck, delete_note, get_collection_info,
-    get_deck, get_deck_tree, get_note, get_note_cards, login, logout, me, register,
-    update_note, AuthRouteState,
-};
+use crate::routes::batch_get_cards;
+use crate::routes::batch_update_cards;
+use crate::routes::bury_card;
+use crate::routes::close_collection;
+use crate::routes::create_deck;
+use crate::routes::create_note;
+use crate::routes::delete_card;
+use crate::routes::delete_deck;
+use crate::routes::delete_note;
+use crate::routes::flag_card;
+use crate::routes::get_card;
+use crate::routes::get_collection_info;
+use crate::routes::get_deck;
+use crate::routes::get_deck_tree;
+use crate::routes::get_note;
+use crate::routes::get_note_cards;
+use crate::routes::login;
+use crate::routes::logout;
+use crate::routes::me;
+use crate::routes::register;
+use crate::routes::suspend_card;
+use crate::routes::unsuspend_card;
+use crate::routes::update_card;
+use crate::routes::update_note;
+use crate::routes::AuthRouteState;
 use crate::swagger_ui;
 use crate::WebAppConfig;
 
@@ -38,12 +62,21 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/notes/{id}", put(update_note))
         .route("/api/v1/notes/{id}", delete(delete_note))
         .route("/api/v1/notes/{id}/cards", get(get_note_cards))
+        .route("/api/v1/cards/{id}", get(get_card))
+        .route("/api/v1/cards/{id}", put(update_card))
+        .route("/api/v1/cards/{id}", delete(delete_card))
+        .route("/api/v1/cards/{id}/flag", post(flag_card))
+        .route("/api/v1/cards/{id}/suspend", post(suspend_card))
+        .route("/api/v1/cards/{id}/unsuspend", post(unsuspend_card))
+        .route("/api/v1/cards/{id}/bury", post(bury_card))
+        .route("/api/v1/cards/batch", post(batch_get_cards))
+        .route("/api/v1/cards/batch-update", post(batch_update_cards))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,
         ));
 
-    // Public auth routes  
+    // Public auth routes
     let auth_route_state = AuthRouteState {
         database: auth_state.database.clone(),
         jwt_manager: auth_state.jwt_manager.clone(),
@@ -149,6 +182,15 @@ async fn root_handler() -> Html<&'static str> {
         <li><code>PUT /api/v1/notes/{id}</code> - Update note</li>
         <li><code>DELETE /api/v1/notes/{id}</code> - Delete note</li>
         <li><code>GET /api/v1/notes/{id}/cards</code> - Get cards for note</li>
+        <li><code>GET /api/v1/cards/{id}</code> - Get card by ID</li>
+        <li><code>PUT /api/v1/cards/{id}</code> - Update card</li>
+        <li><code>DELETE /api/v1/cards/{id}</code> - Delete card</li>
+        <li><code>POST /api/v1/cards/{id}/flag</code> - Flag card</li>
+        <li><code>POST /api/v1/cards/{id}/suspend</code> - Suspend card</li>
+        <li><code>POST /api/v1/cards/{id}/unsuspend</code> - Unsuspend card</li>
+        <li><code>POST /api/v1/cards/{id}/bury</code> - Bury card</li>
+        <li><code>POST /api/v1/cards/batch</code> - Get multiple cards</li>
+        <li><code>POST /api/v1/cards/batch-update</code> - Update multiple cards</li>
     </ul>
     
     <h2>Status</h2>

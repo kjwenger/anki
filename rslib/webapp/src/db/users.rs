@@ -1,8 +1,12 @@
 use anyhow::Result;
-use rusqlite::{params, OptionalExtension, Row};
-use serde::{Deserialize, Serialize};
+use rusqlite::params;
+use rusqlite::OptionalExtension;
+use rusqlite::Row;
+use serde::Deserialize;
+use serde::Serialize;
 
-use super::{current_timestamp, Database};
+use super::current_timestamp;
+use super::Database;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
@@ -51,7 +55,8 @@ impl<'a> UserStore<'a> {
             Ok(conn.last_insert_rowid())
         })?;
 
-        self.get_by_id(id)?.ok_or_else(|| anyhow::anyhow!("Failed to retrieve created user"))
+        self.get_by_id(id)?
+            .ok_or_else(|| anyhow::anyhow!("Failed to retrieve created user"))
     }
 
     pub fn get_by_id(&self, id: i64) -> Result<Option<User>> {
@@ -144,7 +149,9 @@ mod tests {
         let store = db.users();
 
         // Create
-        let user = store.create("testuser", "hash123", Some("test@example.com")).unwrap();
+        let user = store
+            .create("testuser", "hash123", Some("test@example.com"))
+            .unwrap();
         assert_eq!(user.username, "testuser");
         assert_eq!(user.email.as_deref(), Some("test@example.com"));
         assert!(user.is_active);
@@ -165,9 +172,14 @@ mod tests {
         assert_eq!(updated.password_hash, "newhash");
 
         // Update collection path
-        store.update_collection_path(user.id, "/path/to/collection").unwrap();
+        store
+            .update_collection_path(user.id, "/path/to/collection")
+            .unwrap();
         let updated = store.get_by_id(user.id).unwrap().unwrap();
-        assert_eq!(updated.collection_path.as_deref(), Some("/path/to/collection"));
+        assert_eq!(
+            updated.collection_path.as_deref(),
+            Some("/path/to/collection")
+        );
 
         // Set inactive
         store.set_active(user.id, false).unwrap();

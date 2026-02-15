@@ -20,9 +20,9 @@ tokio.workspace = true
 tower-http.workspace = true
 
 # Workspace dependencies - Serialization
+prost.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-prost.workspace = true
 
 # Workspace dependencies - Error handling
 anyhow.workspace = true
@@ -33,18 +33,17 @@ tracing.workspace = true
 tracing-subscriber.workspace = true
 
 # Additional dependencies for webapp
-jsonwebtoken = "9.2"
 argon2 = { version = "0.5", features = ["std"] }
-uuid = { version = "1.6", features = ["v4", "serde"] }
 chrono.workspace = true
-toml = "0.8"
+jsonwebtoken = "9.2"
 rusqlite.workspace = true
-
+toml = "0.8"
+uuid = { version = "1.6", features = ["v4", "serde"] }
 
 [dev-dependencies]
+tempfile = "3.8"
 tokio.workspace = true
 tower = { version = "0.5", features = ["util"] }
-tempfile = "3.8"
 
 [[bin]]
 name = "anki-webapp"

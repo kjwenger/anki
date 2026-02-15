@@ -13,10 +13,13 @@ pub mod server;
 pub mod session;
 pub mod swagger_ui;
 
-pub use auth::{AuthState, AuthUser, JwtManager};
+pub use auth::AuthState;
+pub use auth::AuthUser;
+pub use auth::JwtManager;
 pub use config::WebAppConfig;
 pub use db::Database;
-pub use error::{Result, WebAppError};
+pub use error::Result;
+pub use error::WebAppError;
 pub use routes::AuthRouteState;
 pub use server::WebAppServer;
 pub use session::BackendManager;

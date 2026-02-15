@@ -1,10 +1,31 @@
 pub mod auth;
+pub mod cards;
 pub mod collection;
 pub mod decks;
 pub mod notes;
 
-pub use auth::{login, logout, me, register, AuthRouteState};
-pub use collection::{close_collection, get_collection_info};
-pub use decks::{create_deck, delete_deck, get_deck, get_deck_tree};
-pub use notes::{create_note, delete_note, get_note, get_note_cards, update_note};
-
+pub use auth::login;
+pub use auth::logout;
+pub use auth::me;
+pub use auth::register;
+pub use auth::AuthRouteState;
+pub use cards::batch_get_cards;
+pub use cards::batch_update_cards;
+pub use cards::bury_card;
+pub use cards::delete_card;
+pub use cards::flag_card;
+pub use cards::get_card;
+pub use cards::suspend_card;
+pub use cards::unsuspend_card;
+pub use cards::update_card;
+pub use collection::close_collection;
+pub use collection::get_collection_info;
+pub use decks::create_deck;
+pub use decks::delete_deck;
+pub use decks::get_deck;
+pub use decks::get_deck_tree;
+pub use notes::create_note;
+pub use notes::delete_note;
+pub use notes::get_note;
+pub use notes::get_note_cards;
+pub use notes::update_note;

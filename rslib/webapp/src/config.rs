@@ -1,24 +1,26 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-use serde::{Deserialize, Serialize};
 use std::net::IpAddr;
 use std::path::PathBuf;
+
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WebAppConfig {
     #[serde(default = "default_host")]
     pub host: IpAddr,
-    
+
     #[serde(default = "default_port")]
     pub port: u16,
-    
+
     #[serde(default = "default_data_dir")]
     pub data_dir: PathBuf,
-    
+
     #[serde(default = "default_jwt_secret")]
     pub jwt_secret: String,
-    
+
     #[serde(default = "default_session_timeout_hours")]
     pub session_timeout_hours: u64,
 }
@@ -61,33 +63,33 @@ impl WebAppConfig {
     pub fn from_env() -> anyhow::Result<Self> {
         // Start with default config
         let mut config = Self::default();
-        
+
         // Try to load from config file (if exists)
         if let Ok(file_config) = Self::from_file("config/server.toml") {
             config = file_config;
         }
-        
+
         // Override with environment variables (highest priority)
         if let Ok(host) = std::env::var("ANKI_WEBAPP_HOST") {
             config.host = host.parse()?;
         }
-        
+
         if let Ok(port) = std::env::var("ANKI_WEBAPP_PORT") {
             config.port = port.parse()?;
         }
-        
+
         if let Ok(data_dir) = std::env::var("ANKI_WEBAPP_DATA_DIR") {
             config.data_dir = PathBuf::from(data_dir);
         }
-        
+
         if let Ok(jwt_secret) = std::env::var("ANKI_WEBAPP_JWT_SECRET") {
             config.jwt_secret = jwt_secret;
         }
-        
+
         if let Ok(timeout) = std::env::var("ANKI_WEBAPP_SESSION_TIMEOUT_HOURS") {
             config.session_timeout_hours = timeout.parse()?;
         }
-        
+
         Ok(config)
     }
 
@@ -101,9 +103,11 @@ impl WebAppConfig {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::io::Write;
+
     use tempfile::NamedTempFile;
+
+    use super::*;
 
     #[test]
     fn test_default_config() {
@@ -172,4 +176,3 @@ jwt_secret = "my-secret"
         std::env::remove_var("ANKI_WEBAPP_JWT_SECRET");
     }
 }
-

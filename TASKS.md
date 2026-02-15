@@ -5,15 +5,19 @@ This document breaks down the implementation into manageable tasks with prioriti
 ## Project Phases
 
 ### Phase 1: Foundation (Week 1-2)
+
 Core infrastructure and authentication
 
 ### Phase 2: Core API (Week 3-4)
+
 Essential REST endpoints
 
 ### Phase 3: UI Components (Week 5-7)
+
 Web interface pages
 
 ### Phase 4: Polish & Testing (Week 8-9)
+
 Testing, documentation, deployment
 
 ---
@@ -21,8 +25,9 @@ Testing, documentation, deployment
 ## Phase 1: Foundation (2 weeks)
 
 ### 1.1 Project Structure Setup
-**Priority**: P0 (Critical)  
-**Estimate**: 2 days  
+
+**Priority**: P0 (Critical)\
+**Estimate**: 2 days\
 **Dependencies**: None
 
 - [ ] Create `rslib/webapp/` directory structure
@@ -33,6 +38,7 @@ Testing, documentation, deployment
 - [ ] Configure build system integration
 
 **Acceptance Criteria**:
+
 - Server compiles and runs on localhost
 - SvelteKit app accessible in browser
 - `./check` passes with new code
@@ -40,9 +46,10 @@ Testing, documentation, deployment
 ---
 
 ### 1.2 Database Schema for Users ✅
-**Priority**: P0  
-**Estimate**: 1 day  
-**Dependencies**: 1.1  
+
+**Priority**: P0\
+**Estimate**: 1 day\
+**Dependencies**: 1.1\
 **Status**: Complete
 
 - [x] Create SQLite schema for users table
@@ -52,12 +59,14 @@ Testing, documentation, deployment
 - [x] Write database helper functions
 
 **Files Created**:
+
 - `rslib/webapp/src/db/schema.sql`
 - `rslib/webapp/src/db/mod.rs`
 - `rslib/webapp/src/db/users.rs`
 - `rslib/webapp/src/db/sessions.rs`
 
 **Acceptance Criteria** (All Met):
+
 - ✅ Database creates on first run
 - ✅ Users can be added/queried
 - ✅ Sessions can be stored/retrieved
@@ -65,9 +74,10 @@ Testing, documentation, deployment
 ---
 
 ### 1.3 Authentication System ✅
-**Priority**: P0  
-**Estimate**: 3 days  
-**Dependencies**: 1.2  
+
+**Priority**: P0\
+**Estimate**: 3 days\
+**Dependencies**: 1.2\
 **Status**: Complete
 
 - [x] Implement password hashing (argon2)
@@ -79,6 +89,7 @@ Testing, documentation, deployment
 - [x] Add token refresh mechanism
 
 **Files Created**:
+
 - `rslib/webapp/src/auth/mod.rs`
 - `rslib/webapp/src/auth/jwt.rs`
 - `rslib/webapp/src/auth/password.rs`
@@ -87,6 +98,7 @@ Testing, documentation, deployment
 - `rslib/webapp/src/routes/auth.rs`
 
 **Acceptance Criteria** (All Met):
+
 - ✅ User can register with username/password
 - ✅ User can login and receive JWT
 - ✅ Protected routes require valid JWT
@@ -97,9 +109,10 @@ Testing, documentation, deployment
 ---
 
 ### 1.4 Session Management ✅
-**Priority**: P0  
-**Estimate**: 2 days  
-**Dependencies**: 1.3  
+
+**Priority**: P0\
+**Estimate**: 2 days\
+**Dependencies**: 1.3\
 **Status**: Complete
 
 - [x] Implement session store (completed in 1.2)
@@ -109,11 +122,13 @@ Testing, documentation, deployment
 - [x] Add session cleanup/timeout (completed in 1.2)
 
 **Files Created**:
+
 - `rslib/webapp/src/session/mod.rs`
 - `rslib/webapp/src/session/backend.rs`
 - `rslib/webapp/src/routes/collection.rs`
 
 **Acceptance Criteria** (All Met):
+
 - ✅ Each user gets isolated Backend instance
 - ✅ Sessions timeout after inactivity (database-based)
 - ✅ Collections properly closed on logout
@@ -124,9 +139,10 @@ Testing, documentation, deployment
 ---
 
 ### 1.5 Configuration System ✅
-**Priority**: P1  
-**Estimate**: 1 day  
-**Dependencies**: 1.1  
+
+**Priority**: P1\
+**Estimate**: 1 day\
+**Dependencies**: 1.1\
 **Status**: Complete
 
 - [x] Create configuration struct
@@ -136,13 +152,16 @@ Testing, documentation, deployment
 - [x] Document configuration options
 
 **Files Created**:
+
 - `config/server.toml.example` - Example configuration file
 - `config/README.md` - Configuration documentation
 
 **Files Enhanced**:
+
 - `rslib/webapp/src/config.rs` - Added TOML file loading and tests
 
 **Acceptance Criteria** (All Met):
+
 - ✅ Server loads config from file (config/server.toml)
 - ✅ ENV vars override config values (highest priority)
 - ✅ Missing config uses sensible defaults
@@ -153,9 +172,10 @@ Testing, documentation, deployment
 ---
 
 ### 1.6 Error Handling ✅
-**Priority**: P1  
-**Estimate**: 1 day  
-**Dependencies**: 1.1  
+
+**Priority**: P1\
+**Estimate**: 1 day\
+**Dependencies**: 1.1\
 **Status**: Complete
 
 - [x] Create error types for webapp
@@ -165,9 +185,11 @@ Testing, documentation, deployment
 - [x] Add error logging
 
 **Files Enhanced**:
+
 - `rslib/webapp/src/error.rs` - Added logging and comprehensive tests
 
 **Acceptance Criteria** (All Met):
+
 - ✅ Consistent error response format (JSON with success: false)
 - ✅ Appropriate HTTP status codes (500, 400, 401, 404, 409, 403)
 - ✅ Errors logged with context (error/warn/debug levels)
@@ -181,29 +203,34 @@ Testing, documentation, deployment
 ## Phase 2: Core API (2 weeks)
 
 ### 2.1 Collections API ✅
-**Priority**: P0  
-**Estimate**: 2 days  
-**Dependencies**: 1.4  
+
+**Priority**: P0\
+**Estimate**: 2 days\
+**Dependencies**: 1.4\
 **Status**: Complete (Simplified Architecture)
 
-**Architectural Decision:**  
+**Architectural Decision:**\
 Single collection per user (standard web app pattern) instead of multiple collections.
 Collection management handled through backend manager (Task 1.4).
 
 Endpoints Implemented:
+
 - [x] GET /api/v1/collection/info (get current user's collection)
 - [x] POST /api/v1/collection/close (close collection)
 
 **Note:** In our web app architecture:
+
 - Each user has ONE collection (auto-created on first access)
 - Collection lifecycle tied to user session
 - Collection path: `./data/users/user_{id}/{username}.anki2`
 - No need for collection CRUD - it's automatic
 
 **Files Enhanced**:
+
 - `rslib/webapp/src/routes/collection.rs` - Collection endpoints
 
 **Acceptance Criteria** (Met):
+
 - ✅ Collections isolated per user (Task 1.4)
 - ✅ Auto-creation on first access (Task 1.4)
 - ✅ Proper cleanup on logout (Task 1.4)
@@ -213,12 +240,14 @@ Endpoints Implemented:
 ---
 
 ### 2.2 Decks API ✅
-**Priority**: P0  
-**Estimate**: 2 days  
-**Dependencies**: 2.1  
+
+**Priority**: P0\
+**Estimate**: 2 days\
+**Dependencies**: 2.1\
 **Status**: Core Complete
 
 Endpoints Implemented:
+
 - [x] GET /api/v1/decks (deck tree)
 - [x] POST /api/v1/decks (create)
 - [x] GET /api/v1/decks/{id} (get)
@@ -231,9 +260,11 @@ Endpoints Implemented:
 - [ ] PUT /api/v1/decks/{id}/config - future
 
 **Files Created**:
+
 - `rslib/webapp/src/routes/decks.rs` - Deck route handlers
 
 **Acceptance Criteria** (Core Met):
+
 - ✅ Deck tree returns correct hierarchy
 - ✅ Deck CRUD operations work (create, read, delete)
 - ✅ Decks properly isolated per user
@@ -243,23 +274,27 @@ Endpoints Implemented:
 ---
 
 ### 2.3 Scheduler API ⏭️
-**Priority**: P0  
-**Estimate**: 3 days  
-**Dependencies**: 2.2, 2.4  
+
+**Priority**: P0\
+**Estimate**: 3 days\
+**Dependencies**: 2.2, 2.4\
 **Status**: Deferred (Requires Notes & Cards first)
 
 **Note:** Scheduler requires proper note and card creation first.
 The scheduler API will be implemented after we have:
+
 - Notes API (2.4) - to create content
 - Cards API (implied) - to have cards to review
 
 Endpoints Planned:
+
 - [ ] GET /api/v1/scheduler/next (get next card)
 - [ ] POST /api/v1/scheduler/answer (answer card)
 - [ ] GET /api/v1/scheduler/counts (review counts)
 - [ ] GET /api/v1/scheduler/congrats (completion)
 
 **Acceptance Criteria** (Future):
+
 - Cards returned in correct order
 - Answer updates scheduling
 - Counts reflect queue state
@@ -268,12 +303,14 @@ Endpoints Planned:
 ---
 
 ### 2.4 Notes API ✅
-**Priority**: P0  
-**Estimate**: 2 days  
-**Dependencies**: 2.1  
+
+**Priority**: P0\
+**Estimate**: 2 days\
+**Dependencies**: 2.1\
 **Status**: Core Complete
 
 Endpoints Implemented:
+
 - [x] GET /api/v1/notes/{id} - Get note by ID
 - [x] POST /api/v1/notes - Create note
 - [x] PUT /api/v1/notes/{id} - Update note
@@ -284,9 +321,11 @@ Endpoints Implemented:
 - [ ] POST /api/v1/notes/{id}/tags - Manage tags (future)
 
 **Files Created**:
+
 - `rslib/webapp/src/routes/notes.rs` - Note route handlers
 
 **Acceptance Criteria** (Core Met):
+
 - ✅ Notes create with correct fields
 - ✅ Updates reflect in database
 - ✅ Tags handled correctly
@@ -295,34 +334,48 @@ Endpoints Implemented:
 
 ---
 
-### 2.5 Cards API
-**Priority**: P0  
-**Estimate**: 1 day  
-**Dependencies**: 2.4
+### 2.5 Cards API ✅
 
-- [ ] GET /api/v1/cards/{id}
-- [ ] PUT /api/v1/cards/{id}
-- [ ] DELETE /api/v1/cards/{id}
-- [ ] POST /api/v1/cards/{id}/flag
-- [ ] POST /api/v1/cards/{id}/suspend
-- [ ] POST /api/v1/cards/{id}/bury
-- [ ] GET /api/v1/cards (batch get)
-- [ ] PUT /api/v1/cards (batch update)
+**Priority**: P0\
+**Estimate**: 1 day\
+**Dependencies**: 2.4\
+**Status**: Complete
 
-**Files to Create**:
-- `rslib/webapp/src/routes/cards.rs`
-- `rslib/webapp/src/handlers/cards.rs`
+- [x] GET /api/v1/cards/{id}
+- [x] PUT /api/v1/cards/{id}
+- [x] DELETE /api/v1/cards/{id}
+- [x] POST /api/v1/cards/{id}/flag
+- [x] POST /api/v1/cards/{id}/suspend
+- [x] POST /api/v1/cards/{id}/unsuspend
+- [x] POST /api/v1/cards/{id}/bury
+- [x] POST /api/v1/cards/batch (batch get)
+- [x] POST /api/v1/cards/batch-update (batch update)
 
-**Acceptance Criteria**:
-- Card CRUD operations work
-- State changes (flag/suspend/bury) work
-- Batch operations efficient
+**Files Created**:
+
+- `rslib/webapp/src/routes/cards.rs` - Card route handlers
+
+**Files Enhanced**:
+
+- `rslib/webapp/src/routes/mod.rs` - Added card route exports
+- `rslib/webapp/src/server/router.rs` - Integrated card routes
+- `rslib/webapp/src/openapi.rs` - Added Cards API documentation and schemas
+
+**Acceptance Criteria** (All Met):
+
+- ✅ Card CRUD operations work (get, update, delete)
+- ✅ State changes (flag/suspend/bury/unsuspend) work
+- ✅ Batch operations implemented (batch get and batch update)
+- ✅ Routes integrated into router with authentication
+- ✅ OpenAPI documentation complete
+- ✅ All endpoints use proper service traits (CardsService, SchedulerService)
 
 ---
 
 ### 2.6 Search API
-**Priority**: P1  
-**Estimate**: 1 day  
+
+**Priority**: P1\
+**Estimate**: 1 day\
 **Dependencies**: 2.1
 
 - [ ] POST /api/v1/search/cards
@@ -330,10 +383,12 @@ Endpoints Implemented:
 - [ ] POST /api/v1/search/find-replace
 
 **Files to Create**:
+
 - `rslib/webapp/src/routes/search.rs`
 - `rslib/webapp/src/handlers/search.rs`
 
 **Acceptance Criteria**:
+
 - Search query syntax supported
 - Results paginated
 - Find-replace works correctly
@@ -341,8 +396,9 @@ Endpoints Implemented:
 ---
 
 ### 2.7 Media API
-**Priority**: P1  
-**Estimate**: 2 days  
+
+**Priority**: P1\
+**Estimate**: 2 days\
 **Dependencies**: 2.1
 
 - [ ] GET /api/v1/media/{filename}
@@ -354,10 +410,12 @@ Endpoints Implemented:
 - [ ] Add virus scanning (optional)
 
 **Files to Create**:
+
 - `rslib/webapp/src/routes/media.rs`
 - `rslib/webapp/src/handlers/media.rs`
 
 **Acceptance Criteria**:
+
 - Files upload successfully
 - Correct MIME types served
 - File size limits enforced
@@ -366,8 +424,9 @@ Endpoints Implemented:
 ---
 
 ### 2.8 Tags API
-**Priority**: P2  
-**Estimate**: 1 day  
+
+**Priority**: P2\
+**Estimate**: 1 day\
 **Dependencies**: 2.1
 
 - [ ] GET /api/v1/tags
@@ -377,10 +436,12 @@ Endpoints Implemented:
 - [ ] POST /api/v1/tags/clear-unused
 
 **Files to Create**:
+
 - `rslib/webapp/src/routes/tags.rs`
 - `rslib/webapp/src/handlers/tags.rs`
 
 **Acceptance Criteria**:
+
 - Tags list correctly
 - Rename updates all notes
 - Delete works properly
@@ -388,8 +449,9 @@ Endpoints Implemented:
 ---
 
 ### 2.9 Statistics API
-**Priority**: P2  
-**Estimate**: 1 day  
+
+**Priority**: P2\
+**Estimate**: 1 day\
 **Dependencies**: 2.1
 
 - [ ] GET /api/v1/stats/deck/{id}
@@ -398,10 +460,12 @@ Endpoints Implemented:
 - [ ] GET /api/v1/stats/studied-today
 
 **Files to Create**:
+
 - `rslib/webapp/src/routes/stats.rs`
 - `rslib/webapp/src/handlers/stats.rs`
 
 **Acceptance Criteria**:
+
 - Stats match desktop app
 - Graph data correct format
 - Performance acceptable
@@ -411,8 +475,9 @@ Endpoints Implemented:
 ## Phase 3: UI Components (3 weeks)
 
 ### 3.1 Authentication UI
-**Priority**: P0  
-**Estimate**: 2 days  
+
+**Priority**: P0\
+**Estimate**: 2 days\
 **Dependencies**: 1.3
 
 - [ ] Login page
@@ -423,12 +488,14 @@ Endpoints Implemented:
 - [ ] Protected route wrapper
 
 **Files to Create**:
+
 - `ts/routes/webapp/auth/login/+page.svelte`
 - `ts/routes/webapp/auth/register/+page.svelte`
 - `ts/routes/webapp/auth/profile/+page.svelte`
 - `ts/lib/webapp/stores/auth.ts`
 
 **Acceptance Criteria**:
+
 - User can login/register
 - JWT stored securely
 - Auto-redirect on auth required
@@ -437,8 +504,9 @@ Endpoints Implemented:
 ---
 
 ### 3.2 Collection Manager UI
-**Priority**: P0  
-**Estimate**: 1 day  
+
+**Priority**: P0\
+**Estimate**: 1 day\
 **Dependencies**: 2.1, 3.1
 
 - [ ] Collection list page
@@ -448,11 +516,13 @@ Endpoints Implemented:
 - [ ] Backup management
 
 **Files to Create**:
+
 - `ts/routes/webapp/collections/+page.svelte`
 - `ts/lib/webapp/components/CollectionList.svelte`
 - `ts/lib/webapp/components/CreateCollectionDialog.svelte`
 
 **Acceptance Criteria**:
+
 - User can create collections
 - Can switch between collections
 - Can delete collections
@@ -460,8 +530,9 @@ Endpoints Implemented:
 ---
 
 ### 3.3 Deck Browser UI
-**Priority**: P0  
-**Estimate**: 3 days  
+
+**Priority**: P0\
+**Estimate**: 3 days\
 **Dependencies**: 2.2, 3.2
 
 - [ ] Deck tree display component
@@ -473,12 +544,14 @@ Endpoints Implemented:
 - [ ] Drag-drop to reparent (optional)
 
 **Files to Create**:
+
 - `ts/routes/webapp/decks/+page.svelte`
 - `ts/lib/webapp/components/DeckTree.svelte`
 - `ts/lib/webapp/components/DeckNode.svelte`
 - `ts/lib/webapp/components/DeckDialog.svelte`
 
 **Acceptance Criteria**:
+
 - Deck tree displays correctly
 - Counts update in real-time
 - Deck management works
@@ -487,8 +560,9 @@ Endpoints Implemented:
 ---
 
 ### 3.4 Reviewer UI
-**Priority**: P0  
-**Estimate**: 5 days  
+
+**Priority**: P0\
+**Estimate**: 5 days\
 **Dependencies**: 2.3, 3.2
 
 - [ ] Card display component
@@ -502,6 +576,7 @@ Endpoints Implemented:
 - [ ] Study completion screen integration
 
 **Files to Create**:
+
 - `ts/routes/webapp/review/+page.svelte`
 - `ts/lib/webapp/components/CardDisplay.svelte`
 - `ts/lib/webapp/components/AnswerButtons.svelte`
@@ -509,6 +584,7 @@ Endpoints Implemented:
 - `ts/lib/webapp/stores/reviewer.ts`
 
 **Acceptance Criteria**:
+
 - Cards display correctly (HTML/CSS)
 - Answer buttons update schedule
 - Keyboard shortcuts work (1/2/3/4, space)
@@ -519,8 +595,9 @@ Endpoints Implemented:
 ---
 
 ### 3.5 Editor UI
-**Priority**: P0  
-**Estimate**: 5 days  
+
+**Priority**: P0\
+**Estimate**: 5 days\
 **Dependencies**: 2.4, 3.2
 
 - [ ] Field editor components (rich text)
@@ -534,6 +611,7 @@ Endpoints Implemented:
 - [ ] Form validation
 
 **Files to Create**:
+
 - `ts/routes/webapp/editor/+page.svelte`
 - `ts/lib/webapp/components/FieldEditor.svelte`
 - `ts/lib/webapp/components/TagInput.svelte`
@@ -542,6 +620,7 @@ Endpoints Implemented:
 - `ts/lib/webapp/stores/editor.ts`
 
 **Acceptance Criteria**:
+
 - Fields editable with formatting
 - Tags autocomplete
 - Deck/notetype selectable
@@ -553,8 +632,9 @@ Endpoints Implemented:
 ---
 
 ### 3.6 Card Browser UI
-**Priority**: P1  
-**Estimate**: 4 days  
+
+**Priority**: P1\
+**Estimate**: 4 days\
 **Dependencies**: 2.6, 3.2
 
 - [ ] Search input with query builder
@@ -568,6 +648,7 @@ Endpoints Implemented:
 - [ ] Pagination
 
 **Files to Create**:
+
 - `ts/routes/webapp/browse/+page.svelte`
 - `ts/lib/webapp/components/SearchBar.svelte`
 - `ts/lib/webapp/components/CardTable.svelte`
@@ -575,6 +656,7 @@ Endpoints Implemented:
 - `ts/lib/webapp/components/PreviewPane.svelte`
 
 **Acceptance Criteria**:
+
 - Search works correctly
 - Table displays cards
 - Multi-select functional
@@ -585,8 +667,9 @@ Endpoints Implemented:
 ---
 
 ### 3.7 Statistics UI
-**Priority**: P2  
-**Estimate**: 2 days  
+
+**Priority**: P2\
+**Estimate**: 2 days\
 **Dependencies**: 2.9, 3.2
 
 - [ ] Integrate existing graphs page
@@ -596,10 +679,12 @@ Endpoints Implemented:
 - [ ] Retention graphs
 
 **Files to Create**:
+
 - `ts/routes/webapp/stats/+page.svelte`
 - `ts/lib/webapp/components/StatsOverview.svelte`
 
 **Acceptance Criteria**:
+
 - Graphs render correctly
 - Data accurate
 - Can switch between decks
@@ -608,8 +693,9 @@ Endpoints Implemented:
 ---
 
 ### 3.8 Settings UI
-**Priority**: P2  
-**Estimate**: 2 days  
+
+**Priority**: P2\
+**Estimate**: 2 days\
 **Dependencies**: 3.1
 
 - [ ] User preferences
@@ -619,10 +705,12 @@ Endpoints Implemented:
 - [ ] Backup settings
 
 **Files to Create**:
+
 - `ts/routes/webapp/settings/+page.svelte`
 - `ts/lib/webapp/components/SettingsPanel.svelte`
 
 **Acceptance Criteria**:
+
 - Settings persist
 - Changes apply immediately or on save
 - Validation works
@@ -630,8 +718,9 @@ Endpoints Implemented:
 ---
 
 ### 3.9 Navigation & Layout
-**Priority**: P0  
-**Estimate**: 2 days  
+
+**Priority**: P0\
+**Estimate**: 2 days\
 **Dependencies**: 3.1
 
 - [ ] Top navigation bar
@@ -642,12 +731,14 @@ Endpoints Implemented:
 - [ ] Theme switching
 
 **Files to Create**:
+
 - `ts/routes/webapp/+layout.svelte`
 - `ts/lib/webapp/components/NavBar.svelte`
 - `ts/lib/webapp/components/Sidebar.svelte`
 - `ts/lib/webapp/components/UserMenu.svelte`
 
 **Acceptance Criteria**:
+
 - Navigation works on all pages
 - Mobile menu functional
 - User can access profile/logout
@@ -658,8 +749,9 @@ Endpoints Implemented:
 ## Phase 4: Polish & Testing (2 weeks)
 
 ### 4.1 API Testing
-**Priority**: P0  
-**Estimate**: 3 days  
+
+**Priority**: P0\
+**Estimate**: 3 days\
 **Dependencies**: Phase 2 complete
 
 - [ ] Write integration tests for auth
@@ -671,12 +763,14 @@ Endpoints Implemented:
 - [ ] Test edge cases
 
 **Files to Create**:
+
 - `rslib/webapp/tests/integration/auth.rs`
 - `rslib/webapp/tests/integration/collections.rs`
 - `rslib/webapp/tests/integration/scheduler.rs`
 - `rslib/webapp/benches/api.rs`
 
 **Acceptance Criteria**:
+
 - 80%+ code coverage
 - All critical paths tested
 - Load tests pass
@@ -685,8 +779,9 @@ Endpoints Implemented:
 ---
 
 ### 4.2 UI Testing
-**Priority**: P1  
-**Estimate**: 2 days  
+
+**Priority**: P1\
+**Estimate**: 2 days\
 **Dependencies**: Phase 3 complete
 
 - [ ] Write component tests
@@ -696,11 +791,13 @@ Endpoints Implemented:
 - [ ] Cross-browser testing
 
 **Files to Create**:
+
 - `ts/tests/webapp/reviewer.test.ts`
 - `ts/tests/webapp/editor.test.ts`
 - `ts/tests/e2e/study-flow.spec.ts`
 
 **Acceptance Criteria**:
+
 - Critical user flows tested
 - Works in Chrome/Firefox/Safari
 - Mobile layout tested
@@ -708,8 +805,9 @@ Endpoints Implemented:
 ---
 
 ### 4.3 Documentation
-**Priority**: P1  
-**Estimate**: 2 days  
+
+**Priority**: P1\
+**Estimate**: 2 days\
 **Dependencies**: All features complete
 
 - [ ] API documentation (OpenAPI/Swagger)
@@ -720,12 +818,14 @@ Endpoints Implemented:
 - [ ] Update README.webapp.md
 
 **Files to Create**:
+
 - `docs/webapp/api.yaml`
 - `docs/webapp/user-guide.md`
 - `docs/webapp/admin-guide.md`
 - `docs/webapp/deployment.md`
 
 **Acceptance Criteria**:
+
 - API fully documented
 - User can self-serve setup
 - Common issues documented
@@ -733,8 +833,9 @@ Endpoints Implemented:
 ---
 
 ### 4.4 Security Audit
-**Priority**: P0  
-**Estimate**: 2 days  
+
+**Priority**: P0\
+**Estimate**: 2 days\
 **Dependencies**: All features complete
 
 - [ ] Review authentication implementation
@@ -747,6 +848,7 @@ Endpoints Implemented:
 - [ ] Dependency security scan
 
 **Acceptance Criteria**:
+
 - No critical vulnerabilities
 - Auth boundaries enforced
 - Input validation complete
@@ -755,8 +857,9 @@ Endpoints Implemented:
 ---
 
 ### 4.5 Performance Optimization
-**Priority**: P1  
-**Estimate**: 2 days  
+
+**Priority**: P1\
+**Estimate**: 2 days\
 **Dependencies**: Testing complete
 
 - [ ] Profile API endpoints
@@ -768,6 +871,7 @@ Endpoints Implemented:
 - [ ] Connection pooling tuning
 
 **Acceptance Criteria**:
+
 - API responds < 100ms for common ops
 - Page load < 2s
 - Memory usage stable
@@ -776,8 +880,9 @@ Endpoints Implemented:
 ---
 
 ### 4.6 Deployment Packaging
-**Priority**: P1  
-**Estimate**: 3 days  
+
+**Priority**: P1\
+**Estimate**: 3 days\
 **Dependencies**: All features complete
 
 - [ ] Create binary release scripts
@@ -790,12 +895,14 @@ Endpoints Implemented:
 - [ ] Test deployment on various platforms
 
 **Files to Create**:
+
 - `Dockerfile`
 - `docker-compose.yml`
 - `deploy/anki-webapp.service`
 - `deploy/install.sh`
 
 **Acceptance Criteria**:
+
 - Docker image builds
 - docker-compose works out of box
 - Service auto-starts on boot
@@ -806,7 +913,8 @@ Endpoints Implemented:
 ## Optional Enhancements (Future)
 
 ### Import/Export UI
-**Priority**: P2  
+
+**Priority**: P2\
 **Estimate**: 3 days
 
 - [ ] Import .apkg wizard
@@ -818,7 +926,8 @@ Endpoints Implemented:
 ---
 
 ### Real-time Sync
-**Priority**: P3  
+
+**Priority**: P3\
 **Estimate**: 1 week
 
 - [ ] WebSocket implementation
@@ -828,7 +937,8 @@ Endpoints Implemented:
 ---
 
 ### Mobile Optimization
-**Priority**: P2  
+
+**Priority**: P2\
 **Estimate**: 3 days
 
 - [ ] Touch gesture support
@@ -839,7 +949,8 @@ Endpoints Implemented:
 ---
 
 ### Advanced Features
-**Priority**: P3  
+
+**Priority**: P3\
 **Estimate**: 2+ weeks
 
 - [ ] Collaborative decks
@@ -852,13 +963,13 @@ Endpoints Implemented:
 
 ## Timeline Summary
 
-| Phase | Duration | Dependencies |
-|-------|----------|--------------|
-| Phase 1: Foundation | 2 weeks | None |
-| Phase 2: Core API | 2 weeks | Phase 1 |
-| Phase 3: UI Components | 3 weeks | Phase 1, 2 |
-| Phase 4: Polish & Testing | 2 weeks | Phase 1, 2, 3 |
-| **Total** | **9 weeks** | |
+| Phase                     | Duration    | Dependencies  |
+| ------------------------- | ----------- | ------------- |
+| Phase 1: Foundation       | 2 weeks     | None          |
+| Phase 2: Core API         | 2 weeks     | Phase 1       |
+| Phase 3: UI Components    | 3 weeks     | Phase 1, 2    |
+| Phase 4: Polish & Testing | 2 weeks     | Phase 1, 2, 3 |
+| **Total**                 | **9 weeks** |               |
 
 ## Resource Requirements
 
@@ -868,13 +979,13 @@ Endpoints Implemented:
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Scope creep | High | High | Stick to MVP, defer enhancements |
-| Security vulnerabilities | Medium | High | Security audit, code review |
-| Performance issues | Medium | Medium | Load testing, profiling |
-| Browser compatibility | Low | Medium | Cross-browser testing |
-| Data corruption | Low | Critical | Extensive testing, backups |
+| Risk                     | Likelihood | Impact   | Mitigation                       |
+| ------------------------ | ---------- | -------- | -------------------------------- |
+| Scope creep              | High       | High     | Stick to MVP, defer enhancements |
+| Security vulnerabilities | Medium     | High     | Security audit, code review      |
+| Performance issues       | Medium     | Medium   | Load testing, profiling          |
+| Browser compatibility    | Low        | Medium   | Cross-browser testing            |
+| Data corruption          | Low        | Critical | Extensive testing, backups       |
 
 ## Success Criteria
 

@@ -1,10 +1,11 @@
-use anyhow::Result;
 use std::collections::HashMap;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
+use std::sync::Mutex;
 
-use anki::collection::CollectionBuilder;
 use anki::collection::Collection;
+use anki::collection::CollectionBuilder;
+use anyhow::Result;
 
 /// Manages per-user Anki Backend (Collection) instances
 pub struct BackendManager {
@@ -23,7 +24,11 @@ impl BackendManager {
     }
 
     /// Get or create a Collection instance for a user
-    pub fn get_or_create_backend(&self, user_id: i64, username: &str) -> Result<Arc<Mutex<Collection>>> {
+    pub fn get_or_create_backend(
+        &self,
+        user_id: i64,
+        username: &str,
+    ) -> Result<Arc<Mutex<Collection>>> {
         let mut backends = self.backends.lock().unwrap();
 
         // Return existing backend if available
@@ -33,17 +38,20 @@ impl BackendManager {
 
         // Create new backend
         let collection_path = self.get_collection_path(user_id, username);
-        
+
         // Ensure user directory exists
         if let Some(parent) = collection_path.parent() {
             std::fs::create_dir_all(parent)?;
         }
 
-        tracing::info!("Opening collection for user {} at {:?}", username, collection_path);
+        tracing::info!(
+            "Opening collection for user {} at {:?}",
+            username,
+            collection_path
+        );
 
         // Open or create collection
-        let col = CollectionBuilder::new(collection_path)
-            .build()?;
+        let col = CollectionBuilder::new(collection_path).build()?;
 
         let backend = Arc::new(Mutex::new(col));
         backends.insert(user_id, backend.clone());
@@ -60,7 +68,7 @@ impl BackendManager {
     /// Close and remove backend for a user
     pub fn close_backend(&self, user_id: i64) -> Result<()> {
         let mut backends = self.backends.lock().unwrap();
-        
+
         if let Some(backend) = backends.remove(&user_id) {
             // Drop the backend to close the collection
             // The Collection's Drop implementation will handle cleanup
@@ -89,9 +97,9 @@ impl BackendManager {
     pub fn close_all(&self) -> Result<()> {
         let mut backends = self.backends.lock().unwrap();
         let count = backends.len();
-        
+
         backends.clear();
-        
+
         if count > 0 {
             tracing::info!("Closed {} backend instances", count);
         }
@@ -108,8 +116,9 @@ impl Drop for BackendManager {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use tempfile::TempDir;
+
+    use super::*;
 
     #[test]
     fn test_backend_manager_lifecycle() {
@@ -150,7 +159,7 @@ mod tests {
         let manager = BackendManager::new(temp_dir.path().to_path_buf());
 
         let path = manager.get_collection_path(123, "testuser");
-        
+
         assert!(path.to_string_lossy().contains("user_123"));
         assert!(path.to_string_lossy().ends_with("testuser.anki2"));
     }

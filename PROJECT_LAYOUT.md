@@ -5,6 +5,7 @@ This document describes the recommended directory structure for the web app impl
 ## Overview
 
 The web app components are organized into three main areas:
+
 1. **Backend (Rust)**: `rslib/webapp/` - REST API server
 2. **Frontend (TypeScript/Svelte)**: `ts/routes/webapp/` - Web UI
 3. **Configuration**: `config/` - Server and deployment configs
@@ -341,6 +342,7 @@ ts/lib/webapp/api/client.ts
 ### 4. Shared Components
 
 Reuse existing Svelte components where possible:
+
 - Deck options UI (already exists)
 - Statistics graphs (already exists)
 - Import wizards (already exist)
@@ -421,18 +423,21 @@ The webapp looks for configuration in this order:
 ## Naming Conventions
 
 ### Rust
+
 - Modules: `snake_case`
 - Types: `PascalCase`
 - Functions: `snake_case`
 - Constants: `SCREAMING_SNAKE_CASE`
 
 ### TypeScript
+
 - Components: `PascalCase.svelte`
 - Functions: `camelCase`
 - Types: `PascalCase`
 - Constants: `SCREAMING_SNAKE_CASE`
 
 ### API Routes
+
 - REST paths: `kebab-case`
 - Query params: `snake_case`
 - JSON keys: `camelCase` or `snake_case` (match protobuf)

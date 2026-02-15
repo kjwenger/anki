@@ -3,6 +3,7 @@
 The Anki Web App supports multiple configuration methods with the following priority:
 
 **Priority (highest to lowest):**
+
 1. Environment Variables
 2. Configuration File (`config/server.toml`)
 3. Default Values
@@ -58,11 +59,13 @@ export ANKI_WEBAPP_SESSION_TIMEOUT_HOURS="168"
 ### Method 2: Configuration File
 
 1. Copy the example configuration:
+
 ```bash
 cp config/server.toml.example config/server.toml
 ```
 
 2. Edit `config/server.toml`:
+
 ```toml
 host = "0.0.0.0"
 port = 8080
@@ -72,6 +75,7 @@ session_timeout_hours = 168
 ```
 
 3. Run the server:
+
 ```bash
 ./anki-webapp
 ```
@@ -91,6 +95,7 @@ export ANKI_WEBAPP_PORT="9000"  # Override just the port
 ### Security
 
 1. **Always set a custom JWT secret:**
+
 ```bash
 # Generate a random secret
 openssl rand -base64 32
@@ -100,11 +105,13 @@ export ANKI_WEBAPP_JWT_SECRET="<generated-secret>"
 ```
 
 2. **Use a long session timeout for convenience:**
+
 ```toml
-session_timeout_hours = 720  # 30 days
+session_timeout_hours = 720 # 30 days
 ```
 
 3. **Bind to localhost if behind a reverse proxy:**
+
 ```toml
 host = "127.0.0.1"
 port = 8080
@@ -113,11 +120,13 @@ port = 8080
 ### Storage
 
 1. **Use an absolute path for data_dir:**
+
 ```toml
 data_dir = "/var/lib/anki-webapp"
 ```
 
 2. **Ensure proper permissions:**
+
 ```bash
 sudo mkdir -p /var/lib/anki-webapp
 sudo chown anki-webapp:anki-webapp /var/lib/anki-webapp
@@ -127,6 +136,7 @@ sudo chmod 750 /var/lib/anki-webapp
 ### Deployment
 
 1. **Systemd service example:**
+
 ```ini
 [Unit]
 Description=Anki Web App
@@ -146,6 +156,7 @@ WantedBy=multi-user.target
 ```
 
 2. **Docker environment variables:**
+
 ```yaml
 version: '3'
 services:
@@ -165,11 +176,13 @@ services:
 ## Validation
 
 The server will validate configuration on startup and warn about:
+
 - Using the default JWT secret in production
 - Invalid host/port combinations
 - Inaccessible data directories
 
 Check the logs on startup:
+
 ```
 INFO Server configuration:
 INFO   Host: 127.0.0.1

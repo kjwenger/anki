@@ -1,8 +1,12 @@
 use anyhow::Result;
-use rusqlite::{params, OptionalExtension, Row};
-use serde::{Deserialize, Serialize};
+use rusqlite::params;
+use rusqlite::OptionalExtension;
+use rusqlite::Row;
+use serde::Deserialize;
+use serde::Serialize;
 
-use super::{current_timestamp, Database};
+use super::current_timestamp;
+use super::Database;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Session {
@@ -99,10 +103,7 @@ impl<'a> SessionStore<'a> {
     pub fn cleanup_expired(&self) -> Result<usize> {
         let now = current_timestamp();
         self.db.with_conn(|conn| {
-            let count = conn.execute(
-                "DELETE FROM sessions WHERE expires_at < ?1",
-                params![now],
-            )?;
+            let count = conn.execute("DELETE FROM sessions WHERE expires_at < ?1", params![now])?;
             Ok(count)
         })
     }

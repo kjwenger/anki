@@ -1,8 +1,11 @@
 /// Embedded Swagger UI for API documentation
-use axum::{
-    response::{Html, IntoResponse, Response},
-    http::StatusCode,
-};
+use axum::http::StatusCode;
+/// Embedded Swagger UI for API documentation
+use axum::response::Html;
+/// Embedded Swagger UI for API documentation
+use axum::response::IntoResponse;
+/// Embedded Swagger UI for API documentation
+use axum::response::Response;
 
 /// Serves the Swagger UI HTML page
 pub async fn swagger_ui_handler() -> Response {
