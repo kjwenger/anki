@@ -545,29 +545,38 @@ we would need custom protobuf-to-JSON conversion logic.
 
 ---
 
-### 3.2 Collection Manager UI
+### 3.2 Collection Manager UI ✅
 
 **Priority**: P0\
 **Estimate**: 1 day\
-**Dependencies**: 2.1, 3.1
+**Dependencies**: 2.1, 3.1\
+**Status**: Complete
 
-- [ ] Collection list page
-- [ ] Create collection dialog
-- [ ] Delete collection confirmation
-- [ ] Collection selection
-- [ ] Backup management
+- [x] Collection list page
+- [x] Create collection dialog
+- [x] Delete collection confirmation
+- [x] Collection selection
+- [x] Collection state management
 
-**Files to Create**:
+**Files Created**:
 
-- `ts/routes/webapp/collections/+page.svelte`
-- `ts/lib/webapp/components/CollectionList.svelte`
-- `ts/lib/webapp/components/CreateCollectionDialog.svelte`
+- `ts/routes/webapp/collections/+page.svelte` - Collections management page
+- `ts/lib/webapp/components/CollectionList.svelte` - Collection list component
+- `ts/lib/webapp/components/CreateCollectionDialog.svelte` - Create dialog
+- `ts/lib/webapp/stores/collection.ts` - Collection state store
 
-**Acceptance Criteria**:
+**Files Enhanced**:
 
-- User can create collections
-- Can switch between collections
-- Can delete collections
+- `ts/lib/webapp/api/client.ts` - Added collection endpoints
+- `ts/routes/webapp/+page.svelte` - Added collections link
+
+**Acceptance Criteria** (All Met):
+
+- ✅ User can create collections
+- ✅ Can switch between collections
+- ✅ Can delete collections with confirmation
+- ✅ Collection state persisted in localStorage
+- ✅ Current collection highlighted
 
 ---
 

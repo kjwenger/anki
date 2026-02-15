@@ -127,6 +127,26 @@ export class ApiClient {
             "/api/v1/auth/me",
         );
     }
+
+    // Collection endpoints
+    async getCollections() {
+        return this.get<{ collections: Array<{ path: string; name: string }> }>(
+            "/api/v1/collections",
+        );
+    }
+
+    async createCollection(name: string) {
+        return this.post<{ path: string; message: string }>(
+            "/api/v1/collections",
+            { name },
+        );
+    }
+
+    async deleteCollection(path: string) {
+        return this.delete<{ message: string }>(
+            `/api/v1/collections/${encodeURIComponent(path)}`,
+        );
+    }
 }
 
 export const api = new ApiClient();

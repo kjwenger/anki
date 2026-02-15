@@ -5,6 +5,10 @@
     function handleProfile() {
         goto("/webapp/auth/profile");
     }
+
+    function handleCollections() {
+        goto("/webapp/collections");
+    }
 </script>
 
 <div class="dashboard-container">
@@ -25,7 +29,7 @@
             <div class="card">
                 <h2>Collections</h2>
                 <p>Manage your flashcard collections</p>
-                <button class="btn-primary">View Collections</button>
+                <button class="btn-primary" on:click={handleCollections}>View Collections</button>
             </div>
 
             <div class="card">
