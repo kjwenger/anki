@@ -1,13 +1,18 @@
+use std::path::PathBuf;
+
+use axum::body::Body;
 use axum::body::Bytes;
 use axum::extract::Multipart;
 use axum::extract::Path;
 use axum::extract::State;
+use axum::http::header;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::Extension;
 use axum::Json;
 use serde::Deserialize;
 use serde::Serialize;
+use tokio::fs;
 
 use anki::services::MediaService;
 use crate::auth::AuthUser;
@@ -68,19 +73,85 @@ pub async fn check_media(
     }))
 }
 
-/// Get a media file  
-/// Note: This endpoint requires access to the media folder path which is currently private.
-/// For now, media files should be accessed through the desktop app or by implementing
-/// a public accessor method in the Collection struct.
+/// Get a media file by filename
 pub async fn get_media(
-    State(_state): State<AuthRouteState>,
-    Extension(_auth_user): Extension<AuthUser>,
-    Path(_filename): Path<String>,
+    State(state): State<AuthRouteState>,
+    Extension(auth_user): Extension<AuthUser>,
+    Path(filename): Path<String>,
 ) -> Result<Response> {
-    // TODO: Implement once Collection provides public access to media_folder
-    Err(WebAppError::not_implemented(
-        "Media file download not yet implemented - use add_media and check_media endpoints",
-    ))
+    // Reject path traversal attempts
+    if filename.contains('/') || filename.contains('\\') || filename.contains("..") {
+        return Err(WebAppError::bad_request("Invalid filename"));
+    }
+
+    let media_folder = state
+        .backend_manager
+        .get_media_folder_path(auth_user.user_id, &auth_user.username);
+
+    let file_path = media_folder.join(&filename);
+
+    // Verify the resolved path is still within the media folder
+    let canonical_media = media_folder.canonicalize().unwrap_or(media_folder.clone());
+    let canonical_file = file_path
+        .canonicalize()
+        .map_err(|_| WebAppError::not_found("Media file not found"))?;
+    if !canonical_file.starts_with(&canonical_media) {
+        return Err(WebAppError::bad_request("Invalid filename"));
+    }
+
+    let data = fs::read(&canonical_file)
+        .await
+        .map_err(|_| WebAppError::not_found("Media file not found"))?;
+
+    let content_type = mime_type_for_filename(&filename);
+
+    Ok(Response::builder()
+        .header(header::CONTENT_TYPE, content_type)
+        .body(Body::from(data))
+        .unwrap())
+}
+
+/// Determine MIME type from file extension
+fn mime_type_for_filename(filename: &str) -> &'static str {
+    let ext = PathBuf::from(filename)
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("")
+        .to_lowercase();
+    // Use a leaked string so we can match on &str
+    let ext = ext.as_str();
+    match ext {
+        // Images
+        "jpg" | "jpeg" => "image/jpeg",
+        "png" => "image/png",
+        "gif" => "image/gif",
+        "svg" => "image/svg+xml",
+        "webp" => "image/webp",
+        "ico" => "image/x-icon",
+        "bmp" => "image/bmp",
+        "tiff" | "tif" => "image/tiff",
+        // Audio
+        "mp3" => "audio/mpeg",
+        "ogg" | "oga" => "audio/ogg",
+        "wav" => "audio/wav",
+        "flac" => "audio/flac",
+        "m4a" | "aac" => "audio/aac",
+        "opus" => "audio/opus",
+        // Video
+        "mp4" => "video/mp4",
+        "webm" => "video/webm",
+        "ogv" => "video/ogg",
+        "mkv" => "video/x-matroska",
+        "avi" => "video/x-msvideo",
+        // Text/other
+        "txt" => "text/plain",
+        "html" | "htm" => "text/html",
+        "css" => "text/css",
+        "js" => "application/javascript",
+        "json" => "application/json",
+        "pdf" => "application/pdf",
+        _ => "application/octet-stream",
+    }
 }
 
 /// Upload a media file

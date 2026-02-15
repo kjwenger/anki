@@ -5,6 +5,7 @@ pub mod decks;
 pub mod media;
 pub mod notes;
 pub mod search;
+pub mod tags;
 
 pub use auth::login;
 pub use auth::logout;
@@ -38,3 +39,8 @@ pub use media::add_media;
 pub use media::check_media;
 pub use media::delete_media;
 pub use media::get_media;
+pub use tags::clear_unused_tags;
+pub use tags::delete_tag;
+pub use tags::get_tag_tree;
+pub use tags::get_tags;
+pub use tags::rename_tag;

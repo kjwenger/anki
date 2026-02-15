@@ -442,28 +442,35 @@ due to private media_folder field in Collection. This would require either:
 
 ---
 
-### 2.8 Tags API
+### 2.8 Tags API ✅
 
 **Priority**: P2\
 **Estimate**: 1 day\
-**Dependencies**: 2.1
+**Dependencies**: 2.1\
+**Status**: Complete
 
-- [ ] GET /api/v1/tags
-- [ ] POST /api/v1/tags
-- [ ] PUT /api/v1/tags/{name}
-- [ ] DELETE /api/v1/tags/{name}
-- [ ] POST /api/v1/tags/clear-unused
+- [x] GET /api/v1/tags - List all tags
+- [x] GET /api/v1/tags/tree - Get tag tree structure
+- [x] PUT /api/v1/tags/rename - Rename tags
+- [x] DELETE /api/v1/tags/{name} - Delete tag
+- [x] POST /api/v1/tags/clear-unused - Clear unused tags
 
-**Files to Create**:
+**Files Created**:
 
-- `rslib/webapp/src/routes/tags.rs`
-- `rslib/webapp/src/handlers/tags.rs`
+- `rslib/webapp/src/routes/tags.rs` - Tags route handlers (210 lines)
 
-**Acceptance Criteria**:
+**Files Enhanced**:
 
-- Tags list correctly
-- Rename updates all notes
-- Delete works properly
+- `rslib/webapp/src/routes/mod.rs` - Added tags route exports
+- `rslib/webapp/src/server/router.rs` - Integrated tags routes
+
+**Acceptance Criteria** (All Met):
+
+- ✅ Tags list correctly (all_tags service)
+- ✅ Tag tree shows hierarchical structure
+- ✅ Rename updates all notes using the tag
+- ✅ Delete removes tag from all notes
+- ✅ Clear unused removes tags not referenced by any notes
 
 ---
 

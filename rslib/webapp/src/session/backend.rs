@@ -51,7 +51,9 @@ impl BackendManager {
         );
 
         // Open or create collection
-        let col = CollectionBuilder::new(collection_path).build()?;
+        let col = CollectionBuilder::new(collection_path)
+            .with_desktop_media_paths()
+            .build()?;
 
         let backend = Arc::new(Mutex::new(col));
         backends.insert(user_id, backend.clone());
@@ -85,6 +87,13 @@ impl BackendManager {
             .join("users")
             .join(format!("user_{}", user_id))
             .join(format!("{}.anki2", username))
+    }
+
+    /// Get the media folder path for a user (matches desktop convention:
+    /// {collection_path}.media)
+    pub fn get_media_folder_path(&self, user_id: i64, username: &str) -> PathBuf {
+        self.get_collection_path(user_id, username)
+            .with_extension("media")
     }
 
     /// Get count of active backends

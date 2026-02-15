@@ -44,6 +44,11 @@ use crate::routes::register;
 use crate::routes::search_cards;
 use crate::routes::search_notes;
 use crate::routes::suspend_card;
+use crate::routes::clear_unused_tags;
+use crate::routes::delete_tag;
+use crate::routes::get_tag_tree;
+use crate::routes::get_tags;
+use crate::routes::rename_tag;
 use crate::routes::unsuspend_card;
 use crate::routes::update_card;
 use crate::routes::update_note;
@@ -85,6 +90,11 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/media/{filename}", get(get_media))
         .route("/api/v1/media", post(add_media))
         .route("/api/v1/media", delete(delete_media))
+        .route("/api/v1/tags", get(get_tags))
+        .route("/api/v1/tags/tree", get(get_tag_tree))
+        .route("/api/v1/tags/rename", put(rename_tag))
+        .route("/api/v1/tags/{name}", delete(delete_tag))
+        .route("/api/v1/tags/clear-unused", post(clear_unused_tags))
         .layer(middleware::from_fn_with_state(
             auth_state.clone(),
             require_auth,
