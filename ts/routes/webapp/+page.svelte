@@ -9,6 +9,10 @@
     function handleCollections() {
         goto("/webapp/collections");
     }
+
+    function handleDecks() {
+        goto("/webapp/decks");
+    }
 </script>
 
 <div class="dashboard-container">
@@ -35,7 +39,7 @@
             <div class="card">
                 <h2>Study</h2>
                 <p>Start your study session</p>
-                <button class="btn-primary">Start Studying</button>
+                <button class="btn-primary" on:click={handleDecks}>Browse Decks</button>
             </div>
 
             <div class="card">

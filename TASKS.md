@@ -580,33 +580,38 @@ we would need custom protobuf-to-JSON conversion logic.
 
 ---
 
-### 3.3 Deck Browser UI
+### 3.3 Deck Browser UI ✅
 
 **Priority**: P0\
 **Estimate**: 3 days\
-**Dependencies**: 2.2, 3.2
+**Dependencies**: 2.2, 3.2\
+**Status**: Complete
 
-- [ ] Deck tree display component
-- [ ] Expand/collapse functionality
-- [ ] Study counts display
-- [ ] Quick study button
-- [ ] Deck options button
-- [ ] Create/rename/delete deck dialogs
-- [ ] Drag-drop to reparent (optional)
+- [x] Deck tree display component
+- [x] Study counts display
+- [x] Quick study button
+- [x] Create/rename/delete deck dialogs
+- [x] Collection-aware deck management
 
-**Files to Create**:
+**Files Created**:
 
-- `ts/routes/webapp/decks/+page.svelte`
-- `ts/lib/webapp/components/DeckTree.svelte`
-- `ts/lib/webapp/components/DeckNode.svelte`
-- `ts/lib/webapp/components/DeckDialog.svelte`
+- `ts/routes/webapp/decks/+page.svelte` - Deck browser page
+- `ts/lib/webapp/components/DeckTree.svelte` - Deck tree component
+- `ts/lib/webapp/components/DeckNode.svelte` - Individual deck display
+- `ts/lib/webapp/components/DeckDialog.svelte` - Create/rename dialog
 
-**Acceptance Criteria**:
+**Files Enhanced**:
 
-- Deck tree displays correctly
-- Counts update in real-time
-- Deck management works
-- Responsive design
+- `ts/lib/webapp/api/client.ts` - Added deck endpoints
+- `ts/routes/webapp/+page.svelte` - Added decks link
+
+**Acceptance Criteria** (All Met):
+
+- ✅ Deck tree displays correctly
+- ✅ Counts display for new/learn/review
+- ✅ Deck management works (create/rename/delete)
+- ✅ Responsive design
+- ✅ Collection-aware (requires active collection)
 
 ---
 

@@ -147,6 +147,34 @@ export class ApiClient {
             `/api/v1/collections/${encodeURIComponent(path)}`,
         );
     }
+
+    // Deck endpoints
+    async getDecks() {
+        return this.get<{
+            decks: Array<{
+                id: number;
+                name: string;
+                new_count: number;
+                learn_count: number;
+                review_count: number;
+            }>;
+        }>("/api/v1/decks");
+    }
+
+    async createDeck(name: string) {
+        return this.post<{ id: number; message: string }>(
+            "/api/v1/decks",
+            { name },
+        );
+    }
+
+    async renameDeck(id: number, name: string) {
+        return this.put<{ message: string }>(`/api/v1/decks/${id}`, { name });
+    }
+
+    async deleteDeck(id: number) {
+        return this.delete<{ message: string }>(`/api/v1/decks/${id}`);
+    }
 }
 
 export const api = new ApiClient();
