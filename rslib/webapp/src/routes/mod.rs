@@ -33,6 +33,7 @@ pub use decks::create_deck;
 pub use decks::delete_deck;
 pub use decks::get_deck;
 pub use decks::get_deck_tree;
+pub use decks::update_deck;
 pub use notes::create_note;
 pub use notes::delete_note;
 pub use notes::get_note;

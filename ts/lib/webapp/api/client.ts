@@ -197,7 +197,14 @@ export class ApiClient {
     }
 
     async renameDeck(id: number, name: string) {
-        return this.put<{ message: string }>(`/api/v1/decks/${id}`, { name });
+        console.log("=== API client.renameDeck ===");
+        console.log("Deck ID:", id);
+        console.log("New name:", name);
+        console.log("Endpoint:", `/api/v1/decks/${id}`);
+        console.log("Request body:", { name });
+        const result = await this.put<{ message: string }>(`/api/v1/decks/${id}`, { name });
+        console.log("Rename API response:", result);
+        return result;
     }
 
     async deleteDeck(id: number) {

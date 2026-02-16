@@ -125,6 +125,50 @@ pub async fn get_deck(
     }))
 }
 
+/// Update deck (rename or change collapsed state)
+pub async fn update_deck(
+    State(state): State<AuthRouteState>,
+    Extension(auth_user): Extension<AuthUser>,
+    Path(deck_id): Path<i64>,
+    Json(request): Json<UpdateDeckRequest>,
+) -> Result<impl IntoResponse> {
+    let backend = state
+        .backend_manager
+        .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
+
+    let mut col = backend.lock().unwrap();
+
+    let deck_id = anki::decks::DeckId(deck_id);
+    let deck = col
+        .get_deck(deck_id)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?
+        .ok_or_else(|| WebAppError::not_found("Deck not found"))?;
+
+    // Clone the deck to get a mutable copy
+    let mut deck_mut = (*deck).clone();
+
+    // Update name if provided
+    if let Some(new_name) = request.name {
+        deck_mut.name = anki::decks::NativeDeckName::from_human_name(&new_name);
+    }
+
+    // Update collapsed state if provided
+    if let Some(collapsed) = request.collapsed {
+        deck_mut.common.study_collapsed = collapsed;
+    }
+
+    col.update_deck(&mut deck_mut)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    drop(col);
+
+    Ok(Json(MessageResponse {
+        success: true,
+        message: "Deck updated successfully".to_string(),
+        id: Some(deck_id.0),
+    }))
+}
+
 /// Delete a deck
 pub async fn delete_deck(
     State(state): State<AuthRouteState>,

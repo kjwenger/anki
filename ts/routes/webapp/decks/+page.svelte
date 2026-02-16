@@ -80,23 +80,43 @@
     }
 
     function handleRenameRequest(event: CustomEvent) {
+        console.log("=== Rename Request ===");
         const { id, name } = event.detail;
+        console.log("Deck ID:", id);
+        console.log("Current name:", name);
         renameTarget = { id, name };
         showRenameDialog = true;
+        console.log("Rename dialog opened");
     }
 
     async function handleRenameDeck(event: CustomEvent) {
-        if (!renameTarget) return;
+        console.log("=== Renaming Deck ===");
+        if (!renameTarget) {
+            console.log("No rename target!");
+            return;
+        }
 
         const { name } = event.detail;
+        console.log("Rename target:", renameTarget);
+        console.log("New name:", name);
         error = "";
 
         try {
+            console.log("Calling api.renameDeck...");
+            console.log("Deck ID:", renameTarget.id);
+            console.log("New name:", name);
             await api.renameDeck(renameTarget.id, name);
+            console.log("Rename successful!");
             showRenameDialog = false;
             renameTarget = null;
+            console.log("Reloading decks...");
             await loadDecks();
+            console.log("Rename complete!");
         } catch (e: any) {
+            console.error("=== Error renaming deck ===");
+            console.error("Error object:", e);
+            console.error("Error message:", e.message);
+            console.error("Error status:", e.status);
             error = e.message || "Failed to rename deck";
         }
     }
