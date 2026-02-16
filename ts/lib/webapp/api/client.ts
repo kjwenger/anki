@@ -175,6 +175,51 @@ export class ApiClient {
     async deleteDeck(id: number) {
         return this.delete<{ message: string }>(`/api/v1/decks/${id}`);
     }
+
+    // Scheduler endpoints
+    async getNextCard(deckId: number) {
+        return this.get<{
+            card: {
+                card_id: number;
+                question_html: string;
+                answer_html: string;
+                css: string;
+                counts: {
+                    new: number;
+                    learning: number;
+                    review: number;
+                };
+            } | null;
+            finished: boolean;
+        }>(`/api/v1/scheduler/decks/${deckId}/next`);
+    }
+
+    async answerCard(deckId: number, cardId: number, rating: number) {
+        return this.post<{ success: boolean; message: string }>(
+            `/api/v1/scheduler/decks/${deckId}/cards/${cardId}/answer`,
+            { rating },
+        );
+    }
+
+    async getDeckCounts(deckId: number) {
+        return this.get<{
+            new: number;
+            learning: number;
+            review: number;
+        }>(`/api/v1/scheduler/decks/${deckId}/counts`);
+    }
+
+    async undo() {
+        return this.post<{ success: boolean; message: string }>(
+            "/api/v1/scheduler/undo",
+        );
+    }
+
+    async redo() {
+        return this.post<{ success: boolean; message: string }>(
+            "/api/v1/scheduler/redo",
+        );
+    }
 }
 
 export const api = new ApiClient();

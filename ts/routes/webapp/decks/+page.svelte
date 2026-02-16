@@ -107,8 +107,7 @@
 
     function handleStudy(event: CustomEvent) {
         const { id } = event.detail;
-        // Navigate to study page (to be implemented)
-        alert(`Study deck ${id} - Study interface coming soon!`);
+        goto(`/webapp/review?deck=${id}`);
     }
 
     function goToDashboard() {
