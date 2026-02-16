@@ -235,6 +235,24 @@ export class ApiClient {
         );
     }
 
+    // Card endpoints
+    async getCard(id: number) {
+        return this.get<{
+            id: number;
+            note_id: number;
+            deck_id: number;
+            template_idx: number;
+            queue: number;
+            due: number;
+            interval: number;
+            ease_factor: number;
+            reps: number;
+            lapses: number;
+            remaining_steps: number;
+            original_deck_id: number;
+        }>(`/api/v1/cards/${id}`);
+    }
+
     // Scheduler endpoints
     async getNextCard(deckId: number) {
         return this.get<{
@@ -278,6 +296,29 @@ export class ApiClient {
         return this.post<{ success: boolean; message: string }>(
             "/api/v1/scheduler/redo",
         );
+    }
+
+    // Search endpoints
+    async searchCards(query: string, sortColumn?: string, reverse?: boolean) {
+        return this.post<{
+            card_ids: number[];
+            count: number;
+        }>("/api/v1/search/cards", {
+            query,
+            sort_column: sortColumn,
+            reverse: reverse || false,
+        });
+    }
+
+    async searchNotes(query: string, sortColumn?: string, reverse?: boolean) {
+        return this.post<{
+            note_ids: number[];
+            count: number;
+        }>("/api/v1/search/notes", {
+            query,
+            sort_column: sortColumn,
+            reverse: reverse || false,
+        });
     }
 }
 

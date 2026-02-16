@@ -56,7 +56,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-### 🔄 Phase 3: UI Components (IN PROGRESS - 5/9 Complete)
+### 🔄 Phase 3: UI Components (IN PROGRESS - 6/9 Complete)
 
 **Status:** In progress  
 **Dependencies:** Phase 2 completion ✅
@@ -67,13 +67,13 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 3.2 Collection Manager UI | ✅ | 100% - Collection CRUD interface |
 | 3.3 Deck Browser UI | ✅ | 100% - Deck tree with study buttons |
 | 3.4 Reviewer UI | ✅ | 100% - Complete study interface |
-| **3.5 Editor UI** | **✅** | **100% - Just completed!** |
-| 3.6 Card Browser UI | 📋 | 0% - Next task |
-| 3.7 Statistics UI | 📋 | 0% - Planned |
+| 3.5 Editor UI | ✅ | 100% - Card creation interface |
+| **3.6 Card Browser UI** | **✅** | **100% - Just completed!** |
+| 3.7 Statistics UI | 📋 | 0% - Next task |
 | 3.8 Settings UI | 📋 | 0% - Planned |
 | 3.9 Navigation & Layout | 📋 | 0% - Planned |
 
-**Progress:** 5/9 tasks (56%)
+**Progress:** 6/9 tasks (67%)
 
 ---
 
@@ -84,11 +84,54 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-## Latest Completion: Phase 3.5 - Editor UI ✅
+## Latest Completion: Phase 3.6 - Card Browser UI ✅
+
+**Completed:** 2026-02-16  
+**Lines of Code:** ~650 lines  
+**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+
+### Components Implemented
+
+**Frontend UI (1 new file):**
+- `ts/routes/webapp/browse/+page.svelte` - Browse interface with search and bulk operations
+
+**API Integration:**
+- Extended `ts/lib/webapp/api/client.ts` with search methods
+- `searchCards()`, `searchNotes()`, `getCard()`
+- Updated dashboard with "Browse" link
+
+### Features Delivered
+
+1. **Search Interface**
+   - Cards/Notes mode toggle
+   - Anki query syntax support
+   - Enter key or button to search
+   - Empty query returns all results
+
+2. **Results Table**
+   - Card/Note ID display
+   - Deck, due date, interval columns
+   - Multi-select with checkboxes
+   - Select All / Deselect All
+   - First 100 results pagination
+
+3. **Bulk Operations**
+   - Suspend selected cards
+   - Delete selected cards/notes
+   - Confirmation dialogs
+   - Selection counter
+
+### Documentation
+- ✅ Complete feature documentation (PHASE_3.6_COMPLETE.md)
+- ✅ Updated project status
+
+---
+
+## Previous Completion: Phase 3.5 - Editor UI ✅
 
 **Completed:** 2026-02-16  
 **Lines of Code:** ~900 lines  
-**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+**Build Status:** ✅ Passing
 
 ### Components Implemented
 
@@ -409,14 +452,14 @@ cargo test                   # Test
 - **Build Time:** ~1 minute (release)
 
 ### Lines of Code (Webapp Module)
-- Total: ~5,100 lines
+- Total: ~5,750 lines
 - Routes: ~1,300 lines
 - Auth: ~600 lines
 - Database: ~400 lines
 - Configuration: ~200 lines
 - Error handling: ~200 lines
 - Documentation: ~900 lines (OpenAPI)
-- UI Components: ~1,500 lines (updated)
+- UI Components: ~2,150 lines (updated)
 
 ---
 
@@ -438,6 +481,7 @@ From TASKS.md original success criteria:
 |----------|--------|-------|
 | Users can study cards via web browser | ✅ | Complete with keyboard shortcuts |
 | Users can create cards via web browser | ✅ | Complete with editor interface |
+| Users can browse/search cards | ✅ | Complete with bulk operations |
 | API fully functional for core operations | ✅ | 100% complete (45 endpoints) |
 | Performance comparable to desktop app | ⏳ | To be measured |
 | Security audit passes | ⏳ | Pending Phase 4 |
@@ -445,7 +489,7 @@ From TASKS.md original success criteria:
 | Can deploy on standard VPS | ⏳ | Pending Phase 4 |
 | Existing collections compatible | ✅ | Uses standard Anki backend |
 
-**Overall Progress:** Approximately 65% complete (Phases 1-2 complete, Phase 3 56% done)
+**Overall Progress:** Approximately 70% complete (Phases 1-2 complete, Phase 3 67% done)
 
 ---
 
@@ -453,7 +497,7 @@ From TASKS.md original success criteria:
 
 - **Phase 1 (Foundation):** ✅ Complete (~2 weeks)
 - **Phase 2 (Core API):** ✅ Complete (~2 weeks)
-- **Phase 3 (UI Components):** 🔄 In Progress (56% done, ~1-2 weeks remaining)
+- **Phase 3 (UI Components):** 🔄 In Progress (67% done, ~1 week remaining)
 - **Phase 4 (Polish & Testing):** 📋 Not started (~2 weeks estimated)
 
 **Estimated Total:** 9 weeks  
@@ -462,4 +506,4 @@ From TASKS.md original success criteria:
 
 ---
 
-*This document is auto-updated as phases complete. Last update: Phase 3.5 completion.*
+*This document is auto-updated as phases complete. Last update: Phase 3.6 completion.*

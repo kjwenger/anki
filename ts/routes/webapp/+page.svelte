@@ -17,6 +17,10 @@
     function handleEditor() {
         goto("/webapp/editor");
     }
+
+    function handleBrowse() {
+        goto("/webapp/browse");
+    }
 </script>
 
 <div class="dashboard-container">
@@ -50,6 +54,12 @@
                 <h2>Add Cards</h2>
                 <p>Create new flashcards</p>
                 <button class="btn-primary" on:click={handleEditor}>Add Cards</button>
+            </div>
+
+            <div class="card">
+                <h2>Browse</h2>
+                <p>Search and manage cards</p>
+                <button class="btn-primary" on:click={handleBrowse}>Browse Cards</button>
             </div>
 
             <div class="card">
