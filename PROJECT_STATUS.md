@@ -18,14 +18,14 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Duration:** Completed  
 **Status:** All tasks complete and tested
 
-| Task | Status | Notes |
-|------|--------|-------|
-| 1.1 Project Structure Setup | ✅ | Webapp module integrated into workspace |
-| 1.2 Database Schema | ✅ | SQLite users and sessions tables |
-| 1.3 Authentication System | ✅ | JWT + Argon2 password hashing |
-| 1.4 Session Management | ✅ | Per-user Backend instances with Mutex |
-| 1.5 Configuration System | ✅ | TOML + ENV + defaults, 4 tests passing |
-| 1.6 Error Handling | ✅ | Consistent JSON errors, 9 tests passing |
+| Task                        | Status | Notes                                   |
+|-----------------------------|--------|-----------------------------------------|
+| 1.1 Project Structure Setup | ✅      | Webapp module integrated into workspace |
+| 1.2 Database Schema         | ✅      | SQLite users and sessions tables        |
+| 1.3 Authentication System   | ✅      | JWT + Argon2 password hashing           |
+| 1.4 Session Management      | ✅      | Per-user Backend instances with Mutex   |
+| 1.5 Configuration System    | ✅      | TOML + ENV + defaults, 4 tests passing  |
+| 1.6 Error Handling          | ✅      | Consistent JSON errors, 9 tests passing |
 
 **Key Achievements:**
 - Secure authentication with JWT tokens
@@ -40,17 +40,17 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Duration:** Completed  
 **Status:** 9 of 9 tasks complete (100%)
 
-| Task | Status | Completion |
-|------|--------|------------|
-| 2.1 Collections API | ✅ | 100% - Simplified single-collection architecture |
-| 2.2 Decks API | ✅ | 100% - Core CRUD complete (4 endpoints) |
-| 2.3 Scheduler API | ✅ | 100% - Complete with undo/redo (5 endpoints) |
-| 2.4 Notes API | ✅ | 100% - Core CRUD complete (5 endpoints) |
-| 2.5 Cards API | ✅ | 100% - Complete (9 endpoints) |
-| 2.6 Search API | ✅ | 100% - Complete (3 endpoints) |
-| 2.7 Media API | ✅ | 100% - Upload, check, delete (3 endpoints) |
-| 2.8 Tags API | ✅ | 100% - Complete (5 endpoints) |
-| 2.9 Statistics API | ✅ | 100% - Complete (4 endpoints) |
+| Task                | Status | Completion                                       |
+|---------------------|--------|--------------------------------------------------|
+| 2.1 Collections API | ✅      | 100% - Simplified single-collection architecture |
+| 2.2 Decks API       | ✅      | 100% - Core CRUD complete (4 endpoints)          |
+| 2.3 Scheduler API   | ✅      | 100% - Complete with undo/redo (5 endpoints)     |
+| 2.4 Notes API       | ✅      | 100% - Core CRUD complete (5 endpoints)          |
+| 2.5 Cards API       | ✅      | 100% - Complete (9 endpoints)                    |
+| 2.6 Search API      | ✅      | 100% - Complete (3 endpoints)                    |
+| 2.7 Media API       | ✅      | 100% - Upload, check, delete (3 endpoints)       |
+| 2.8 Tags API        | ✅      | 100% - Complete (5 endpoints)                    |
+| 2.9 Statistics API  | ✅      | 100% - Complete (4 endpoints)                    |
 
 **Progress:** 9/9 tasks (100%)
 
@@ -61,17 +61,17 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Status:** ✅ **ALL TASKS COMPLETE!**  
 **Dependencies:** Phase 2 completion ✅
 
-| Task | Status | Completion |
-|------|--------|------------|
-| 3.1 Authentication UI | ✅ | 100% - Login, register, profile pages |
-| 3.2 Collection Manager UI | ✅ | 100% - Collection CRUD interface |
-| 3.3 Deck Browser UI | ✅ | 100% - Deck tree with study buttons |
-| 3.4 Reviewer UI | ✅ | 100% - Complete study interface |
-| 3.5 Editor UI | ✅ | 100% - Card creation interface |
-| 3.6 Card Browser UI | ✅ | 100% - Search and bulk operations |
-| 3.7 Statistics UI | ✅ | 100% - Stats dashboard |
-| 3.8 Settings UI | ✅ | 100% - User preferences |
-| **3.9 Navigation & Layout** | **✅** | **100% - JUST COMPLETED!** |
+| Task                        | Status | Completion                            |
+|-----------------------------|--------|---------------------------------------|
+| 3.1 Authentication UI       | ✅      | 100% - Login, register, profile pages |
+| 3.2 Collection Manager UI   | ✅      | 100% - Collection CRUD interface      |
+| 3.3 Deck Browser UI         | ✅      | 100% - Deck tree with study buttons   |
+| 3.4 Reviewer UI             | ✅      | 100% - Complete study interface       |
+| 3.5 Editor UI               | ✅      | 100% - Card creation interface        |
+| 3.6 Card Browser UI         | ✅      | 100% - Search and bulk operations     |
+| 3.7 Statistics UI           | ✅      | 100% - Stats dashboard                |
+| 3.8 Settings UI             | ✅      | 100% - User preferences               |
+| **3.9 Navigation & Layout** | **✅**  | **100% - JUST COMPLETED!**            |
 
 **Progress:** ✅ 9/9 tasks (100%) - **PHASE COMPLETE!**
 
@@ -82,14 +82,14 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Status:** Ready to begin!  
 **Dependencies:** Phase 3 completion ✅
 
-| Task | Status | Estimate |
-|------|--------|----------|
-| 4.1 API Testing | 📋 | 3 days |
-| 4.2 UI Testing | 📋 | 3 days |
-| 4.3 Performance Optimization | 📋 | 2 days |
-| 4.4 Security Audit | 📋 | 2 days |
-| 4.5 Documentation | 📋 | 3 days |
-| 4.6 Bug Fixes | 📋 | 2 days |
+| Task                         | Status | Estimate |
+|------------------------------|--------|----------|
+| 4.1 API Testing              | 📋     | 3 days   |
+| 4.2 UI Testing               | 📋     | 3 days   |
+| 4.3 Performance Optimization | 📋     | 2 days   |
+| 4.4 Security Audit           | 📋     | 2 days   |
+| 4.5 Documentation            | 📋     | 3 days   |
+| 4.6 Bug Fixes                | 📋     | 2 days   |
 
 **Estimated Duration:** ~2 weeks
 
@@ -604,17 +604,17 @@ cargo test                   # Test
 
 From TASKS.md original success criteria:
 
-| Criteria | Status | Notes |
-|----------|--------|-------|
-| Users can study cards via web browser | ✅ | Complete with keyboard shortcuts |
-| Users can create cards via web browser | ✅ | Complete with editor interface |
-| Users can browse/search cards | ✅ | Complete with bulk operations |
-| API fully functional for core operations | ✅ | 100% complete (45 endpoints) |
-| Performance comparable to desktop app | ⏳ | To be measured |
-| Security audit passes | ⏳ | Pending Phase 4 |
-| Documentation complete | ✅ | OpenAPI + guides complete |
-| Can deploy on standard VPS | ⏳ | Pending Phase 4 |
-| Existing collections compatible | ✅ | Uses standard Anki backend |
+| Criteria                                 | Status | Notes                            |
+|------------------------------------------|--------|----------------------------------|
+| Users can study cards via web browser    | ✅      | Complete with keyboard shortcuts |
+| Users can create cards via web browser   | ✅      | Complete with editor interface   |
+| Users can browse/search cards            | ✅      | Complete with bulk operations    |
+| API fully functional for core operations | ✅      | 100% complete (45 endpoints)     |
+| Performance comparable to desktop app    | ⏳      | To be measured                   |
+| Security audit passes                    | ⏳      | Pending Phase 4                  |
+| Documentation complete                   | ✅      | OpenAPI + guides complete        |
+| Can deploy on standard VPS               | ⏳      | Pending Phase 4                  |
+| Existing collections compatible          | ✅      | Uses standard Anki backend       |
 
 **Overall Progress:** Approximately 85% complete (Phases 1-3 COMPLETE, Phase 4 remaining!)
 

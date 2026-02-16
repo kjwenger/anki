@@ -3,6 +3,7 @@
     import { goto } from "$app/navigation";
     import { api } from "$lib/webapp/api/client";
     import { collectionStore, type Collection } from "$lib/webapp/stores/collection";
+    import { authStore } from "$lib/webapp/stores/auth";
     import CollectionList from "$lib/webapp/components/CollectionList.svelte";
     import CreateCollectionDialog from "$lib/webapp/components/CreateCollectionDialog.svelte";
 
@@ -20,6 +21,18 @@
     });
 
     onMount(() => {
+        // Debug: Check auth state on mount
+        const auth = authStore;
+        let authState: any;
+        const unsub = auth.subscribe(state => { authState = state; });
+        unsub();
+        
+        console.log("=== Collections Page Mount ===");
+        console.log("Auth state:", authState);
+        console.log("localStorage token:", localStorage.getItem("anki_auth_token"));
+        console.log("localStorage user:", localStorage.getItem("anki_user"));
+        console.log("==============================");
+        
         loadCollections();
         return unsubscribe;
     });
@@ -28,10 +41,19 @@
         loading = true;
         error = "";
 
+        console.log("=== Loading Collections ===");
+        
+        let authState: any;
+        const unsub = authStore.subscribe(state => { authState = state; });
+        unsub();
+        console.log("Auth state before API call:", authState);
+
         try {
             const response = await api.getCollections();
+            console.log("Collections response:", response);
             collectionStore.setCollections(response.collections);
         } catch (e: any) {
+            console.error("Error loading collections:", e);
             error = e.message || "Failed to load collections";
         } finally {
             loading = false;
@@ -40,20 +62,41 @@
 
     async function handleCreateCollection(event: CustomEvent) {
         const { name } = event.detail;
+        
+        console.log("=== Creating Collection ===");
+        console.log("Collection name:", name);
+        
+        let authState: any;
+        const unsub = authStore.subscribe(state => { authState = state; });
+        unsub();
+        console.log("Auth state before create:", authState);
+        console.log("localStorage token:", localStorage.getItem("anki_auth_token"));
+        console.log("localStorage user:", localStorage.getItem("anki_user"));
+        
         error = "";
 
         try {
+            console.log("Calling api.createCollection...");
             const response = await api.createCollection(name);
+            console.log("Collection created successfully:", response);
+            
             const newCollection: Collection = {
                 name,
                 path: response.path,
             };
+            
+            console.log("New collection object:", newCollection);
             collectionStore.addCollection(newCollection);
             showCreateDialog = false;
 
             // Auto-select the newly created collection
             collectionStore.selectCollection(newCollection);
+            console.log("Collection creation complete!");
         } catch (e: any) {
+            console.error("=== Error creating collection ===");
+            console.error("Error object:", e);
+            console.error("Error message:", e.message);
+            console.error("Error status:", e.status);
             error = e.message || "Failed to create collection";
         }
     }

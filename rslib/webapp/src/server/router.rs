@@ -23,9 +23,11 @@ use crate::routes::batch_get_cards;
 use crate::routes::batch_update_cards;
 use crate::routes::bury_card;
 use crate::routes::close_collection;
+use crate::routes::create_collection;
 use crate::routes::create_deck;
 use crate::routes::create_note;
 use crate::routes::delete_card;
+use crate::routes::delete_collection;
 use crate::routes::delete_deck;
 use crate::routes::delete_media;
 use crate::routes::delete_note;
@@ -55,6 +57,7 @@ use crate::routes::get_graphs;
 use crate::routes::get_tag_tree;
 use crate::routes::get_tags;
 use crate::routes::get_today_stats;
+use crate::routes::list_collections;
 use crate::routes::rename_tag;
 use crate::routes::unsuspend_card;
 use crate::routes::update_card;
@@ -79,6 +82,9 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/collection", get(get_collection_info))
         .route("/api/v1/collection/info", get(get_collection_info))
         .route("/api/v1/collection/close", post(close_collection))
+        .route("/api/v1/collections", get(list_collections))
+        .route("/api/v1/collections", post(create_collection))
+        .route("/api/v1/collections/{path}", delete(delete_collection))
         .route("/api/v1/decks", get(get_deck_tree))
         .route("/api/v1/decks", post(create_deck))
         .route("/api/v1/decks/{id}", get(get_deck))

@@ -11,9 +11,17 @@
 
     // Redirect if already authenticated
     onMount(() => {
+        console.log("=== Login Page Mount ===");
         const unsubscribe = authStore.subscribe((state) => {
-            if (state.isAuthenticated) {
+            console.log("Login page - Auth state:", state);
+            console.log("localStorage token:", localStorage.getItem("anki_auth_token"));
+            console.log("localStorage user:", localStorage.getItem("anki_user"));
+            
+            if (state.isAuthenticated && state.token) {
+                console.log("User already authenticated, redirecting to /webapp");
                 goto("/webapp");
+            } else {
+                console.log("User not authenticated, showing login form");
             }
         });
         return unsubscribe;
@@ -25,14 +33,37 @@
             return;
         }
 
+        console.log("=== Login Attempt ===");
+        console.log("Username:", username);
+        console.log("Password length:", password.length);
+
         loading = true;
         error = "";
 
         try {
+            console.log("Calling api.login...");
             const response = await api.login(username, password);
+            console.log("Login API response:", response);
+            console.log("Response user:", response.user);
+            console.log("Response token:", response.token);
+            
+            console.log("Calling authStore.login...");
             authStore.login(response.user, response.token);
+            
+            console.log("Checking auth state after login...");
+            let authState: any;
+            const unsub = authStore.subscribe(state => { authState = state; });
+            unsub();
+            console.log("Auth state after login:", authState);
+            console.log("localStorage token after login:", localStorage.getItem("anki_auth_token"));
+            console.log("localStorage user after login:", localStorage.getItem("anki_user"));
+            
+            console.log("Redirecting to /webapp");
             goto("/webapp");
         } catch (e: any) {
+            console.error("=== Login Error ===");
+            console.error("Error:", e);
+            console.error("Error message:", e.message);
             error = e.message || "Login failed. Please try again.";
         } finally {
             loading = false;

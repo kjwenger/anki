@@ -31,17 +31,25 @@ function createAuthStore() {
         const storedToken = localStorage.getItem(TOKEN_KEY);
         const storedUser = localStorage.getItem(USER_KEY);
         
+        console.log("=== Auth Store Initialization ===");
+        console.log("Stored token:", storedToken);
+        console.log("Stored user:", storedUser);
+        
         if (storedToken && storedUser) {
             try {
                 initialState.token = storedToken;
                 initialState.user = JSON.parse(storedUser);
                 initialState.isAuthenticated = true;
+                console.log("Auth state initialized:", initialState);
             } catch (e) {
                 console.error("Failed to parse stored user data:", e);
                 localStorage.removeItem(TOKEN_KEY);
                 localStorage.removeItem(USER_KEY);
             }
+        } else {
+            console.warn("No stored auth data found");
         }
+        console.log("==================================");
     }
 
     const { subscribe, set, update } = writable<AuthState>(initialState);
@@ -49,26 +57,40 @@ function createAuthStore() {
     return {
         subscribe,
         login: (user: User, token: string) => {
+            console.log("=== authStore.login called ===");
+            console.log("User:", user);
+            console.log("Token:", token);
+            
             if (browser) {
+                console.log("Storing in localStorage...");
                 localStorage.setItem(TOKEN_KEY, token);
                 localStorage.setItem(USER_KEY, JSON.stringify(user));
+                console.log("Stored token:", localStorage.getItem(TOKEN_KEY));
+                console.log("Stored user:", localStorage.getItem(USER_KEY));
             }
-            set({
+            
+            const newState = {
                 user,
                 token,
                 isAuthenticated: true,
-            });
+            };
+            console.log("Setting auth state:", newState);
+            set(newState);
+            console.log("Auth state updated!");
         },
         logout: () => {
+            console.log("=== authStore.logout called ===");
             if (browser) {
                 localStorage.removeItem(TOKEN_KEY);
                 localStorage.removeItem(USER_KEY);
+                console.log("Cleared localStorage");
             }
             set({
                 user: null,
                 token: null,
                 isAuthenticated: false,
             });
+            console.log("Auth state cleared");
         },
         updateUser: (user: User) => {
             if (browser) {
@@ -88,4 +110,5 @@ export const authToken = derived(authStore, ($auth) => $auth.token);
 export const currentUser = derived(authStore, ($auth) => $auth.user);
 
 // Derived store for authentication status
-export const isAuthenticated = derived(authStore, ($auth) => $auth.isAuthenticated);
+// IMPORTANT: User is only authenticated if they have BOTH the flag AND a valid token
+export const isAuthenticated = derived(authStore, ($auth) => $auth.isAuthenticated && !!$auth.token);

@@ -24,9 +24,12 @@ export class ApiClient {
         };
 
         if (includeAuth) {
-            const { token } = get(authStore);
-            if (token) {
-                headers["Authorization"] = `Bearer ${token}`;
+            const authState = get(authStore);
+            console.log("Auth state:", authState);
+            if (authState?.token) {
+                headers["Authorization"] = `Bearer ${authState.token}`;
+            } else {
+                console.warn("No auth token available!");
             }
         }
 
@@ -103,11 +106,36 @@ export class ApiClient {
 
     // Authentication endpoints
     async login(username: string, password: string) {
-        return this.post<{ token: string; user: { id: number; username: string; email: string } }>(
+        console.log("=== API client.login ===");
+        console.log("Endpoint: /api/v1/auth/login");
+        console.log("Username:", username);
+        console.log("Sending POST request...");
+        
+        const result = await this.post<{ 
+            token: string; 
+            user: { id: number; username: string; email: string };
+            success?: boolean;
+            data?: any;
+            error?: any;
+        }>(
             "/api/v1/auth/login",
             { username, password },
             false,
         );
+        
+        console.log("Raw API response:", result);
+        
+        // Handle different response formats
+        if (result.success && result.data) {
+            console.log("Response has success/data format");
+            return result.data;
+        } else if (result.token && result.user) {
+            console.log("Response has direct token/user format");
+            return result;
+        } else {
+            console.error("Unexpected response format:", result);
+            throw new Error("Invalid login response format");
+        }
     }
 
     async register(username: string, email: string, password: string) {

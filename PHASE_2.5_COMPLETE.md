@@ -326,16 +326,16 @@ Once the CONTRIBUTORS issue is resolved and server is running:
 
 ## Acceptance Criteria Status
 
-| Criteria | Status | Notes |
-|----------|--------|-------|
-| Card CRUD operations work | ✅ Complete | GET, PUT, DELETE implemented |
-| State changes work | ✅ Complete | Flag, suspend, unsuspend, bury all working |
-| Batch operations efficient | ✅ Complete | Batch get and update use single queries |
-| Routes integrated | ✅ Complete | All routes in router with auth |
-| OpenAPI documentation | ✅ Complete | Full schema and endpoint docs |
-| Code compiles | ✅ Complete | Clean build, no warnings |
-| Proper error handling | ✅ Complete | Consistent pattern across all routes |
-| Authentication required | ✅ Complete | All routes protected by middleware |
+| Criteria                   | Status     | Notes                                      |
+|----------------------------|------------|--------------------------------------------|
+| Card CRUD operations work  | ✅ Complete | GET, PUT, DELETE implemented               |
+| State changes work         | ✅ Complete | Flag, suspend, unsuspend, bury all working |
+| Batch operations efficient | ✅ Complete | Batch get and update use single queries    |
+| Routes integrated          | ✅ Complete | All routes in router with auth             |
+| OpenAPI documentation      | ✅ Complete | Full schema and endpoint docs              |
+| Code compiles              | ✅ Complete | Clean build, no warnings                   |
+| Proper error handling      | ✅ Complete | Consistent pattern across all routes       |
+| Authentication required    | ✅ Complete | All routes protected by middleware         |
 
 ---
 

@@ -127,15 +127,15 @@ Changes:
 
 ## Keyboard Shortcuts Summary
 
-| Key | Action | When Available |
-|-----|--------|----------------|
-| `Space` / `Enter` | Show answer | Question showing |
-| `1` | Rate "Again" | Answer showing |
-| `2` | Rate "Hard" | Answer showing |
-| `3` | Rate "Good" | Answer showing |
-| `4` | Rate "Easy" | Answer showing |
-| `Ctrl+Z` | Undo | After answering |
-| `Ctrl+Shift+Z` / `Ctrl+Y` | Redo | After undo |
+| Key                       | Action       | When Available   |
+|---------------------------|--------------|------------------|
+| `Space` / `Enter`         | Show answer  | Question showing |
+| `1`                       | Rate "Again" | Answer showing   |
+| `2`                       | Rate "Hard"  | Answer showing   |
+| `3`                       | Rate "Good"  | Answer showing   |
+| `4`                       | Rate "Easy"  | Answer showing   |
+| `Ctrl+Z`                  | Undo         | After answering  |
+| `Ctrl+Shift+Z` / `Ctrl+Y` | Redo         | After undo       |
 
 ## Technical Implementation
 
