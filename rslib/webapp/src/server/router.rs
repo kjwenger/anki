@@ -145,7 +145,10 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
 
     // CORS layer for development (SvelteKit dev server on different port)
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
+        .allow_origin([
+            "http://localhost:5173".parse::<HeaderValue>().unwrap(),
+            "http://127.0.0.1:5173".parse::<HeaderValue>().unwrap(),
+        ])
         .allow_methods([
             Method::GET,
             Method::POST,
