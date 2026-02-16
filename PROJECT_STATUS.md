@@ -56,7 +56,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-### 🔄 Phase 3: UI Components (IN PROGRESS - 6/9 Complete)
+### 🔄 Phase 3: UI Components (IN PROGRESS - 7/9 Complete)
 
 **Status:** In progress  
 **Dependencies:** Phase 2 completion ✅
@@ -68,12 +68,12 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 3.3 Deck Browser UI | ✅ | 100% - Deck tree with study buttons |
 | 3.4 Reviewer UI | ✅ | 100% - Complete study interface |
 | 3.5 Editor UI | ✅ | 100% - Card creation interface |
-| **3.6 Card Browser UI** | **✅** | **100% - Just completed!** |
-| 3.7 Statistics UI | 📋 | 0% - Next task |
-| 3.8 Settings UI | 📋 | 0% - Planned |
+| 3.6 Card Browser UI | ✅ | 100% - Search and bulk operations |
+| **3.7 Statistics UI** | **✅** | **100% - Just completed!** |
+| 3.8 Settings UI | 📋 | 0% - Next task |
 | 3.9 Navigation & Layout | 📋 | 0% - Planned |
 
-**Progress:** 6/9 tasks (67%)
+**Progress:** 7/9 tasks (78%)
 
 ---
 
@@ -84,11 +84,47 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-## Latest Completion: Phase 3.6 - Card Browser UI ✅
+## Latest Completion: Phase 3.7 - Statistics UI ✅
+
+**Completed:** 2026-02-16  
+**Lines of Code:** ~480 lines  
+**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+
+### Components Implemented
+
+**Frontend UI (1 new file):**
+- `ts/routes/webapp/stats/+page.svelte` - Statistics dashboard
+
+**API Integration:**
+- Extended `ts/lib/webapp/api/client.ts` with stats methods
+- `getTodayStats()`, `getCollectionStats()`, `getGraphs()`
+
+### Features Delivered
+
+1. **Today's Statistics**
+   - Cards answered, correct count
+   - Study time formatted
+   - Accuracy percentage
+   - Learn/Review/Relearn breakdown
+
+2. **Collection Overview**
+   - Total cards and notes
+   - New/Young/Mature counts
+   - Suspended/Buried cards
+
+3. **Mature Card Performance**
+   - Cards reviewed, retention rate
+
+### Documentation
+- ✅ PHASE_3.7_COMPLETE.md
+
+---
+
+## Previous Completion: Phase 3.6 - Card Browser UI ✅
 
 **Completed:** 2026-02-16  
 **Lines of Code:** ~650 lines  
-**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+**Build Status:** ✅ Passing
 
 ### Components Implemented
 
@@ -452,14 +488,14 @@ cargo test                   # Test
 - **Build Time:** ~1 minute (release)
 
 ### Lines of Code (Webapp Module)
-- Total: ~5,750 lines
+- Total: ~6,200 lines
 - Routes: ~1,300 lines
 - Auth: ~600 lines
 - Database: ~400 lines
 - Configuration: ~200 lines
 - Error handling: ~200 lines
 - Documentation: ~900 lines (OpenAPI)
-- UI Components: ~2,150 lines (updated)
+- UI Components: ~2,600 lines (updated)
 
 ---
 
@@ -489,7 +525,7 @@ From TASKS.md original success criteria:
 | Can deploy on standard VPS | ⏳ | Pending Phase 4 |
 | Existing collections compatible | ✅ | Uses standard Anki backend |
 
-**Overall Progress:** Approximately 70% complete (Phases 1-2 complete, Phase 3 67% done)
+**Overall Progress:** Approximately 75% complete (Phases 1-2 complete, Phase 3 78% done)
 
 ---
 
@@ -497,7 +533,7 @@ From TASKS.md original success criteria:
 
 - **Phase 1 (Foundation):** ✅ Complete (~2 weeks)
 - **Phase 2 (Core API):** ✅ Complete (~2 weeks)
-- **Phase 3 (UI Components):** 🔄 In Progress (67% done, ~1 week remaining)
+- **Phase 3 (UI Components):** 🔄 In Progress (78% done, ~3-4 days remaining)
 - **Phase 4 (Polish & Testing):** 📋 Not started (~2 weeks estimated)
 
 **Estimated Total:** 9 weeks  
@@ -506,4 +542,4 @@ From TASKS.md original success criteria:
 
 ---
 
-*This document is auto-updated as phases complete. Last update: Phase 3.6 completion.*
+*This document is auto-updated as phases complete. Last update: Phase 3.7 completion.*

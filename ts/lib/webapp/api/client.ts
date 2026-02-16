@@ -320,6 +320,41 @@ export class ApiClient {
             reverse: reverse || false,
         });
     }
+
+    // Statistics endpoints
+    async getTodayStats() {
+        return this.get<{
+            answer_count: number;
+            answer_millis: number;
+            correct_count: number;
+            mature_correct: number;
+            mature_count: number;
+            learn_count: number;
+            review_count: number;
+            relearn_count: number;
+            early_review_count: number;
+        }>("/api/v1/stats/today");
+    }
+
+    async getCollectionStats() {
+        return this.get<{
+            total_cards: number;
+            new_cards: number;
+            young_cards: number;
+            mature_cards: number;
+            suspended_cards: number;
+            buried_cards: number;
+            total_notes: number;
+        }>("/api/v1/stats/collection");
+    }
+
+    async getGraphs(search?: string, days?: number) {
+        const params = new URLSearchParams();
+        if (search) params.append("search", search);
+        if (days) params.append("days", days.toString());
+        const query = params.toString() ? `?${params.toString()}` : "";
+        return this.get<any>(`/api/v1/stats/graphs${query}`);
+    }
 }
 
 export const api = new ApiClient();

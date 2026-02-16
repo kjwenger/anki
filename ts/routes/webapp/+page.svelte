@@ -21,6 +21,10 @@
     function handleBrowse() {
         goto("/webapp/browse");
     }
+
+    function handleStats() {
+        goto("/webapp/stats");
+    }
 </script>
 
 <div class="dashboard-container">
@@ -65,7 +69,7 @@
             <div class="card">
                 <h2>Statistics</h2>
                 <p>View your learning progress</p>
-                <button class="btn-primary">View Stats</button>
+                <button class="btn-primary" on:click={handleStats}>View Stats</button>
             </div>
 
             <div class="card">
