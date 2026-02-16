@@ -161,7 +161,8 @@ fn convert_deck_tree(tree: anki_proto::decks::DeckTreeNode) -> DeckTree {
         }
     }
 
+    // The root node is just a container - we want its children (the actual decks)
     DeckTree {
-        decks: vec![convert_node(tree)],
+        decks: tree.children.into_iter().map(convert_node).collect(),
     }
 }

@@ -36,25 +36,45 @@
         loading = true;
         error = "";
 
+        console.log("=== Loading Decks ===");
+        console.log("Collection:", collection);
+
         try {
+            console.log("Calling api.getDecks...");
             const response = await api.getDecks();
+            console.log("Decks response:", response);
+            console.log("Number of decks:", response.decks.length);
             decks = response.decks;
+            console.log("Decks state updated:", decks);
         } catch (e: any) {
+            console.error("Error loading decks:", e);
             error = e.message || "Failed to load decks";
         } finally {
             loading = false;
+            console.log("Loading complete. Final decks:", decks);
         }
     }
 
     async function handleCreateDeck(event: CustomEvent) {
         const { name } = event.detail;
+        
+        console.log("=== Creating Deck ===");
+        console.log("Deck name:", name);
+        
         error = "";
 
         try {
-            await api.createDeck(name);
+            console.log("Calling api.createDeck...");
+            const response = await api.createDeck(name);
+            console.log("Deck created successfully:", response);
             showCreateDialog = false;
             await loadDecks();
+            console.log("Deck creation complete!");
         } catch (e: any) {
+            console.error("=== Error creating deck ===");
+            console.error("Error object:", e);
+            console.error("Error message:", e.message);
+            console.error("Error status:", e.status);
             error = e.message || "Failed to create deck";
         }
     }
