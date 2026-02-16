@@ -25,6 +25,10 @@
     function handleStats() {
         goto("/webapp/stats");
     }
+
+    function handleSettings() {
+        goto("/webapp/settings");
+    }
 </script>
 
 <div class="dashboard-container">
@@ -75,7 +79,7 @@
             <div class="card">
                 <h2>Settings</h2>
                 <p>Configure your preferences</p>
-                <button class="btn-primary">Settings</button>
+                <button class="btn-primary" on:click={handleSettings}>Settings</button>
             </div>
         </div>
 

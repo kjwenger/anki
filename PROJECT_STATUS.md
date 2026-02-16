@@ -56,9 +56,9 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-### 🔄 Phase 3: UI Components (IN PROGRESS - 7/9 Complete)
+### 🔄 Phase 3: UI Components (IN PROGRESS - 8/9 Complete)
 
-**Status:** In progress  
+**Status:** In progress - Final task remaining!  
 **Dependencies:** Phase 2 completion ✅
 
 | Task | Status | Completion |
@@ -69,11 +69,11 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 3.4 Reviewer UI | ✅ | 100% - Complete study interface |
 | 3.5 Editor UI | ✅ | 100% - Card creation interface |
 | 3.6 Card Browser UI | ✅ | 100% - Search and bulk operations |
-| **3.7 Statistics UI** | **✅** | **100% - Just completed!** |
-| 3.8 Settings UI | 📋 | 0% - Next task |
-| 3.9 Navigation & Layout | 📋 | 0% - Planned |
+| 3.7 Statistics UI | ✅ | 100% - Stats dashboard |
+| **3.8 Settings UI** | **✅** | **100% - Just completed!** |
+| 3.9 Navigation & Layout | 📋 | 0% - FINAL TASK! |
 
-**Progress:** 7/9 tasks (78%)
+**Progress:** 8/9 tasks (89%)
 
 ---
 
@@ -84,11 +84,46 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-## Latest Completion: Phase 3.7 - Statistics UI ✅
+## Latest Completion: Phase 3.8 - Settings UI ✅
+
+**Completed:** 2026-02-16  
+**Lines of Code:** ~285 lines  
+**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+
+### Components Implemented
+
+**Frontend UI (1 new file):**
+- `ts/routes/webapp/settings/+page.svelte` - Settings page
+
+### Features Delivered
+
+1. **Appearance Settings**
+   - Theme selection (Light/Dark)
+
+2. **Study Limits**
+   - New cards per day (0-999)
+   - Maximum reviews per day (0-9999)
+
+3. **Study Interface Options**
+   - Show answer time toggle
+   - Auto-play audio toggle
+   - Keyboard shortcuts toggle
+
+4. **Persistence**
+   - localStorage-based storage
+   - Auto-load on mount
+   - Success feedback
+
+### Documentation
+- ✅ PHASE_3.8_COMPLETE.md
+
+---
+
+## Previous Completion: Phase 3.7 - Statistics UI ✅
 
 **Completed:** 2026-02-16  
 **Lines of Code:** ~480 lines  
-**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+**Build Status:** ✅ Passing
 
 ### Components Implemented
 
@@ -525,7 +560,7 @@ From TASKS.md original success criteria:
 | Can deploy on standard VPS | ⏳ | Pending Phase 4 |
 | Existing collections compatible | ✅ | Uses standard Anki backend |
 
-**Overall Progress:** Approximately 75% complete (Phases 1-2 complete, Phase 3 78% done)
+**Overall Progress:** Approximately 80% complete (Phases 1-2 complete, Phase 3 89% done - 1 task left!)
 
 ---
 
@@ -533,7 +568,7 @@ From TASKS.md original success criteria:
 
 - **Phase 1 (Foundation):** ✅ Complete (~2 weeks)
 - **Phase 2 (Core API):** ✅ Complete (~2 weeks)
-- **Phase 3 (UI Components):** 🔄 In Progress (78% done, ~3-4 days remaining)
+- **Phase 3 (UI Components):** 🔄 In Progress (89% done, ~1-2 days remaining for final task!)
 - **Phase 4 (Polish & Testing):** 📋 Not started (~2 weeks estimated)
 
 **Estimated Total:** 9 weeks  
@@ -542,4 +577,4 @@ From TASKS.md original success criteria:
 
 ---
 
-*This document is auto-updated as phases complete. Last update: Phase 3.7 completion.*
+*This document is auto-updated as phases complete. Last update: Phase 3.8 completion.*
