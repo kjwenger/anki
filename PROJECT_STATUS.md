@@ -56,7 +56,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-### 🔄 Phase 3: UI Components (IN PROGRESS - 4/9 Complete)
+### 🔄 Phase 3: UI Components (IN PROGRESS - 5/9 Complete)
 
 **Status:** In progress  
 **Dependencies:** Phase 2 completion ✅
@@ -66,14 +66,14 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 3.1 Authentication UI | ✅ | 100% - Login, register, profile pages |
 | 3.2 Collection Manager UI | ✅ | 100% - Collection CRUD interface |
 | 3.3 Deck Browser UI | ✅ | 100% - Deck tree with study buttons |
-| **3.4 Reviewer UI** | **✅** | **100% - Just completed!** |
-| 3.5 Editor UI | 📋 | 0% - Next task |
-| 3.6 Card Browser UI | 📋 | 0% - Planned |
+| 3.4 Reviewer UI | ✅ | 100% - Complete study interface |
+| **3.5 Editor UI** | **✅** | **100% - Just completed!** |
+| 3.6 Card Browser UI | 📋 | 0% - Next task |
 | 3.7 Statistics UI | 📋 | 0% - Planned |
 | 3.8 Settings UI | 📋 | 0% - Planned |
 | 3.9 Navigation & Layout | 📋 | 0% - Planned |
 
-**Progress:** 4/9 tasks (44%)
+**Progress:** 5/9 tasks (56%)
 
 ---
 
@@ -84,11 +84,68 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-## Latest Completion: Phase 3.4 - Reviewer UI ✅
+## Latest Completion: Phase 3.5 - Editor UI ✅
+
+**Completed:** 2026-02-16  
+**Lines of Code:** ~900 lines  
+**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+
+### Components Implemented
+
+**Backend API (2 new endpoints):**
+- `rslib/webapp/src/routes/notetypes.rs` - Notetype management
+  - GET `/api/v1/notetypes` - List all notetypes
+  - GET `/api/v1/notetypes/{id}` - Get notetype with fields
+
+**Frontend UI (4 new files):**
+- `ts/lib/webapp/stores/editor.ts` - Editor state management
+- `ts/routes/webapp/editor/+page.svelte` - Main editor page
+- `ts/lib/webapp/components/FieldEditor.svelte` - Field input component
+- `ts/lib/webapp/components/TagInput.svelte` - Tag management component
+
+**API Integration:**
+- Extended `ts/lib/webapp/api/client.ts` with notetype and note methods
+- Updated dashboard with "Add Cards" link
+
+### Features Delivered
+
+1. **Complete Card Creation Workflow**
+   - Select deck from dropdown
+   - Choose notetype (Basic, Cloze, etc.)
+   - Fill in dynamic fields based on notetype
+   - Add/remove tags with visual interface
+   - Submit to create card
+
+2. **Dynamic Field Generation**
+   - Fields auto-generate based on selected notetype
+   - Each notetype can have different fields
+   - Multi-line textarea inputs
+   - Proper labeling and focus states
+
+3. **Tag Management**
+   - Visual tag pills with remove buttons
+   - Keyboard shortcuts (Enter/Space to add)
+   - Backspace to remove last tag
+   - Duplicate prevention
+
+4. **Form Management**
+   - Validation before submission
+   - Success feedback with card ID
+   - Auto-clear form for next card
+   - Error handling with user messages
+
+### Documentation
+- ✅ Complete feature documentation (PHASE_3.5_COMPLETE.md)
+- ✅ Updated project status
+- ✅ API endpoints documented
+
+---
+
+## Previous Completion: Phase 3.4 - Reviewer UI ✅
 
 **Completed:** 2026-02-16  
 **Lines of Code:** ~700 lines  
-**Build Status:** ✅ Passing (0 errors, 10 accessibility warnings)
+**Build Status:** ✅ Passing
 
 ### Components Implemented (6 new files)
 
@@ -211,7 +268,11 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 - ✅ POST /api/v1/scheduler/undo
 - ✅ POST /api/v1/scheduler/redo
 
-**Total Endpoints Implemented:** 43
+### Notetype Management (Phase 3.5 - NEW)
+- ✅ GET /api/v1/notetypes - List all notetypes
+- ✅ GET /api/v1/notetypes/{id} - Get notetype details
+
+**Total Endpoints Implemented:** 45
 
 ---
 
@@ -348,14 +409,14 @@ cargo test                   # Test
 - **Build Time:** ~1 minute (release)
 
 ### Lines of Code (Webapp Module)
-- Total: ~4,200 lines
-- Routes: ~1,200 lines
+- Total: ~5,100 lines
+- Routes: ~1,300 lines
 - Auth: ~600 lines
 - Database: ~400 lines
 - Configuration: ~200 lines
 - Error handling: ~200 lines
 - Documentation: ~900 lines (OpenAPI)
-- UI Components: ~700 lines (new)
+- UI Components: ~1,500 lines (updated)
 
 ---
 
@@ -376,14 +437,15 @@ From TASKS.md original success criteria:
 | Criteria | Status | Notes |
 |----------|--------|-------|
 | Users can study cards via web browser | ✅ | Complete with keyboard shortcuts |
-| API fully functional for core operations | ✅ | 100% complete (43 endpoints) |
+| Users can create cards via web browser | ✅ | Complete with editor interface |
+| API fully functional for core operations | ✅ | 100% complete (45 endpoints) |
 | Performance comparable to desktop app | ⏳ | To be measured |
 | Security audit passes | ⏳ | Pending Phase 4 |
 | Documentation complete | ✅ | OpenAPI + guides complete |
 | Can deploy on standard VPS | ⏳ | Pending Phase 4 |
 | Existing collections compatible | ✅ | Uses standard Anki backend |
 
-**Overall Progress:** Approximately 60% complete (Phases 1-2 complete, Phase 3 in progress)
+**Overall Progress:** Approximately 65% complete (Phases 1-2 complete, Phase 3 56% done)
 
 ---
 
@@ -391,7 +453,7 @@ From TASKS.md original success criteria:
 
 - **Phase 1 (Foundation):** ✅ Complete (~2 weeks)
 - **Phase 2 (Core API):** ✅ Complete (~2 weeks)
-- **Phase 3 (UI Components):** 🔄 In Progress (44% done, ~2 weeks remaining)
+- **Phase 3 (UI Components):** 🔄 In Progress (56% done, ~1-2 weeks remaining)
 - **Phase 4 (Polish & Testing):** 📋 Not started (~2 weeks estimated)
 
 **Estimated Total:** 9 weeks  
@@ -400,4 +462,4 @@ From TASKS.md original success criteria:
 
 ---
 
-*This document is auto-updated as phases complete. Last update: Phase 3.4 completion.*
+*This document is auto-updated as phases complete. Last update: Phase 3.5 completion.*

@@ -13,6 +13,10 @@
     function handleDecks() {
         goto("/webapp/decks");
     }
+
+    function handleEditor() {
+        goto("/webapp/editor");
+    }
 </script>
 
 <div class="dashboard-container">
@@ -40,6 +44,12 @@
                 <h2>Study</h2>
                 <p>Start your study session</p>
                 <button class="btn-primary" on:click={handleDecks}>Browse Decks</button>
+            </div>
+
+            <div class="card">
+                <h2>Add Cards</h2>
+                <p>Create new flashcards</p>
+                <button class="btn-primary" on:click={handleEditor}>Add Cards</button>
             </div>
 
             <div class="card">

@@ -176,6 +176,65 @@ export class ApiClient {
         return this.delete<{ message: string }>(`/api/v1/decks/${id}`);
     }
 
+    // Notetype endpoints
+    async getNotetypes() {
+        return this.get<{
+            notetypes: Array<{
+                id: number;
+                name: string;
+            }>;
+        }>("/api/v1/notetypes");
+    }
+
+    async getNotetype(id: number) {
+        return this.get<{
+            id: number;
+            name: string;
+            fields: Array<{
+                name: string;
+                ord: number;
+            }>;
+            templates: Array<{
+                name: string;
+                ord: number;
+            }>;
+        }>(`/api/v1/notetypes/${id}`);
+    }
+
+    // Notes endpoints
+    async createNote(
+        deckId: number,
+        notetypeId: number,
+        fields: string[],
+        tags: string[],
+    ) {
+        return this.post<{
+            success: boolean;
+            note_id: number;
+            message: string;
+        }>("/api/v1/notes", {
+            deck_id: deckId,
+            notetype_id: notetypeId,
+            fields,
+            tags,
+        });
+    }
+
+    async getNote(id: number) {
+        return this.get<{
+            id: number;
+            fields: string[];
+            tags: string[];
+        }>(`/api/v1/notes/${id}`);
+    }
+
+    async updateNote(id: number, fields: string[], tags: string[]) {
+        return this.put<{ success: boolean; message: string }>(
+            `/api/v1/notes/${id}`,
+            { fields, tags },
+        );
+    }
+
     // Scheduler endpoints
     async getNextCard(deckId: number) {
         return this.get<{

@@ -59,6 +59,8 @@ use crate::routes::rename_tag;
 use crate::routes::unsuspend_card;
 use crate::routes::update_card;
 use crate::routes::update_note;
+use crate::routes::get_notetype;
+use crate::routes::list_notetypes;
 use crate::routes::answer_card;
 use crate::routes::get_deck_counts;
 use crate::routes::get_next_card;
@@ -86,6 +88,8 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/notes/{id}", put(update_note))
         .route("/api/v1/notes/{id}", delete(delete_note))
         .route("/api/v1/notes/{id}/cards", get(get_note_cards))
+        .route("/api/v1/notetypes", get(list_notetypes))
+        .route("/api/v1/notetypes/{id}", get(get_notetype))
         .route("/api/v1/cards/{id}", get(get_card))
         .route("/api/v1/cards/{id}", put(update_card))
         .route("/api/v1/cards/{id}", delete(delete_card))
