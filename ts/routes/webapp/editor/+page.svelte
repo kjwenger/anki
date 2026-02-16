@@ -148,7 +148,7 @@
                             id="notetype-select"
                             on:change={handleNotetypeChange}
                             value={$editorStore.notetypeId || ""}
-                            class="w-full p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 cursor-pointer focus:outline-none focus:border-indigo-500 transition-colors"
+                            class="w-full p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 cursor-pointer focus:outline-hidden focus:border-indigo-500 transition-colors"
                         >
                             {#each notetypes as notetype}
                                 <option value={notetype.id}>{notetype.name}</option>
@@ -162,7 +162,7 @@
                             id="deck-select"
                             on:change={handleDeckChange}
                             value={$editorStore.deckId || ""}
-                            class="w-full p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 cursor-pointer focus:outline-none focus:border-indigo-500 transition-colors"
+                            class="w-full p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 cursor-pointer focus:outline-hidden focus:border-indigo-500 transition-colors"
                         >
                             {#each decks as deck}
                                 <option value={deck.id}>{deck.name}</option>

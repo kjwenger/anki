@@ -69,7 +69,7 @@
 </script>
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-    <header class="bg-white dark:bg-gray-800 shadow-sm py-6 px-8">
+    <header class="bg-white dark:bg-gray-800 shadow-xs py-6 px-8">
         <div class="max-w-[900px] mx-auto flex justify-between items-center">
             <h1 class="m-0 text-2xl text-gray-800 dark:text-gray-100 font-bold">Settings</h1>
             <a href="/webapp" class="px-5 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 no-underline rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
@@ -91,7 +91,7 @@
                 <div>
                     <label for="theme" class="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">Theme</label>
                     <select id="theme" bind:value={theme}
-                        class="w-full max-w-[300px] p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400">
+                        class="w-full max-w-[300px] p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-hidden focus:border-indigo-500 dark:focus:border-indigo-400">
                         <option value="light">Light</option>
                         <option value="dark">Dark</option>
                     </select>
@@ -104,14 +104,14 @@
                 <div class="mb-6">
                     <label for="cards-per-day" class="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">New Cards Per Day</label>
                     <input type="number" id="cards-per-day" bind:value={cardsPerDay} min="0" max="999"
-                        class="w-full max-w-[300px] p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400" />
+                        class="w-full max-w-[300px] p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-hidden focus:border-indigo-500 dark:focus:border-indigo-400" />
                     <p class="mt-2 mb-0 text-gray-500 dark:text-gray-400 text-[13px] leading-relaxed">Maximum new cards to introduce per day</p>
                 </div>
 
                 <div>
                     <label for="reviews-per-day" class="block font-semibold text-gray-700 dark:text-gray-200 mb-2 text-sm">Maximum Reviews Per Day</label>
                     <input type="number" id="reviews-per-day" bind:value={reviewsPerDay} min="0" max="9999"
-                        class="w-full max-w-[300px] p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400" />
+                        class="w-full max-w-[300px] p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-hidden focus:border-indigo-500 dark:focus:border-indigo-400" />
                     <p class="mt-2 mb-0 text-gray-500 dark:text-gray-400 text-[13px] leading-relaxed">Maximum review cards to show per day</p>
                 </div>
             </section>

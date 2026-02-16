@@ -157,7 +157,7 @@
                     bind:value={searchQuery}
                     on:keydown={handleKeydown}
                     placeholder="Search query (empty = all)"
-                    class="flex-1 px-3 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:border-indigo-500 transition-colors"
+                    class="flex-1 px-3 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-hidden focus:border-indigo-500 transition-colors"
                 />
                 <button
                     class="px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

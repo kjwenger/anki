@@ -20,6 +20,6 @@
         on:input={handleInput}
         rows="3"
         placeholder="Enter {label}"
-        class="w-full p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-sans text-sm leading-relaxed resize-y transition-colors duration-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 bg-white dark:bg-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+        class="w-full p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-sans text-sm leading-relaxed resize-y transition-colors duration-200 focus:outline-hidden focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 bg-white dark:bg-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
     ></textarea>
 </div>

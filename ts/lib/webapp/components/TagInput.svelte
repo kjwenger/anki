@@ -53,7 +53,7 @@
             on:keydown={handleKeydown}
             on:blur={addTag}
             placeholder="Add tags (press Enter or Space)"
-            class="flex-1 border-none outline-none text-sm p-1 min-w-[120px] bg-transparent dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+            class="flex-1 border-none outline-hidden text-sm p-1 min-w-[120px] bg-transparent dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
         />
     </div>
 </div>

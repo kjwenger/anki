@@ -2,6 +2,7 @@
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 import svg from "@poppanator/sveltekit-svg";
 import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
 import { realpathSync } from "fs";
 import { defineConfig as defineViteConfig, mergeConfig } from "vite";
 import { defineConfig as defineVitestConfig } from "vitest/config";
@@ -19,7 +20,7 @@ const configure = (proxy: any, _options: any) => {
 };
 
 const viteConfig = defineViteConfig({
-    plugins: [sveltekit(), svg({})],
+    plugins: [tailwindcss(), sveltekit(), svg({})],
     build: {
         reportCompressedSize: false,
         // defaults use chrome87, but we need 77 for qt 5.14
