@@ -4,6 +4,7 @@
     import { isAuthenticated } from "$lib/webapp/stores/auth";
     import { onMount } from "svelte";
     import NavBar from "$lib/webapp/components/NavBar.svelte";
+    import "./app.css";
 
     // Public routes that don't require authentication
     const publicRoutes = [
@@ -12,6 +13,22 @@
     ];
 
     let showNav = false;
+
+    // Initialize dark mode from localStorage before render
+    if (typeof document !== "undefined") {
+        try {
+            const settings = JSON.parse(
+                localStorage.getItem("anki-webapp-settings") || "{}",
+            );
+            if (settings.theme === "dark") {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        } catch {
+            // ignore
+        }
+    }
 
     onMount(() => {
         const unsubscribe = isAuthenticated.subscribe((authenticated) => {
@@ -31,27 +48,9 @@
     });
 </script>
 
-<div class="webapp-layout">
+<div id="webapp-root" class="w-full min-h-screen">
     {#if showNav}
         <NavBar />
     {/if}
     <slot />
 </div>
-
-<style>
-    .webapp-layout {
-        width: 100%;
-        min-height: 100vh;
-    }
-
-    :global(body) {
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            "Helvetica Neue", Arial, sans-serif;
-    }
-
-    :global(*) {
-        box-sizing: border-box;
-    }
-</style>

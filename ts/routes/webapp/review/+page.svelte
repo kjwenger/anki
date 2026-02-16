@@ -111,11 +111,12 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="reviewer-container">
-    <div class="reviewer-header">
+<div class="max-w-4xl mx-auto p-5">
+    <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-200 dark:border-gray-700">
         <ReviewProgress />
-        <div class="actions">
+        <div class="flex gap-3">
             <button
+                class="px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 on:click={handleUndo}
                 disabled={!$reviewerStore.canUndo}
                 title="Undo (Ctrl+Z)"
@@ -123,6 +124,7 @@
                 ↶ Undo
             </button>
             <button
+                class="px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 on:click={handleRedo}
                 disabled={!$reviewerStore.canRedo}
                 title="Redo (Ctrl+Shift+Z)"
@@ -133,25 +135,25 @@
     </div>
 
     {#if error}
-        <div class="error-message">{error}</div>
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-5">{error}</div>
     {/if}
 
     {#if loading}
-        <div class="loading">Loading card...</div>
+        <div class="text-center py-16 text-gray-500 dark:text-gray-400 text-lg">Loading card...</div>
     {:else if $reviewerStore.finished}
-        <div class="completion-screen">
-            <h2>🎉 Study Complete!</h2>
-            <p>You've finished reviewing this deck for now.</p>
-            <a href="/webapp/decks" class="btn-primary">Back to Decks</a>
+        <div class="text-center py-20">
+            <h2 class="text-3xl mb-5 text-indigo-500 dark:text-indigo-400 font-bold">Study Complete!</h2>
+            <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">You've finished reviewing this deck for now.</p>
+            <a href="/webapp/decks" class="inline-block px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white no-underline rounded-lg text-base font-medium transition-colors">Back to Decks</a>
         </div>
     {:else if $reviewerStore.currentCard}
         <CardDisplay />
         {#if $reviewerStore.showingAnswer}
             <AnswerButtons on:answer={(e) => answerCard(e.detail)} />
         {:else}
-            <div class="show-answer-container">
+            <div class="text-center mt-10">
                 <button
-                    class="btn-show-answer"
+                    class="px-12 py-4 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-lg cursor-pointer transition-colors"
                     on:click={() => reviewerStore.showAnswer()}
                 >
                     Show Answer (Space)
@@ -160,111 +162,3 @@
         {/if}
     {/if}
 </div>
-
-<style>
-    .reviewer-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .reviewer-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .actions {
-        display: flex;
-        gap: 10px;
-    }
-
-    .actions button {
-        padding: 8px 16px;
-        background: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .actions button:hover:not(:disabled) {
-        background: #e8e8e8;
-    }
-
-    .actions button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .error-message {
-        background: #fee;
-        color: #c33;
-        padding: 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        border: 1px solid #fcc;
-    }
-
-    .loading {
-        text-align: center;
-        padding: 60px 20px;
-        color: #666;
-        font-size: 18px;
-    }
-
-    .completion-screen {
-        text-align: center;
-        padding: 80px 20px;
-    }
-
-    .completion-screen h2 {
-        font-size: 32px;
-        margin-bottom: 20px;
-        color: #0a84ff;
-    }
-
-    .completion-screen p {
-        font-size: 18px;
-        color: #666;
-        margin-bottom: 30px;
-    }
-
-    .btn-primary {
-        display: inline-block;
-        padding: 12px 32px;
-        background: #0a84ff;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 16px;
-        transition: background 0.2s;
-    }
-
-    .btn-primary:hover {
-        background: #0066cc;
-    }
-
-    .show-answer-container {
-        text-align: center;
-        margin-top: 40px;
-    }
-
-    .btn-show-answer {
-        padding: 16px 48px;
-        background: #0a84ff;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 18px;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-show-answer:hover {
-        background: #0066cc;
-    }
-</style>

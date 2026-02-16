@@ -46,20 +46,20 @@
     }
 </script>
 
-<div class="login-container">
-    <div class="login-card">
-        <h1>Anki Web Login</h1>
-        <p class="subtitle">Sign in to your account</p>
+<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md">
+        <h1 class="m-0 mb-2 text-3xl text-gray-800 dark:text-gray-100 text-center font-bold">Anki Web Login</h1>
+        <p class="m-0 mb-8 text-gray-500 dark:text-gray-400 text-center text-sm">Sign in to your account</p>
 
         {#if error}
-            <div class="error-message" role="alert">
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-3 mb-4 text-sm" role="alert">
                 {error}
             </div>
         {/if}
 
         <form on:submit|preventDefault={handleLogin}>
-            <div class="form-group">
-                <label for="username">Username</label>
+            <div class="mb-6">
+                <label for="username" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Username</label>
                 <input
                     id="username"
                     type="text"
@@ -68,11 +68,12 @@
                     placeholder="Enter your username"
                     disabled={loading}
                     autocomplete="username"
+                    class="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-base transition-colors duration-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed bg-white dark:bg-gray-700 dark:text-gray-100"
                 />
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
+            <div class="mb-6">
+                <label for="password" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Password</label>
                 <input
                     id="password"
                     type="password"
@@ -81,10 +82,15 @@
                     placeholder="Enter your password"
                     disabled={loading}
                     autocomplete="current-password"
+                    class="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-base transition-colors duration-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed bg-white dark:bg-gray-700 dark:text-gray-100"
                 />
             </div>
 
-            <button type="submit" class="btn-primary" disabled={loading}>
+            <button
+                type="submit"
+                class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white border-none rounded-lg text-base font-medium cursor-pointer transition-colors duration-200 disabled:cursor-not-allowed"
+                disabled={loading}
+            >
                 {#if loading}
                     Logging in...
                 {:else}
@@ -93,124 +99,9 @@
             </button>
         </form>
 
-        <div class="register-link">
+        <div class="mt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
             Don't have an account?
-            <a href="/webapp/auth/register">Register here</a>
+            <a href="/webapp/auth/register" class="text-indigo-500 dark:text-indigo-400 no-underline font-medium hover:underline">Register here</a>
         </div>
     </div>
 </div>
-
-<style>
-    .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1rem;
-    }
-
-    .login-card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        padding: 2rem;
-        width: 100%;
-        max-width: 400px;
-    }
-
-    h1 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.75rem;
-        color: #333;
-        text-align: center;
-    }
-
-    .subtitle {
-        margin: 0 0 2rem 0;
-        color: #666;
-        text-align: center;
-        font-size: 0.9rem;
-    }
-
-    .error-message {
-        background: #fee;
-        border: 1px solid #fcc;
-        border-radius: 4px;
-        color: #c33;
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: #333;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-
-    input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 1rem;
-        transition: border-color 0.2s;
-        box-sizing: border-box;
-    }
-
-    input:focus {
-        outline: none;
-        border-color: #667eea;
-    }
-
-    input:disabled {
-        background: #f5f5f5;
-        cursor: not-allowed;
-    }
-
-    .btn-primary {
-        width: 100%;
-        padding: 0.75rem;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-        background: #5568d3;
-    }
-
-    .btn-primary:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-    }
-
-    .register-link {
-        margin-top: 1.5rem;
-        text-align: center;
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .register-link a {
-        color: #667eea;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .register-link a:hover {
-        text-decoration: underline;
-    }
-</style>

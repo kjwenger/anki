@@ -18,35 +18,34 @@
     }
 </script>
 
-<div class="collection-list">
+<div class="w-full">
     {#if loading}
-        <div class="loading">Loading collections...</div>
+        <div class="py-8 text-center text-gray-500 dark:text-gray-400">Loading collections...</div>
     {:else if collections.length === 0}
-        <div class="empty-state">
-            <p>No collections found</p>
-            <p class="hint">Create a new collection to get started</p>
+        <div class="py-12 px-8 text-center text-gray-400 dark:text-gray-500">
+            <p class="m-0 my-2">No collections found</p>
+            <p class="m-0 my-2 text-sm text-gray-300 dark:text-gray-600">Create a new collection to get started</p>
         </div>
     {:else}
-        <div class="collections">
+        <div class="flex flex-col gap-2">
             {#each collections as collection (collection.path)}
                 <div
-                    class="collection-item"
-                    class:selected={currentCollection?.path === collection.path}
+                    class="flex justify-between items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:border-indigo-500 hover:shadow-md {currentCollection?.path === collection.path ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'}"
                     on:click={() => handleSelect(collection)}
                     on:keypress={(e) => e.key === "Enter" && handleSelect(collection)}
                     role="button"
                     tabindex="0"
                 >
-                    <div class="collection-info">
-                        <div class="collection-name">{collection.name}</div>
-                        <div class="collection-path">{collection.path}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-gray-800 dark:text-gray-200 mb-1">{collection.name}</div>
+                        <div class="text-sm text-gray-400 dark:text-gray-500 truncate">{collection.path}</div>
                     </div>
-                    <div class="collection-actions">
+                    <div class="flex items-center gap-2">
                         {#if currentCollection?.path === collection.path}
-                            <span class="current-badge">Current</span>
+                            <span class="bg-indigo-500 text-white px-3 py-1 rounded-full text-xs font-medium">Current</span>
                         {/if}
                         <button
-                            class="btn-delete"
+                            class="bg-transparent border-none text-xl cursor-pointer p-1 px-2 opacity-60 hover:opacity-100 transition-opacity"
                             on:click={(e) => handleDelete(collection, e)}
                             aria-label="Delete collection"
                             title="Delete collection"
@@ -59,106 +58,3 @@
         </div>
     {/if}
 </div>
-
-<style>
-    .collection-list {
-        width: 100%;
-    }
-
-    .loading {
-        padding: 2rem;
-        text-align: center;
-        color: #666;
-    }
-
-    .empty-state {
-        padding: 3rem 2rem;
-        text-align: center;
-        color: #999;
-    }
-
-    .empty-state p {
-        margin: 0.5rem 0;
-    }
-
-    .empty-state .hint {
-        font-size: 0.9rem;
-        color: #bbb;
-    }
-
-    .collections {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .collection-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        background: white;
-        border: 2px solid #eee;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .collection-item:hover {
-        border-color: #667eea;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-    }
-
-    .collection-item.selected {
-        border-color: #667eea;
-        background: #f8f9fe;
-    }
-
-    .collection-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .collection-name {
-        font-weight: 500;
-        color: #333;
-        margin-bottom: 0.25rem;
-    }
-
-    .collection-path {
-        font-size: 0.85rem;
-        color: #999;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .collection-actions {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .current-badge {
-        background: #667eea;
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
-
-    .btn-delete {
-        background: none;
-        border: none;
-        font-size: 1.25rem;
-        cursor: pointer;
-        padding: 0.25rem 0.5rem;
-        opacity: 0.6;
-        transition: opacity 0.2s;
-    }
-
-    .btn-delete:hover {
-        opacity: 1;
-    }
-</style>

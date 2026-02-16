@@ -30,19 +30,19 @@
     }
 </script>
 
-<div class="tag-input-container">
-    <label for="tag-input-field">Tags</label>
-    <div class="tag-input">
+<div class="mb-4">
+    <label for="tag-input-field" class="block font-semibold text-gray-800 dark:text-gray-200 mb-1.5 text-sm">Tags</label>
+    <div class="flex flex-wrap gap-1.5 p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg min-h-[42px] items-center transition-colors duration-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 bg-white dark:bg-gray-700">
         {#each tags as tag, index}
-            <span class="tag">
+            <span class="inline-flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-2 py-1 rounded-full text-sm font-medium">
                 {tag}
                 <button
                     type="button"
-                    class="tag-remove"
+                    class="bg-transparent border-none text-indigo-700 dark:text-indigo-400 text-lg leading-none cursor-pointer p-0 w-4 h-4 flex items-center justify-center rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition-colors"
                     on:click={() => removeTag(index)}
                     aria-label="Remove tag"
                 >
-                    ×
+                    &times;
                 </button>
             </span>
         {/each}
@@ -53,83 +53,7 @@
             on:keydown={handleKeydown}
             on:blur={addTag}
             placeholder="Add tags (press Enter or Space)"
-            class="tag-input-field"
+            class="flex-1 border-none outline-none text-sm p-1 min-w-[120px] bg-transparent dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
         />
     </div>
 </div>
-
-<style>
-    .tag-input-container {
-        margin-bottom: 16px;
-    }
-
-    label {
-        display: block;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 6px;
-        font-size: 14px;
-    }
-
-    .tag-input {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px;
-        border: 2px solid #ddd;
-        border-radius: 4px;
-        min-height: 42px;
-        align-items: center;
-        transition: border-color 0.2s;
-    }
-
-    .tag-input:focus-within {
-        border-color: #0a84ff;
-    }
-
-    .tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        background: #e8f4fd;
-        color: #0066cc;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: 500;
-    }
-
-    .tag-remove {
-        background: none;
-        border: none;
-        color: #0066cc;
-        font-size: 18px;
-        line-height: 1;
-        cursor: pointer;
-        padding: 0;
-        width: 16px;
-        height: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: background 0.2s;
-    }
-
-    .tag-remove:hover {
-        background: rgba(0, 102, 204, 0.15);
-    }
-
-    .tag-input-field {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 14px;
-        padding: 4px;
-        min-width: 120px;
-    }
-
-    .tag-input-field::placeholder {
-        color: #999;
-    }
-</style>

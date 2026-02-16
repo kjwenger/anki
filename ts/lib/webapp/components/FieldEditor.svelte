@@ -12,48 +12,14 @@
     }
 </script>
 
-<div class="field-editor">
-    <label for="field-{index}">{label}</label>
+<div class="mb-4">
+    <label for="field-{index}" class="block font-semibold text-gray-800 dark:text-gray-200 mb-1.5 text-sm">{label}</label>
     <textarea
         id="field-{index}"
         {value}
         on:input={handleInput}
         rows="3"
         placeholder="Enter {label}"
+        class="w-full p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-sans text-sm leading-relaxed resize-y transition-colors duration-200 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 bg-white dark:bg-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
     ></textarea>
 </div>
-
-<style>
-    .field-editor {
-        margin-bottom: 16px;
-    }
-
-    label {
-        display: block;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 6px;
-        font-size: 14px;
-    }
-
-    textarea {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid #ddd;
-        border-radius: 4px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        font-size: 14px;
-        line-height: 1.5;
-        resize: vertical;
-        transition: border-color 0.2s;
-    }
-
-    textarea:focus {
-        outline: none;
-        border-color: #0a84ff;
-    }
-
-    textarea::placeholder {
-        color: #999;
-    }
-</style>

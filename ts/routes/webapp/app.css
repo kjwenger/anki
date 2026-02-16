@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply m-0 p-0 font-sans antialiased;
+    }
+    *,
+    *::before,
+    *::after {
+        @apply box-border;
+    }
+}
+
+/*
+ * Neutralize Anki's global button styles within the webapp.
+ * base.scss applies button:not(.btn, .btn-close) { @include button.base }
+ * which sets background, border, and hover gradients that conflict with
+ * Tailwind utility classes.
+ */
+#webapp-root button {
+    background: unset;
+    border: unset;
+    color: unset;
+    box-shadow: unset;
+    border-radius: unset;
+}
+#webapp-root button:hover {
+    background: unset;
+    border: unset;
+}
+#webapp-root button:active {
+    box-shadow: unset;
+    border-color: unset;
+}
+#webapp-root input,
+#webapp-root select,
+#webapp-root textarea {
+    color: unset;
+    background: unset;
+    border: unset;
+    border-radius: unset;
+}
+#webapp-root input:focus,
+#webapp-root select:focus,
+#webapp-root textarea:focus {
+    border-color: unset;
+}

@@ -18,82 +18,16 @@
     }
 </script>
 
-<div class="answer-buttons">
+<div class="flex gap-3 justify-center mt-10 py-5 flex-wrap">
     {#each buttons as button}
         <button
-            class="answer-btn"
+            class="flex-1 max-w-[200px] p-5 border-none rounded-lg text-white text-lg font-semibold cursor-pointer transition-all duration-200 shadow-md hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md flex flex-col items-center gap-2"
             style="background-color: {button.color}"
             on:click={() => handleAnswer(button.rating)}
             title="{button.label} ({button.key})"
         >
-            <span class="label">{button.label}</span>
-            <span class="key">{button.key}</span>
+            <span class="text-lg">{button.label}</span>
+            <span class="text-sm opacity-80 bg-black/20 px-2 py-1 rounded">{button.key}</span>
         </button>
     {/each}
 </div>
-
-<style>
-    .answer-buttons {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-top: 40px;
-        padding: 20px 0;
-    }
-
-    .answer-btn {
-        flex: 1;
-        max-width: 200px;
-        padding: 20px;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        font-size: 18px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .answer-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .answer-btn:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .label {
-        font-size: 18px;
-    }
-
-    .key {
-        font-size: 14px;
-        opacity: 0.8;
-        background: rgba(0, 0, 0, 0.2);
-        padding: 4px 8px;
-        border-radius: 4px;
-    }
-
-    @media (max-width: 768px) {
-        .answer-buttons {
-            flex-wrap: wrap;
-        }
-
-        .answer-btn {
-            max-width: calc(50% - 6px);
-        }
-    }
-
-    @media (max-width: 480px) {
-        .answer-btn {
-            max-width: 100%;
-        }
-    }
-</style>

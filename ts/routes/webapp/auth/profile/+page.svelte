@@ -23,43 +23,43 @@
     }
 </script>
 
-<div class="profile-container">
-    <div class="profile-card">
-        <h1>Profile</h1>
+<div class="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 w-full max-w-lg">
+        <h1 class="m-0 mb-6 text-3xl text-gray-800 dark:text-gray-100 font-bold">Profile</h1>
 
         {#if $currentUser}
-            <div class="user-info">
-                <div class="info-row">
-                    <span class="label">Username:</span>
-                    <span class="value">{$currentUser.username}</span>
+            <div class="mb-6">
+                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+                    <span class="font-medium text-gray-500 dark:text-gray-400">Username:</span>
+                    <span class="text-gray-800 dark:text-gray-200">{$currentUser.username}</span>
                 </div>
-                <div class="info-row">
-                    <span class="label">Email:</span>
-                    <span class="value">{$currentUser.email}</span>
+                <div class="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700">
+                    <span class="font-medium text-gray-500 dark:text-gray-400">Email:</span>
+                    <span class="text-gray-800 dark:text-gray-200">{$currentUser.email}</span>
                 </div>
-                <div class="info-row">
-                    <span class="label">User ID:</span>
-                    <span class="value">{$currentUser.id}</span>
+                <div class="flex justify-between py-3">
+                    <span class="font-medium text-gray-500 dark:text-gray-400">User ID:</span>
+                    <span class="text-gray-800 dark:text-gray-200">{$currentUser.id}</span>
                 </div>
             </div>
 
             {#if message}
-                <div class="success-message">{message}</div>
+                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-3 mb-4">{message}</div>
             {/if}
 
             {#if error}
-                <div class="error-message">{error}</div>
+                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-3 mb-4">{error}</div>
             {/if}
 
-            <div class="actions">
+            <div class="flex gap-4 mt-6">
                 <button
-                    class="btn-secondary"
+                    class="flex-1 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg text-base font-medium cursor-pointer transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-600"
                     on:click={() => goto("/webapp")}
                 >
-                    Back to Dashboard
+                    ← Back
                 </button>
                 <button
-                    class="btn-danger"
+                    class="flex-1 py-3 bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white border-none rounded-lg text-base font-medium cursor-pointer transition-colors duration-200 disabled:cursor-not-allowed"
                     on:click={handleLogout}
                     disabled={loading}
                 >
@@ -67,127 +67,13 @@
                 </button>
             </div>
         {:else}
-            <p>No user information available.</p>
-            <button class="btn-primary" on:click={() => goto("/webapp/auth/login")}>
+            <p class="text-gray-500 dark:text-gray-400">No user information available.</p>
+            <button
+                class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-base font-medium cursor-pointer transition-colors duration-200"
+                on:click={() => goto("/webapp/auth/login")}
+            >
                 Login
             </button>
         {/if}
     </div>
 </div>
-
-<style>
-    .profile-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: #f5f5f5;
-        padding: 1rem;
-    }
-
-    .profile-card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
-        width: 100%;
-        max-width: 500px;
-    }
-
-    h1 {
-        margin: 0 0 1.5rem 0;
-        font-size: 1.75rem;
-        color: #333;
-    }
-
-    .user-info {
-        margin-bottom: 1.5rem;
-    }
-
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #eee;
-    }
-
-    .info-row:last-child {
-        border-bottom: none;
-    }
-
-    .label {
-        font-weight: 500;
-        color: #666;
-    }
-
-    .value {
-        color: #333;
-    }
-
-    .success-message {
-        background: #efe;
-        border: 1px solid #cfc;
-        border-radius: 4px;
-        color: #3c3;
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-    }
-
-    .error-message {
-        background: #fee;
-        border: 1px solid #fcc;
-        border-radius: 4px;
-        color: #c33;
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-    }
-
-    .actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-
-    button {
-        flex: 1;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-primary {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: #5568d3;
-    }
-
-    .btn-secondary {
-        background: #f0f0f0;
-        color: #333;
-    }
-
-    .btn-secondary:hover {
-        background: #e0e0e0;
-    }
-
-    .btn-danger {
-        background: #dc3545;
-        color: white;
-    }
-
-    .btn-danger:hover:not(:disabled) {
-        background: #c82333;
-    }
-
-    button:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-    }
-</style>

@@ -92,7 +92,7 @@
             );
 
             success = `Card created successfully! (ID: ${result.note_id})`;
-            
+
             // Reset form for next card
             editorStore.resetFields();
 
@@ -118,36 +118,37 @@
     }
 </script>
 
-<div class="editor-page">
-    <header class="page-header">
-        <div class="header-content">
-            <h1>Add Cards</h1>
-            <div class="header-actions">
-                <a href="/webapp/decks" class="btn-secondary"> ← Back to Decks </a>
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">Add Cards</h1>
+            <div class="flex gap-4">
+                <a href="/webapp" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"> &larr; Back </a>
             </div>
         </div>
     </header>
 
-    <main class="page-content">
+    <main class="max-w-7xl mx-auto p-8">
         {#if error}
-            <div class="error-banner">{error}</div>
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6">{error}</div>
         {/if}
 
         {#if success}
-            <div class="success-banner">{success}</div>
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-4 mb-6">{success}</div>
         {/if}
 
         {#if loading}
-            <div class="loading">Loading...</div>
+            <div class="text-center py-16 text-gray-500 dark:text-gray-400 text-lg">Loading...</div>
         {:else}
-            <div class="editor-container">
-                <div class="editor-sidebar">
-                    <div class="selector-group">
-                        <label for="notetype-select">Note Type</label>
+            <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-8">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md h-fit">
+                    <div class="mb-6">
+                        <label for="notetype-select" class="block font-semibold text-gray-800 dark:text-gray-200 mb-2 text-sm">Note Type</label>
                         <select
                             id="notetype-select"
                             on:change={handleNotetypeChange}
                             value={$editorStore.notetypeId || ""}
+                            class="w-full p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 cursor-pointer focus:outline-none focus:border-indigo-500 transition-colors"
                         >
                             {#each notetypes as notetype}
                                 <option value={notetype.id}>{notetype.name}</option>
@@ -155,12 +156,13 @@
                         </select>
                     </div>
 
-                    <div class="selector-group">
-                        <label for="deck-select">Deck</label>
+                    <div>
+                        <label for="deck-select" class="block font-semibold text-gray-800 dark:text-gray-200 mb-2 text-sm">Deck</label>
                         <select
                             id="deck-select"
                             on:change={handleDeckChange}
                             value={$editorStore.deckId || ""}
+                            class="w-full p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 cursor-pointer focus:outline-none focus:border-indigo-500 transition-colors"
                         >
                             {#each decks as deck}
                                 <option value={deck.id}>{deck.name}</option>
@@ -169,10 +171,10 @@
                     </div>
                 </div>
 
-                <div class="editor-main">
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
                     {#if $editorStore.notetype}
                         <form on:submit|preventDefault={handleSubmit}>
-                            <div class="fields-container">
+                            <div class="mb-5">
                                 {#each $editorStore.notetype.fields as field, index}
                                     <FieldEditor
                                         label={field.name}
@@ -188,17 +190,17 @@
                                 on:change={handleTagsChange}
                             />
 
-                            <div class="form-actions">
+                            <div class="flex gap-4 mt-8">
                                 <button
                                     type="submit"
-                                    class="btn-primary"
+                                    class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-base font-medium cursor-pointer transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     disabled={saving}
                                 >
                                     {saving ? "Adding..." : "Add Card"}
                                 </button>
                                 <button
                                     type="button"
-                                    class="btn-secondary"
+                                    class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg text-base font-medium cursor-pointer transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                     on:click={() => editorStore.resetFields()}
                                     disabled={saving}
                                 >
@@ -207,188 +209,10 @@
                             </div>
                         </form>
                     {:else}
-                        <p class="no-notetype">Please select a note type to begin.</p>
+                        <p class="text-center text-gray-500 dark:text-gray-400 py-10">Please select a note type to begin.</p>
                     {/if}
                 </div>
             </div>
         {/if}
     </main>
 </div>
-
-<style>
-    .editor-page {
-        min-height: 100vh;
-        background: #f5f5f5;
-    }
-
-    .page-header {
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem 2rem;
-    }
-
-    .header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 1.75rem;
-        color: #333;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .page-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .error-banner {
-        background: #fee;
-        border: 1px solid #fcc;
-        border-radius: 8px;
-        color: #c33;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .success-banner {
-        background: #efe;
-        border: 1px solid #cfc;
-        border-radius: 8px;
-        color: #3c3;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .loading {
-        text-align: center;
-        padding: 60px 20px;
-        color: #666;
-        font-size: 18px;
-    }
-
-    .editor-container {
-        display: grid;
-        grid-template-columns: 250px 1fr;
-        gap: 2rem;
-    }
-
-    .editor-sidebar {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        height: fit-content;
-    }
-
-    .selector-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .selector-group:last-child {
-        margin-bottom: 0;
-    }
-
-    .selector-group label {
-        display: block;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 6px;
-        font-size: 14px;
-    }
-
-    .selector-group select {
-        width: 100%;
-        padding: 8px;
-        border: 2px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-        background: white;
-        cursor: pointer;
-    }
-
-    .selector-group select:focus {
-        outline: none;
-        border-color: #0a84ff;
-    }
-
-    .editor-main {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .fields-container {
-        margin-bottom: 20px;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        padding: 12px 24px;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-primary {
-        background: #0a84ff;
-        color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-        background: #0066cc;
-    }
-
-    .btn-primary:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .btn-secondary {
-        background: #f0f0f0;
-        color: #333;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-        background: #e0e0e0;
-    }
-
-    .btn-secondary:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .no-notetype {
-        text-align: center;
-        color: #666;
-        padding: 40px;
-    }
-
-    @media (max-width: 768px) {
-        .editor-container {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>

@@ -26,30 +26,26 @@
     $: totalDue = deck.new_count + deck.learn_count + deck.review_count;
 </script>
 
-<div class="deck-node">
-    <div class="deck-info">
-        <div class="deck-name">{deck.name}</div>
-        <div class="deck-counts">
-            <span class="count new" title="New cards">{deck.new_count}</span>
-            <span class="count learn" title="Learning cards"
-                >{deck.learn_count}</span
-            >
-            <span class="count review" title="Review cards"
-                >{deck.review_count}</span
-            >
+<div class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg mb-2 transition-all duration-200 hover:border-indigo-500 hover:shadow-md">
+    <div class="flex-1 min-w-0">
+        <div class="font-medium text-gray-800 dark:text-gray-200 mb-2 text-lg">{deck.name}</div>
+        <div class="flex gap-4">
+            <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" title="New cards">{deck.new_count}</span>
+            <span class="px-3 py-1 rounded-full text-sm font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" title="Learning cards">{deck.learn_count}</span>
+            <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" title="Review cards">{deck.review_count}</span>
         </div>
     </div>
 
-    <div class="deck-actions">
+    <div class="flex items-center gap-2">
         {#if totalDue > 0}
-            <button class="btn-study" on:click={handleStudy}>
+            <button class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleStudy}>
                 Study Now ({totalDue})
             </button>
         {:else}
-            <span class="no-cards">No cards due</span>
+            <span class="text-gray-400 dark:text-gray-500 text-sm italic">No cards due</span>
         {/if}
         <button
-            class="btn-icon"
+            class="bg-transparent border-none text-xl cursor-pointer p-1 px-2 opacity-60 hover:opacity-100 transition-opacity"
             on:click={handleRename}
             aria-label="Rename deck"
             title="Rename"
@@ -57,7 +53,7 @@
             ✏️
         </button>
         <button
-            class="btn-icon"
+            class="bg-transparent border-none text-xl cursor-pointer p-1 px-2 opacity-60 hover:opacity-100 transition-opacity"
             on:click={handleDelete}
             aria-label="Delete deck"
             title="Delete"
@@ -66,103 +62,3 @@
         </button>
     </div>
 </div>
-
-<style>
-    .deck-node {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        background: white;
-        border: 2px solid #eee;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-        transition: all 0.2s;
-    }
-
-    .deck-node:hover {
-        border-color: #667eea;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-    }
-
-    .deck-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .deck-name {
-        font-weight: 500;
-        color: #333;
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
-    }
-
-    .deck-counts {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .count {
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .count.new {
-        background: #e3f2fd;
-        color: #1976d2;
-    }
-
-    .count.learn {
-        background: #fff3e0;
-        color: #f57c00;
-    }
-
-    .count.review {
-        background: #e8f5e9;
-        color: #388e3c;
-    }
-
-    .deck-actions {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .no-cards {
-        color: #999;
-        font-size: 0.9rem;
-        font-style: italic;
-    }
-
-    .btn-study {
-        background: #667eea;
-        color: white;
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-study:hover {
-        background: #5568d3;
-    }
-
-    .btn-icon {
-        background: none;
-        border: none;
-        font-size: 1.25rem;
-        cursor: pointer;
-        padding: 0.25rem 0.5rem;
-        opacity: 0.6;
-        transition: opacity 0.2s;
-    }
-
-    .btn-icon:hover {
-        opacity: 1;
-    }
-</style>

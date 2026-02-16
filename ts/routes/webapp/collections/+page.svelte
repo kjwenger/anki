@@ -50,7 +50,7 @@
             };
             collectionStore.addCollection(newCollection);
             showCreateDialog = false;
-            
+
             // Auto-select the newly created collection
             collectionStore.selectCollection(newCollection);
         } catch (e: any) {
@@ -92,29 +92,29 @@
     }
 </script>
 
-<div class="collections-page">
-    <header class="page-header">
-        <div class="header-content">
-            <h1>Collections</h1>
-            <div class="header-actions">
-                <button class="btn-secondary" on:click={goToDashboard}>
-                    ← Back to Dashboard
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">Collections</h1>
+            <div class="flex gap-4">
+                <button class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-600" on:click={goToDashboard}>
+                    &larr; Back
                 </button>
-                <button class="btn-primary" on:click={() => (showCreateDialog = true)}>
+                <button class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={() => (showCreateDialog = true)}>
                     + New Collection
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="page-content">
+    <main class="max-w-7xl mx-auto p-8">
         {#if error}
-            <div class="error-banner" role="alert">
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6" role="alert">
                 {error}
             </div>
         {/if}
 
-        <div class="collections-container">
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 mb-8">
             <CollectionList
                 {collections}
                 {currentCollection}
@@ -125,11 +125,11 @@
         </div>
 
         {#if currentCollection}
-            <div class="current-collection-info">
-                <h3>Selected Collection</h3>
-                <p><strong>Name:</strong> {currentCollection.name}</p>
-                <p><strong>Path:</strong> {currentCollection.path}</p>
-                <button class="btn-primary" on:click={goToDashboard}>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="m-0 mb-4 text-gray-800 dark:text-gray-100 font-semibold">Selected Collection</h3>
+                <p class="m-0 my-2 text-gray-500 dark:text-gray-400"><strong class="text-gray-800 dark:text-gray-200">Name:</strong> {currentCollection.name}</p>
+                <p class="m-0 my-2 text-gray-500 dark:text-gray-400"><strong class="text-gray-800 dark:text-gray-200">Path:</strong> {currentCollection.path}</p>
+                <button class="mt-4 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={goToDashboard}>
                     Continue to Dashboard
                 </button>
             </div>
@@ -143,178 +143,15 @@
 />
 
 {#if deleteConfirmation}
-    <div class="modal-overlay" on:click={cancelDelete} role="presentation">
-        <div class="confirm-dialog" on:click|stopPropagation role="dialog" aria-modal="true">
-            <h2>Delete Collection</h2>
-            <p>Are you sure you want to delete "{deleteConfirmation.name}"?</p>
-            <p class="warning">This action cannot be undone!</p>
-            <div class="dialog-actions">
-                <button class="btn-secondary" on:click={cancelDelete}>Cancel</button>
-                <button class="btn-danger" on:click={confirmDelete}>Delete</button>
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" on:click={cancelDelete} role="presentation">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-md w-[90%]" on:click|stopPropagation role="dialog" aria-modal="true">
+            <h2 class="m-0 mb-4 text-xl text-gray-800 dark:text-gray-100 font-semibold">Delete Collection</h2>
+            <p class="m-0 my-2 text-gray-500 dark:text-gray-400">Are you sure you want to delete "{deleteConfirmation.name}"?</p>
+            <p class="text-red-600 dark:text-red-400 font-medium mt-4">This action cannot be undone!</p>
+            <div class="flex justify-end gap-4 mt-6">
+                <button class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-600" on:click={cancelDelete}>Cancel</button>
+                <button class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={confirmDelete}>Delete</button>
             </div>
         </div>
     </div>
 {/if}
-
-<style>
-    .collections-page {
-        min-height: 100vh;
-        background: #f5f5f5;
-    }
-
-    .page-header {
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem 2rem;
-    }
-
-    .header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 1.75rem;
-        color: #333;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .page-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .error-banner {
-        background: #fee;
-        border: 1px solid #fcc;
-        border-radius: 8px;
-        color: #c33;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .collections-container {
-        background: #f9f9f9;
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .current-collection-info {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        border-left: 4px solid #667eea;
-    }
-
-    .current-collection-info h3 {
-        margin: 0 0 1rem 0;
-        color: #333;
-    }
-
-    .current-collection-info p {
-        margin: 0.5rem 0;
-        color: #666;
-    }
-
-    .current-collection-info strong {
-        color: #333;
-    }
-
-    .current-collection-info .btn-primary {
-        margin-top: 1rem;
-    }
-
-    button {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-primary {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: #5568d3;
-    }
-
-    .btn-secondary {
-        background: #f0f0f0;
-        color: #333;
-    }
-
-    .btn-secondary:hover {
-        background: #e0e0e0;
-    }
-
-    .btn-danger {
-        background: #dc3545;
-        color: white;
-    }
-
-    .btn-danger:hover {
-        background: #c82333;
-    }
-
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-    }
-
-    .confirm-dialog {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        padding: 2rem;
-        max-width: 400px;
-        width: 90%;
-    }
-
-    .confirm-dialog h2 {
-        margin: 0 0 1rem 0;
-        color: #333;
-        font-size: 1.25rem;
-    }
-
-    .confirm-dialog p {
-        margin: 0.5rem 0;
-        color: #666;
-    }
-
-    .confirm-dialog .warning {
-        color: #c33;
-        font-weight: 500;
-        margin-top: 1rem;
-    }
-
-    .dialog-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-</style>

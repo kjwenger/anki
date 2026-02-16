@@ -31,188 +31,69 @@
     }
 </script>
 
-<div class="dashboard-container">
-    <header class="dashboard-header">
-        <h1>Anki Web Dashboard</h1>
-        <div class="user-section">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-4 flex justify-between items-center">
+        <h1 class="m-0 text-2xl text-gray-800 dark:text-gray-100 font-bold">Anki Web Dashboard</h1>
+        <div class="flex items-center gap-4">
             {#if $currentUser}
-                <span class="welcome">Welcome, {$currentUser.username}!</span>
-                <button class="btn-profile" on:click={handleProfile}>
+                <span class="text-gray-500 dark:text-gray-400 text-sm">Welcome, {$currentUser.username}!</span>
+                <button
+                    class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg cursor-pointer text-sm font-medium transition-colors duration-200"
+                    on:click={handleProfile}
+                >
                     Profile
                 </button>
             {/if}
         </div>
     </header>
 
-    <main class="dashboard-main">
-        <div class="dashboard-grid">
-            <div class="card">
-                <h2>Collections</h2>
-                <p>Manage your flashcard collections</p>
-                <button class="btn-primary" on:click={handleCollections}>View Collections</button>
+    <main class="max-w-7xl mx-auto p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group">
+                <h2 class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold">Collections</h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">Manage your flashcard collections</p>
+                <button class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleCollections}>View Collections</button>
             </div>
 
-            <div class="card">
-                <h2>Study</h2>
-                <p>Start your study session</p>
-                <button class="btn-primary" on:click={handleDecks}>Browse Decks</button>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group">
+                <h2 class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold">Study</h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">Start your study session</p>
+                <button class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleDecks}>Browse Decks</button>
             </div>
 
-            <div class="card">
-                <h2>Add Cards</h2>
-                <p>Create new flashcards</p>
-                <button class="btn-primary" on:click={handleEditor}>Add Cards</button>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group">
+                <h2 class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold">Add Cards</h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">Create new flashcards</p>
+                <button class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleEditor}>Add Cards</button>
             </div>
 
-            <div class="card">
-                <h2>Browse</h2>
-                <p>Search and manage cards</p>
-                <button class="btn-primary" on:click={handleBrowse}>Browse Cards</button>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group">
+                <h2 class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold">Browse</h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">Search and manage cards</p>
+                <button class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleBrowse}>Browse Cards</button>
             </div>
 
-            <div class="card">
-                <h2>Statistics</h2>
-                <p>View your learning progress</p>
-                <button class="btn-primary" on:click={handleStats}>View Stats</button>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group">
+                <h2 class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold">Statistics</h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">View your learning progress</p>
+                <button class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleStats}>View Stats</button>
             </div>
 
-            <div class="card">
-                <h2>Settings</h2>
-                <p>Configure your preferences</p>
-                <button class="btn-primary" on:click={handleSettings}>Settings</button>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group">
+                <h2 class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold">Settings</h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">Configure your preferences</p>
+                <button class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200" on:click={handleSettings}>Settings</button>
             </div>
         </div>
 
-        <div class="info-box">
-            <h3>🎉 Welcome to Anki Web!</h3>
-            <p>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border-l-4 border-indigo-500">
+            <h3 class="m-0 mb-4 text-gray-800 dark:text-gray-100 font-semibold">Welcome to Anki Web!</h3>
+            <p class="m-0 my-2 text-gray-500 dark:text-gray-400 leading-relaxed">
                 This is your central hub for managing flashcards, studying, and tracking your progress.
             </p>
-            <p>
+            <p class="m-0 my-2 text-gray-500 dark:text-gray-400 leading-relaxed">
                 Phase 3.1 (Authentication UI) is now complete! More features coming soon.
             </p>
         </div>
     </main>
 </div>
-
-<style>
-    .dashboard-container {
-        min-height: 100vh;
-        background: #f5f5f5;
-    }
-
-    .dashboard-header {
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: #333;
-    }
-
-    .user-section {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .welcome {
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .btn-profile {
-        padding: 0.5rem 1rem;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: background 0.2s;
-    }
-
-    .btn-profile:hover {
-        background: #5568d3;
-    }
-
-    .dashboard-main {
-        padding: 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .card h2 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.25rem;
-        color: #333;
-    }
-
-    .card p {
-        margin: 0 0 1rem 0;
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .btn-primary {
-        width: 100%;
-        padding: 0.75rem;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .btn-primary:hover {
-        background: #5568d3;
-    }
-
-    .info-box {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        border-left: 4px solid #667eea;
-    }
-
-    .info-box h3 {
-        margin: 0 0 1rem 0;
-        color: #333;
-    }
-
-    .info-box p {
-        margin: 0.5rem 0;
-        color: #666;
-        line-height: 1.6;
-    }
-</style>

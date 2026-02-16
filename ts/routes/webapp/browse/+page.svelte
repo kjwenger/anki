@@ -120,49 +120,47 @@
     }
 </script>
 
-<div class="browse-page">
-    <header class="page-header">
-        <div class="header-content">
-            <h1>Browse {searchMode === "cards" ? "Cards" : "Notes"}</h1>
-            <div class="header-actions">
-                <a href="/webapp/decks" class="btn-secondary"> ← Back </a>
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
+        <div class="max-w-[1400px] mx-auto flex justify-between items-center">
+            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">Browse {searchMode === "cards" ? "Cards" : "Notes"}</h1>
+            <div class="flex gap-4">
+                <a href="/webapp" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"> &larr; Back </a>
             </div>
         </div>
     </header>
 
-    <main class="page-content">
+    <main class="max-w-[1400px] mx-auto p-8">
         {#if error}
-            <div class="error-banner">{error}</div>
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6">{error}</div>
         {/if}
 
-        <div class="search-bar">
-            <div class="mode-selector">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+            <div class="flex gap-2 mb-4">
                 <button
-                    class="mode-btn"
-                    class:active={searchMode === "cards"}
+                    class="px-4 py-2 border-2 rounded-lg cursor-pointer transition-all duration-200 {searchMode === 'cards' ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
                     on:click={() => (searchMode = "cards")}
                 >
                     Cards
                 </button>
                 <button
-                    class="mode-btn"
-                    class:active={searchMode === "notes"}
+                    class="px-4 py-2 border-2 rounded-lg cursor-pointer transition-all duration-200 {searchMode === 'notes' ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
                     on:click={() => (searchMode = "notes")}
                 >
                     Notes
                 </button>
             </div>
 
-            <div class="search-input-container">
+            <div class="flex gap-2">
                 <input
                     type="text"
                     bind:value={searchQuery}
                     on:keydown={handleKeydown}
                     placeholder="Search query (empty = all)"
-                    class="search-input"
+                    class="flex-1 px-3 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:border-indigo-500 transition-colors"
                 />
                 <button
-                    class="btn-search"
+                    class="px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     on:click={handleSearch}
                     disabled={loading}
                 >
@@ -171,9 +169,9 @@
             </div>
         </div>
 
-        <div class="results-section">
-            <div class="results-header">
-                <div class="results-info">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center flex-wrap gap-4">
+                <div class="font-semibold text-gray-800 dark:text-gray-200">
                     {results.length}
                     {searchMode} found
                     {#if selectedIds.size > 0}
@@ -181,24 +179,18 @@
                     {/if}
                 </div>
                 {#if results.length > 0}
-                    <div class="bulk-actions">
-                        <button class="btn-small" on:click={selectAll}>
+                    <div class="flex gap-2 flex-wrap">
+                        <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg cursor-pointer text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" on:click={selectAll}>
                             Select All
                         </button>
-                        <button class="btn-small" on:click={deselectAll}>
+                        <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg cursor-pointer text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" on:click={deselectAll}>
                             Deselect All
                         </button>
                         {#if selectedIds.size > 0}
-                            <button
-                                class="btn-small btn-warning"
-                                on:click={handleBulkSuspend}
-                            >
+                            <button class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors" on:click={handleBulkSuspend}>
                                 Suspend Selected
                             </button>
-                            <button
-                                class="btn-small btn-danger"
-                                on:click={handleBulkDelete}
-                            >
+                            <button class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors" on:click={handleBulkDelete}>
                                 Delete Selected
                             </button>
                         {/if}
@@ -206,16 +198,16 @@
                 {/if}
             </div>
 
-            <div class="results-table">
+            <div class="overflow-x-auto">
                 {#if loading}
-                    <div class="loading">Searching...</div>
+                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">Searching...</div>
                 {:else if results.length === 0}
-                    <div class="no-results">No {searchMode} found</div>
+                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">No {searchMode} found</div>
                 {:else}
-                    <table>
+                    <table class="w-full border-collapse">
                         <thead>
                             <tr>
-                                <th class="col-checkbox">
+                                <th class="w-10 text-center px-3 py-3 bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">
                                     <input
                                         type="checkbox"
                                         checked={selectedIds.size ===
@@ -232,38 +224,37 @@
                                         }}
                                     />
                                 </th>
-                                <th>ID</th>
+                                <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">ID</th>
                                 {#if searchMode === "cards"}
-                                    <th>Deck</th>
-                                    <th>Due</th>
-                                    <th>Interval</th>
+                                    <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Deck</th>
+                                    <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Due</th>
+                                    <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Interval</th>
                                 {/if}
-                                <th>Actions</th>
+                                <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {#each results.slice(0, 100) as id}
                                 {@const card = cardDetails.get(id)}
-                                <tr class:selected={selectedIds.has(id)}>
-                                    <td class="col-checkbox">
+                                <tr
+                                    class="border-b border-gray-100 dark:border-gray-700/50 transition-colors {selectedIds.has(id) ? 'bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}"
+                                >
+                                    <td class="w-10 text-center px-3 py-3">
                                         <input
                                             type="checkbox"
                                             checked={selectedIds.has(id)}
                                             on:change={() => toggleSelect(id)}
                                         />
                                     </td>
-                                    <td>{id}</td>
+                                    <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{id}</td>
                                     {#if searchMode === "cards"}
-                                        <td
-                                            >{card?.deck_id ||
-                                                "Loading..."}</td
-                                        >
-                                        <td>{card?.due || "-"}</td>
-                                        <td>{card?.interval || "-"}</td>
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{card?.deck_id || "Loading..."}</td>
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{card?.due || "-"}</td>
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{card?.interval || "-"}</td>
                                     {/if}
-                                    <td>
+                                    <td class="px-3 py-3">
                                         <button
-                                            class="btn-tiny"
+                                            class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded cursor-pointer text-xs hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                                             on:click={() =>
                                                 alert(`View ${searchMode} ${id}`)}
                                         >
@@ -275,7 +266,7 @@
                         </tbody>
                     </table>
                     {#if results.length > 100}
-                        <div class="pagination-note">
+                        <div class="py-4 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700">
                             Showing first 100 of {results.length}
                             {searchMode}
                         </div>
@@ -285,242 +276,3 @@
         </div>
     </main>
 </div>
-
-<style>
-    .browse-page {
-        min-height: 100vh;
-        background: #f5f5f5;
-    }
-
-    .page-header {
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem 2rem;
-    }
-
-    .header-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    h1 {
-        margin: 0;
-        font-size: 1.75rem;
-        color: #333;
-    }
-
-    .page-content {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .error-banner {
-        background: #fee;
-        border: 1px solid #fcc;
-        border-radius: 8px;
-        color: #c33;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .search-bar {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
-    }
-
-    .mode-selector {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .mode-btn {
-        padding: 0.5rem 1rem;
-        border: 2px solid #ddd;
-        background: white;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .mode-btn.active {
-        background: #0a84ff;
-        border-color: #0a84ff;
-        color: white;
-    }
-
-    .search-input-container {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .search-input {
-        flex: 1;
-        padding: 0.75rem;
-        border: 2px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .search-input:focus {
-        outline: none;
-        border-color: #0a84ff;
-    }
-
-    .btn-search {
-        padding: 0.75rem 2rem;
-        background: #0a84ff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 500;
-    }
-
-    .btn-search:hover:not(:disabled) {
-        background: #0066cc;
-    }
-
-    .btn-search:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .results-section {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    .results-header {
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .results-info {
-        font-weight: 600;
-        color: #333;
-    }
-
-    .bulk-actions {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .btn-small,
-    .btn-tiny {
-        padding: 0.5rem 1rem;
-        background: #f0f0f0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 13px;
-    }
-
-    .btn-tiny {
-        padding: 0.25rem 0.5rem;
-        font-size: 12px;
-    }
-
-    .btn-small:hover,
-    .btn-tiny:hover {
-        background: #e0e0e0;
-    }
-
-    .btn-warning {
-        background: #ff9800;
-        color: white;
-    }
-
-    .btn-warning:hover {
-        background: #f57c00;
-    }
-
-    .btn-danger {
-        background: #f44336;
-        color: white;
-    }
-
-    .btn-danger:hover {
-        background: #d32f2f;
-    }
-
-    .btn-secondary {
-        padding: 0.5rem 1rem;
-        background: #f0f0f0;
-        color: #333;
-        text-decoration: none;
-        border-radius: 4px;
-        display: inline-block;
-    }
-
-    .results-table {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 0.75rem;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
-
-    th {
-        background: #f9f9f9;
-        font-weight: 600;
-        color: #666;
-        font-size: 13px;
-        text-transform: uppercase;
-    }
-
-    tr.selected {
-        background: #e3f2fd;
-    }
-
-    tr:hover {
-        background: #f5f5f5;
-    }
-
-    tr.selected:hover {
-        background: #bbdefb;
-    }
-
-    .col-checkbox {
-        width: 40px;
-        text-align: center;
-    }
-
-    .loading,
-    .no-results {
-        text-align: center;
-        padding: 3rem;
-        color: #666;
-    }
-
-    .pagination-note {
-        padding: 1rem;
-        text-align: center;
-        color: #666;
-        font-size: 14px;
-        border-top: 1px solid #eee;
-    }
-</style>

@@ -29,80 +29,92 @@
     $: isActive = (path: string) => currentPath.startsWith(path);
 </script>
 
-<nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-brand">
-            <button class="brand-link" on:click={() => navigateTo("/webapp")}>
-                <span class="brand-icon">🎴</span>
-                <span class="brand-text">Anki Web</span>
+<nav class="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+        <div class="flex items-center gap-4">
+            <button
+                class="flex items-center gap-2 bg-transparent border-none cursor-pointer text-xl font-semibold text-gray-800 dark:text-gray-100 hover:text-indigo-500 dark:hover:text-indigo-400 p-0"
+                on:click={() => navigateTo("/webapp")}
+            >
+                <span class="text-2xl">🎴</span>
+                <span>Anki Web</span>
             </button>
-            <button class="mobile-menu-toggle" on:click={toggleMobileMenu}>
+            <button
+                class="md:hidden bg-transparent border-none text-2xl cursor-pointer p-2 text-gray-600 dark:text-gray-300"
+                on:click={toggleMobileMenu}
+            >
                 {showMobileMenu ? "✕" : "☰"}
             </button>
         </div>
 
-        <div class="navbar-menu" class:active={showMobileMenu}>
-            <div class="navbar-links">
+        <div
+            class="items-center {showMobileMenu ? 'flex absolute top-16 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex-col gap-0 p-4' : 'hidden md:flex gap-8'}"
+        >
+            <div class="flex gap-1 {showMobileMenu ? 'flex-col w-full' : ''}">
                 <button
-                    class="nav-link"
-                    class:active={isActive("/webapp/decks")}
+                    class="bg-transparent border-none px-4 py-2 cursor-pointer text-sm font-medium rounded transition-all duration-200 {showMobileMenu ? 'w-full text-left' : ''} {isActive('/webapp/decks') ? 'bg-indigo-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200'}"
                     on:click={() => navigateTo("/webapp/decks")}
                 >
                     Decks
                 </button>
                 <button
-                    class="nav-link"
-                    class:active={isActive("/webapp/editor")}
+                    class="bg-transparent border-none px-4 py-2 cursor-pointer text-sm font-medium rounded transition-all duration-200 {showMobileMenu ? 'w-full text-left' : ''} {isActive('/webapp/editor') ? 'bg-indigo-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200'}"
                     on:click={() => navigateTo("/webapp/editor")}
                 >
                     Add
                 </button>
                 <button
-                    class="nav-link"
-                    class:active={isActive("/webapp/browse")}
+                    class="bg-transparent border-none px-4 py-2 cursor-pointer text-sm font-medium rounded transition-all duration-200 {showMobileMenu ? 'w-full text-left' : ''} {isActive('/webapp/browse') ? 'bg-indigo-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200'}"
                     on:click={() => navigateTo("/webapp/browse")}
                 >
                     Browse
                 </button>
                 <button
-                    class="nav-link"
-                    class:active={isActive("/webapp/stats")}
+                    class="bg-transparent border-none px-4 py-2 cursor-pointer text-sm font-medium rounded transition-all duration-200 {showMobileMenu ? 'w-full text-left' : ''} {isActive('/webapp/stats') ? 'bg-indigo-500 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200'}"
                     on:click={() => navigateTo("/webapp/stats")}
                 >
                     Stats
                 </button>
             </div>
 
-            <div class="navbar-user">
+            <div class="relative {showMobileMenu ? 'w-full mt-2' : ''}">
                 {#if $currentUser}
-                    <button class="user-button" on:click={toggleUserMenu}>
-                        <span class="user-icon">👤</span>
-                        <span class="user-name">{$currentUser.username}</span>
-                        <span class="user-arrow">{showUserMenu ? "▲" : "▼"}</span>
+                    <button
+                        class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-4 py-2 cursor-pointer text-sm transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 {showMobileMenu ? 'w-full justify-between' : ''}"
+                        on:click={toggleUserMenu}
+                    >
+                        <span class="text-base">👤</span>
+                        <span class="font-medium text-gray-800 dark:text-gray-200">{$currentUser.username}</span>
+                        <span class="text-xs text-gray-400">{showUserMenu ? "▲" : "▼"}</span>
                     </button>
 
                     {#if showUserMenu}
-                        <div class="user-menu">
+                        <div
+                            class="{showMobileMenu ? 'static mt-2 shadow-none border-0 bg-gray-50 dark:bg-gray-800' : 'absolute top-full mt-2 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded shadow-lg'} min-w-[180px] z-50"
+                        >
                             <button
-                                class="menu-item"
+                                class="block w-full px-4 py-3 bg-transparent border-none text-left cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 on:click={() => navigateTo("/webapp/auth/profile")}
                             >
                                 Profile
                             </button>
                             <button
-                                class="menu-item"
+                                class="block w-full px-4 py-3 bg-transparent border-none text-left cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 on:click={() => navigateTo("/webapp/settings")}
                             >
                                 Settings
                             </button>
                             <button
-                                class="menu-item"
+                                class="block w-full px-4 py-3 bg-transparent border-none text-left cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 on:click={() => navigateTo("/webapp/collections")}
                             >
                                 Collections
                             </button>
-                            <div class="menu-divider"></div>
-                            <button class="menu-item logout" on:click={handleLogout}>
+                            <div class="h-px bg-gray-200 dark:bg-gray-600 my-1"></div>
+                            <button
+                                class="block w-full px-4 py-3 bg-transparent border-none text-left cursor-pointer text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                on:click={handleLogout}
+                            >
                                 Logout
                             </button>
                         </div>
@@ -112,219 +124,3 @@
         </div>
     </div>
 </nav>
-
-<style>
-    .navbar {
-        background: white;
-        border-bottom: 1px solid #e0e0e0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-
-    .navbar-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 60px;
-    }
-
-    .navbar-brand {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .brand-link {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #333;
-        padding: 0;
-    }
-
-    .brand-link:hover {
-        color: #667eea;
-    }
-
-    .brand-icon {
-        font-size: 1.5rem;
-    }
-
-    .mobile-menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0.5rem;
-    }
-
-    .navbar-menu {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-    }
-
-    .navbar-links {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .nav-link {
-        background: none;
-        border: none;
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        color: #666;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-
-    .nav-link:hover {
-        background: #f5f5f5;
-        color: #333;
-    }
-
-    .nav-link.active {
-        background: #667eea;
-        color: white;
-    }
-
-    .navbar-user {
-        position: relative;
-    }
-
-    .user-button {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.2s;
-    }
-
-    .user-button:hover {
-        background: #e8e8e8;
-    }
-
-    .user-icon {
-        font-size: 16px;
-    }
-
-    .user-name {
-        font-weight: 500;
-        color: #333;
-    }
-
-    .user-arrow {
-        font-size: 10px;
-        color: #999;
-    }
-
-    .user-menu {
-        position: absolute;
-        top: calc(100% + 0.5rem);
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        min-width: 180px;
-        z-index: 1001;
-    }
-
-    .menu-item {
-        display: block;
-        width: 100%;
-        padding: 0.75rem 1rem;
-        background: none;
-        border: none;
-        text-align: left;
-        cursor: pointer;
-        font-size: 14px;
-        color: #333;
-        transition: background 0.2s;
-    }
-
-    .menu-item:hover {
-        background: #f5f5f5;
-    }
-
-    .menu-item.logout {
-        color: #d32f2f;
-    }
-
-    .menu-divider {
-        height: 1px;
-        background: #e0e0e0;
-        margin: 0.5rem 0;
-    }
-
-    @media (max-width: 768px) {
-        .mobile-menu-toggle {
-            display: block;
-        }
-
-        .navbar-menu {
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
-            flex-direction: column;
-            gap: 0;
-            padding: 1rem;
-            display: none;
-        }
-
-        .navbar-menu.active {
-            display: flex;
-        }
-
-        .navbar-links {
-            flex-direction: column;
-            width: 100%;
-            gap: 0.5rem;
-        }
-
-        .nav-link {
-            width: 100%;
-            text-align: left;
-        }
-
-        .navbar-user {
-            width: 100%;
-            margin-top: 0.5rem;
-        }
-
-        .user-button {
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .user-menu {
-            position: static;
-            margin-top: 0.5rem;
-            box-shadow: none;
-            border: none;
-            background: #f9f9f9;
-        }
-    }
-</style>
