@@ -3,6 +3,7 @@
     import { page } from "$app/stores";
     import { isAuthenticated } from "$lib/webapp/stores/auth";
     import { onMount } from "svelte";
+    import NavBar from "$lib/webapp/components/NavBar.svelte";
 
     // Public routes that don't require authentication
     const publicRoutes = [
@@ -10,12 +11,16 @@
         "/webapp/auth/register",
     ];
 
+    let showNav = false;
+
     onMount(() => {
         const unsubscribe = isAuthenticated.subscribe((authenticated) => {
             const currentPath = $page.url.pathname;
             const isPublicRoute = publicRoutes.some((route) =>
                 currentPath.startsWith(route)
             );
+
+            showNav = authenticated && !isPublicRoute;
 
             if (!authenticated && !isPublicRoute) {
                 goto("/webapp/auth/login");
@@ -27,6 +32,9 @@
 </script>
 
 <div class="webapp-layout">
+    {#if showNav}
+        <NavBar />
+    {/if}
     <slot />
 </div>
 
