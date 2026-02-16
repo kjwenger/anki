@@ -1,0 +1,47 @@
+# Dockerfile for Anki Webapp API (Rust backend)
+FROM rust:1.75 as builder
+
+WORKDIR /app
+
+# Copy Cargo files
+COPY Cargo.toml Cargo.lock ./
+COPY rust-toolchain.toml ./
+
+# Copy source code
+COPY rslib ./rslib
+COPY pylib/rsbridge ./pylib/rsbridge
+COPY proto ./proto
+COPY build ./build
+COPY ftl ./ftl
+COPY tools ./tools
+
+# Build the webapp API
+WORKDIR /app/rslib/webapp
+RUN cargo build --release
+
+# Runtime stage
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && \
+    apt-get install -y libssl3 ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy the built binary
+COPY --from=builder /app/target/release/anki-webapp-api /app/anki-webapp-api
+
+# Create data directory for collections
+RUN mkdir -p /app/data
+
+# Expose API port
+EXPOSE 8080
+
+# Set environment variables
+ENV RUST_LOG=info
+ENV DATABASE_URL=/app/data/anki.db
+ENV JWT_SECRET=change-this-secret-in-production
+
+# Run the API server
+CMD ["/app/anki-webapp-api"]
