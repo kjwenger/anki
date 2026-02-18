@@ -33,7 +33,10 @@ pub fn openapi_spec() -> Value {
             { "name": "media", "description": "Media file management" },
             { "name": "tags", "description": "Tag management" },
             { "name": "stats", "description": "Statistics and analytics" },
-            { "name": "health", "description": "Health check endpoints" }
+            { "name": "health", "description": "Health check endpoints" },
+            { "name": "scheduler", "description": "Study session and spaced repetition scheduler" },
+            { "name": "notetypes", "description": "Note type (model) management" },
+            { "name": "collections", "description": "Collection file management" }
         ],
         "paths": {
             "/api/v1/auth/register": {
@@ -276,6 +279,33 @@ pub fn openapi_spec() -> Value {
                             "content": {
                                 "application/json": {
                                     "schema": { "$ref": "#/components/schemas/Deck" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                },
+                "put": {
+                    "tags": ["decks"],
+                    "summary": "Update a deck (rename or set collapsed state)",
+                    "operationId": "updateDeck",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [{ "$ref": "#/components/parameters/DeckId" }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/UpdateDeckRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Deck updated",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
                                 }
                             }
                         },
@@ -1181,6 +1211,288 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/notetypes": {
+                "get": {
+                    "tags": ["notetypes"],
+                    "summary": "List all note types",
+                    "operationId": "listNotetypes",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "List of note types",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "notetypes": {
+                                                "type": "array",
+                                                "items": { "$ref": "#/components/schemas/NotetypeSummary" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/notetypes/{id}": {
+                "get": {
+                    "tags": ["notetypes"],
+                    "summary": "Get a note type by ID",
+                    "operationId": "getNotetype",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Note type ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Note type details including fields",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/NotetypeDetail" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/collections": {
+                "get": {
+                    "tags": ["collections"],
+                    "summary": "List available collection files for the current user",
+                    "operationId": "listCollections",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "List of collection paths",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "collections": {
+                                                "type": "array",
+                                                "items": { "type": "string" },
+                                                "description": "Collection file paths relative to the user data directory"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                },
+                "post": {
+                    "tags": ["collections"],
+                    "summary": "Create a new collection",
+                    "operationId": "createCollection",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/CreateCollectionRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Collection created",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/collections/{path}": {
+                "delete": {
+                    "tags": ["collections"],
+                    "summary": "Delete a collection file",
+                    "operationId": "deleteCollection",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "path",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "string" },
+                            "description": "Collection file path (relative to user data directory)"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Collection deleted",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/scheduler/decks/{deck_id}/next": {
+                "get": {
+                    "tags": ["scheduler"],
+                    "summary": "Get the next card due for review in a deck",
+                    "operationId": "getNextCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "deck_id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Deck ID to fetch the next card from"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Next card for review, or null if no cards are due",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/NextCardResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/scheduler/decks/{deck_id}/cards/{card_id}/answer": {
+                "post": {
+                    "tags": ["scheduler"],
+                    "summary": "Submit an answer (ease rating) for a card",
+                    "operationId": "answerCard",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "deck_id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Deck ID"
+                        },
+                        {
+                            "name": "card_id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID to answer"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/AnswerCardRequest" }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Answer recorded, returns updated counts",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/AnswerCardResponse" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/scheduler/decks/{deck_id}/counts": {
+                "get": {
+                    "tags": ["scheduler"],
+                    "summary": "Get card counts (new / learning / review) for a deck",
+                    "operationId": "getDeckCounts",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "deck_id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Deck ID"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Card counts for the deck",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/DeckCountsResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
+            "/api/v1/scheduler/undo": {
+                "post": {
+                    "tags": ["scheduler"],
+                    "summary": "Undo the last scheduler action",
+                    "operationId": "undoScheduler",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Undo successful",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/scheduler/redo": {
+                "post": {
+                    "tags": ["scheduler"],
+                    "summary": "Redo the last undone scheduler action",
+                    "operationId": "redoScheduler",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Redo successful",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/MessageResponse" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
             "/api/v1/info": {
                 "get": {
                     "tags": ["health"],
@@ -1726,6 +2038,77 @@ pub fn openapi_spec() -> Value {
                         "success": { "type": "boolean", "example": true },
                         "message": { "type": "string", "example": "Cleared 3 unused tags" },
                         "removed_count": { "type": "integer", "description": "Number of tags removed" }
+                    }
+                },
+                "UpdateDeckRequest": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string", "nullable": true, "example": "Spanish Vocabulary" },
+                        "collapsed": { "type": "boolean", "nullable": true }
+                    }
+                },
+                "NotetypeSummary": {
+                    "type": "object",
+                    "properties": {
+                        "id": { "type": "integer", "format": "int64" },
+                        "name": { "type": "string", "example": "Basic" }
+                    }
+                },
+                "NotetypeDetail": {
+                    "type": "object",
+                    "properties": {
+                        "id": { "type": "integer", "format": "int64" },
+                        "name": { "type": "string", "example": "Basic" },
+                        "fields": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "example": ["Front", "Back"]
+                        }
+                    }
+                },
+                "CreateCollectionRequest": {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": { "type": "string", "example": "Work" }
+                    }
+                },
+                "NextCardResponse": {
+                    "type": "object",
+                    "properties": {
+                        "card_id": { "type": "integer", "format": "int64", "nullable": true },
+                        "question": { "type": "string", "nullable": true, "description": "Rendered HTML for the question side" },
+                        "answer": { "type": "string", "nullable": true, "description": "Rendered HTML for the answer side" },
+                        "deck_id": { "type": "integer", "format": "int64", "nullable": true },
+                        "card_type": { "type": "integer", "nullable": true, "description": "0=New, 1=Learn, 2=Review, 3=Relearn" }
+                    }
+                },
+                "AnswerCardRequest": {
+                    "type": "object",
+                    "required": ["ease"],
+                    "properties": {
+                        "ease": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 4,
+                            "description": "Rating: 1=Again, 2=Hard, 3=Good, 4=Easy",
+                            "example": 3
+                        }
+                    }
+                },
+                "AnswerCardResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "counts": { "$ref": "#/components/schemas/DeckCountsResponse" }
+                    }
+                },
+                "DeckCountsResponse": {
+                    "type": "object",
+                    "properties": {
+                        "new": { "type": "integer", "format": "uint32", "description": "New cards remaining" },
+                        "learn": { "type": "integer", "format": "uint32", "description": "Learning/relearning cards remaining" },
+                        "review": { "type": "integer", "format": "uint32", "description": "Review cards remaining" }
                     }
                 },
                 "ErrorResponse": {
