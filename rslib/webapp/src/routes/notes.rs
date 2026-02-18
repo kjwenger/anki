@@ -14,6 +14,7 @@ use crate::routes::AuthRouteState;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NoteInfo {
     pub id: i64,
+    pub notetype_id: i64,
     pub fields: Vec<String>,
     pub tags: Vec<String>,
 }
@@ -113,6 +114,7 @@ pub async fn get_note(
         .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?
         .ok_or_else(|| WebAppError::not_found("Note not found"))?;
 
+    let notetype_id = note.notetype_id.0;
     let fields = note.fields().clone();
     let tags = note.tags.clone();
 
@@ -120,6 +122,7 @@ pub async fn get_note(
 
     Ok(Json(NoteInfo {
         id: note.id.0,
+        notetype_id,
         fields,
         tags,
     }))

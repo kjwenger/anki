@@ -27,6 +27,7 @@ pub struct BrowseRequest {
 #[derive(Debug, Serialize)]
 pub struct CardBrowseRow {
     pub card_id: i64,
+    pub note_id: i64,
     pub sort_field: String,
     pub card_type: String,
     pub due: String,
@@ -63,6 +64,7 @@ pub async fn browse_cards(
     // Phase 1: collect raw data for each card using the proto-based public API.
     struct RawCard {
         card_id: i64,
+        note_id: i64,
         deck_id: i64,
         notetype_id: i64,
         template_idx: u32,
@@ -93,6 +95,7 @@ pub async fn browse_cards(
         deck_ids.insert(deck_id);
         raw.push(RawCard {
             card_id: *card_id,
+            note_id: card.note_id,
             deck_id,
             notetype_id,
             template_idx: card.template_idx,
@@ -135,6 +138,7 @@ pub async fn browse_cards(
             let due = format_due(r.queue, r.due, days_elapsed);
             CardBrowseRow {
                 card_id: r.card_id,
+                note_id: r.note_id,
                 sort_field: r.sort_field,
                 card_type,
                 due,

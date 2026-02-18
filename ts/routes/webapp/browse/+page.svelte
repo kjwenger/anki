@@ -4,6 +4,7 @@
 
     import { onMount } from "svelte";
     import { api } from "$lib/webapp/api/client";
+    import NoteEditorDialog from "$lib/webapp/components/NoteEditorDialog.svelte";
 
     let searchQuery = "";
     let searchMode: "cards" | "notes" = "cards";
@@ -13,8 +14,30 @@
     let selectedIds: Set<number> = new Set();
 
     // Browse rows returned from the batch endpoints
-    let cardRows: Map<number, { sort_field: string; card_type: string; due: string; deck: string }> = new Map();
+    let cardRows: Map<number, { note_id: number; sort_field: string; card_type: string; due: string; deck: string }> = new Map();
     let noteRows: Map<number, { sort_field: string; notetype: string; cards: number; tags: string }> = new Map();
+
+    // Note editor dialog
+    let editorOpen = false;
+    let editorNoteId: number | null = null;
+
+    function openEditor(noteId: number) {
+        editorNoteId = noteId;
+        editorOpen = true;
+    }
+
+    async function handleNoteSaved() {
+        // Re-fetch browse rows for the currently visible slice so updated
+        // sort fields, tags, etc. are reflected immediately.
+        const visible = results.slice(0, PAGE_SIZE);
+        if (searchMode === "cards") {
+            cardRows = new Map();
+            await loadCardRows(visible);
+        } else {
+            noteRows = new Map();
+            await loadNoteRows(visible);
+        }
+    }
 
     const PAGE_SIZE = 100;
 
@@ -56,6 +79,7 @@
         const response = await api.browseCards(ids);
         for (const row of response.rows) {
             cardRows.set(row.card_id, {
+                note_id: row.note_id,
                 sort_field: row.sort_field,
                 card_type: row.card_type,
                 due: row.due,
@@ -152,6 +176,8 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
+
+<NoteEditorDialog bind:open={editorOpen} noteId={editorNoteId} on:saved={handleNoteSaved} />
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
@@ -334,6 +360,9 @@
                                         Tags
                                     </th>
                                 {/if}
+                                <th
+                                    class="px-3 py-3 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700"
+                                ></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -366,6 +395,15 @@
                                         <td class="px-3 py-3 text-gray-800 dark:text-gray-200">
                                             {row?.deck ?? "…"}
                                         </td>
+                                        <td class="px-3 py-3">
+                                            <button
+                                                class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded cursor-pointer text-xs hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                                                on:click={() => row && openEditor(row.note_id)}
+                                                disabled={!row}
+                                            >
+                                                View
+                                            </button>
+                                        </td>
                                     {:else}
                                         {@const row = noteRows.get(id)}
                                         <td class="px-3 py-3 text-gray-800 dark:text-gray-200 max-w-xs truncate">
@@ -379,6 +417,14 @@
                                         </td>
                                         <td class="px-3 py-3 text-gray-500 dark:text-gray-400 text-sm">
                                             {row?.tags ?? ""}
+                                        </td>
+                                        <td class="px-3 py-3">
+                                            <button
+                                                class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded cursor-pointer text-xs hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+                                                on:click={() => openEditor(id)}
+                                            >
+                                                View
+                                            </button>
                                         </td>
                                     {/if}
                                 </tr>

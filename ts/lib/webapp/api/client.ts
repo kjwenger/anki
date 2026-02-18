@@ -286,6 +286,7 @@ export class ApiClient {
     async getNote(id: number) {
         return this.get<{
             id: number;
+            notetype_id: number;
             fields: string[];
             tags: string[];
         }>(`/api/v1/notes/${id}`);
@@ -429,6 +430,7 @@ export class ApiClient {
         return this.post<{
             rows: {
                 card_id: number;
+                note_id: number;
                 sort_field: string;
                 card_type: string;
                 due: string;
