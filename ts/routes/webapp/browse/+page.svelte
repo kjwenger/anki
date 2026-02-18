@@ -23,20 +23,37 @@
         error = "";
         try {
             const query = searchQuery.trim() || ""; // Empty query returns all
+            console.log("=== Browse Search ===");
+            console.log("Query:", query);
+            console.log("Mode:", searchMode);
 
             if (searchMode === "cards") {
+                console.log("Calling api.searchCards...");
                 const response = await api.searchCards(query);
+                console.log("Search response:", response);
                 results = response.card_ids;
+                console.log("Card IDs:", results);
                 // Load card details for first batch (first 50)
                 await loadCardDetails(results.slice(0, 50));
             } else {
+                console.log("Calling api.searchNotes...");
                 const response = await api.searchNotes(query);
+                console.log("Search response:", response);
                 results = response.note_ids;
             }
-        } catch (e: any) {
-            error = e.message || "Search failed";
-            results = [];
-        } finally {
+                } catch (e: any) {
+                    console.error("Search error:", e);
+                    
+                    // Ensure error message is a string
+                    let msg = "Search failed";
+                    if (e.message) {
+                        msg = typeof e.message === 'string' ? e.message : JSON.stringify(e.message);
+                    }
+                    
+                    error = msg;
+                    results = [];
+                }
+         finally {
             loading = false;
         }
     }

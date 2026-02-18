@@ -66,41 +66,41 @@ pub async fn search_cards(
     Extension(auth_user): Extension<AuthUser>,
     Json(request): Json<SearchCardsRequest>,
 ) -> Result<impl IntoResponse> {
+    eprintln!("=== SEARCH_CARDS REQUEST ===");
+    eprintln!("User: {:?}", auth_user.user_id);
+    eprintln!("Request: {:?}", request);
+    
     let backend = state
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
+    eprintln!("Got collection lock");
 
-    // Build sort mode
-    let sort_mode = if let Some(column) = request.sort_column {
-        // Parse column string to Column enum
-        use std::str::FromStr;
-        match anki::browser_table::Column::from_str(&column) {
-            Ok(col) => anki::search::SortMode::Builtin {
-                column: col,
-                reverse: request.reverse,
-            },
-            Err(_) => anki::search::SortMode::Custom(column),
-        }
-    } else {
-        anki::search::SortMode::NoOrder
-    };
+    // Build sort mode - use NoOrder for simplicity
+    let sort_mode = anki::search::SortMode::NoOrder;
+    eprintln!("Searching with query: '{}' and sort_mode: {:?}", request.query, sort_mode);
 
     // Search for cards
     let card_ids = col
-        .search_cards(&request.query, sort_mode)
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
-
-    let count = card_ids.len();
-    let ids: Vec<i64> = card_ids.into_iter().map(|cid| cid.0).collect();
-
-    drop(col);
-
-    Ok(Json(SearchCardsResponse {
-        card_ids: ids,
-        count,
-    }))
+        .search_cards(&request.query, sort_mode);
+    
+    match card_ids {
+        Ok(ids) => {
+            eprintln!("Search succeeded, found {} cards", ids.len());
+            let count = ids.len();
+            let ids: Vec<i64> = ids.into_iter().map(|cid| cid.0).collect();
+            drop(col);
+            Ok(Json(SearchCardsResponse {
+                card_ids: ids,
+                count,
+            }))
+        }
+        Err(e) => {
+            tracing::error!("Search cards failed for query '{}': {:?}", request.query, e);
+            Err(WebAppError::internal(&format!("{:?}", e)))
+        }
+    }
 }
 
 /// Search for notes matching a query
@@ -109,41 +109,41 @@ pub async fn search_notes(
     Extension(auth_user): Extension<AuthUser>,
     Json(request): Json<SearchNotesRequest>,
 ) -> Result<impl IntoResponse> {
+    eprintln!("=== SEARCH_NOTES REQUEST ===");
+    eprintln!("User: {:?}", auth_user.user_id);
+    eprintln!("Request: {:?}", request);
+    
     let backend = state
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
+    eprintln!("Got collection lock");
 
-    // Build sort mode
-    let sort_mode = if let Some(column) = request.sort_column {
-        // Parse column string to Column enum
-        use std::str::FromStr;
-        match anki::browser_table::Column::from_str(&column) {
-            Ok(col) => anki::search::SortMode::Builtin {
-                column: col,
-                reverse: request.reverse,
-            },
-            Err(_) => anki::search::SortMode::Custom(column),
-        }
-    } else {
-        anki::search::SortMode::NoOrder
-    };
+    // Build sort mode - use NoOrder for simplicity
+    let sort_mode = anki::search::SortMode::NoOrder;
+    eprintln!("Searching with query: '{}' and sort_mode: {:?}", request.query, sort_mode);
 
     // Search for notes
     let note_ids = col
-        .search_notes(&request.query, sort_mode)
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
-
-    let count = note_ids.len();
-    let ids: Vec<i64> = note_ids.into_iter().map(|nid| nid.0).collect();
-
-    drop(col);
-
-    Ok(Json(SearchNotesResponse {
-        note_ids: ids,
-        count,
-    }))
+        .search_notes(&request.query, sort_mode);
+    
+    match note_ids {
+        Ok(ids) => {
+            eprintln!("Search succeeded, found {} notes", ids.len());
+            let count = ids.len();
+            let ids: Vec<i64> = ids.into_iter().map(|nid| nid.0).collect();
+            drop(col);
+            Ok(Json(SearchNotesResponse {
+                note_ids: ids,
+                count,
+            }))
+        }
+        Err(e) => {
+            tracing::error!("Search cards failed for query '{}': {:?}", request.query, e);
+            Err(WebAppError::internal(&format!("{:?}", e)))
+        }
+    }
 }
 
 /// Find and replace text in note fields

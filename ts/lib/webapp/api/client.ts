@@ -47,15 +47,27 @@ export class ApiClient {
     }
 
     private async handleResponse<T>(response: Response): Promise<T> {
+        console.log("=== API Response ===");
+        console.log("Status:", response.status, response.statusText);
+        console.log("URL:", response.url);
+        
+        const text = await response.text();
+        console.log("Raw response text:", text.substring(0, 500));
+        
         if (!response.ok) {
-            const errorText = await response.text();
             let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
 
             try {
-                const errorData = JSON.parse(errorText);
-                errorMessage = errorData.message || errorData.error || errorMessage;
+                const errorData = JSON.parse(text);
+                console.log("Parsed error JSON:", errorData);
+                // Standard format is { success: false, error: { message: "..." } }
+                if (errorData.error && errorData.error.message) {
+                    errorMessage = errorData.error.message;
+                } else {
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                }
             } catch {
-                errorMessage = errorText || errorMessage;
+                errorMessage = text || errorMessage;
             }
 
             throw {
@@ -64,7 +76,6 @@ export class ApiClient {
             } as ApiError;
         }
 
-        const text = await response.text();
         return text ? JSON.parse(text) : ({} as T);
     }
 
@@ -82,6 +93,11 @@ export class ApiClient {
         data?: unknown,
         includeAuth: boolean = true,
     ): Promise<T> {
+        console.log("=== API POST Request ===");
+        console.log("Endpoint:", endpoint);
+        console.log("Data:", data);
+        console.log("Headers:", this.getHeaders(includeAuth));
+        
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             method: "POST",
             headers: this.getHeaders(includeAuth),

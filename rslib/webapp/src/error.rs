@@ -72,10 +72,10 @@ impl IntoResponse for WebAppError {
             WebAppError::Internal(msg) => {
                 // Log internal errors with full context
                 tracing::error!("Internal server error: {}", msg);
-                // Don't expose internal error details to clients
+                // Temporarily expose message for debugging the "object Object" issue
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    "Internal server error".to_string(),
+                    format!("Internal error: {}", msg),
                 )
             }
             WebAppError::BadRequest(msg) => {
