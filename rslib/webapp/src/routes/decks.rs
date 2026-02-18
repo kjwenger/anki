@@ -1,3 +1,4 @@
+use anki::timestamp::TimestampSecs;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::IntoResponse;
@@ -21,6 +22,9 @@ pub struct DeckNode {
     pub id: i64,
     pub name: String,
     pub collapsed: bool,
+    pub new_count: u32,
+    pub learn_count: u32,
+    pub review_count: u32,
     pub children: Vec<DeckNode>,
 }
 
@@ -59,9 +63,9 @@ pub async fn get_deck_tree(
 
     let mut col = backend.lock().unwrap();
 
-    // Get deck tree from collection
+    // Pass current timestamp so due-card counts are populated
     let tree = col
-        .deck_tree(Default::default())
+        .deck_tree(Some(TimestampSecs::now()))
         .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     drop(col);
@@ -201,6 +205,9 @@ fn convert_deck_tree(tree: anki_proto::decks::DeckTreeNode) -> DeckTree {
             id: node.deck_id,
             name: node.name,
             collapsed: node.collapsed,
+            new_count: node.new_count,
+            learn_count: node.learn_count,
+            review_count: node.review_count,
             children: node.children.into_iter().map(convert_node).collect(),
         }
     }

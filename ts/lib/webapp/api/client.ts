@@ -333,6 +333,15 @@ export class ApiClient {
         );
     }
 
+    async getNextStates(deckId: number, cardId: number) {
+        return this.get<{
+            again: string;
+            hard: string;
+            good: string;
+            easy: string;
+        }>(`/api/v1/scheduler/decks/${deckId}/cards/${cardId}/next-states`);
+    }
+
     // Search endpoints
     async searchCards(query: string, sortColumn?: string, reverse?: boolean) {
         return this.post<{

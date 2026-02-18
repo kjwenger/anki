@@ -171,6 +171,49 @@ pub async fn answer_card(
     }
 }
 
+/// Get next interval descriptions for a card's answer buttons
+pub async fn get_next_states(
+    State(state): State<AuthRouteState>,
+    Extension(auth_user): Extension<AuthUser>,
+    Path((_deck_id, card_id)): Path<(i64, i64)>,
+) -> Result<impl IntoResponse> {
+    let backend = state
+        .backend_manager
+        .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
+
+    let mut col = backend.lock().unwrap();
+
+    // Get scheduling states for the card
+    let states = col
+        .get_scheduling_states(card_id.into())
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    // Get human-readable interval descriptions
+    let descriptions = col
+        .describe_next_states(&states)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    drop(col);
+
+    // descriptions is a Vec<String> with 4 entries: [Again, Hard, Good, Easy]
+    #[derive(Serialize)]
+    struct NextStatesResponse {
+        again: String,
+        hard: String,
+        good: String,
+        easy: String,
+    }
+
+    let response = NextStatesResponse {
+        again: descriptions.get(0).cloned().unwrap_or_default(),
+        hard: descriptions.get(1).cloned().unwrap_or_default(),
+        good: descriptions.get(2).cloned().unwrap_or_default(),
+        easy: descriptions.get(3).cloned().unwrap_or_default(),
+    };
+
+    Ok(Json(response))
+}
+
 /// Get study counts for a specific deck
 pub async fn get_deck_counts(
     State(state): State<AuthRouteState>,

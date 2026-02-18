@@ -68,6 +68,7 @@ use crate::routes::list_notetypes;
 use crate::routes::answer_card;
 use crate::routes::get_deck_counts;
 use crate::routes::get_next_card;
+use crate::routes::get_next_states;
 use crate::routes::redo;
 use crate::routes::undo;
 use crate::routes::AuthRouteState;
@@ -125,6 +126,7 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/stats/today", get(get_today_stats))
         .route("/api/v1/scheduler/decks/{deck_id}/next", get(get_next_card))
         .route("/api/v1/scheduler/decks/{deck_id}/cards/{card_id}/answer", post(answer_card))
+        .route("/api/v1/scheduler/decks/{deck_id}/cards/{card_id}/next-states", get(get_next_states))
         .route("/api/v1/scheduler/decks/{deck_id}/counts", get(get_deck_counts))
         .route("/api/v1/scheduler/undo", post(undo))
         .route("/api/v1/scheduler/redo", post(redo))

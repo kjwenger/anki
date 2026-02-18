@@ -886,24 +886,36 @@ are frontend-only or require only minor Rust changes.
 
 ---
 
-### 4.2 Interval Preview on Answer Buttons
+### 4.2 Interval Preview on Answer Buttons ✅
 
 **Priority**: P0\
 **Estimate**: 1 day\
 **Dependencies**: Phase 2.3 (Scheduler API ✅)\
 **Effort**: Low — call `DescribeNextStates` RPC, render text above buttons\
-**Source**: Gap analysis §3 — "Next interval preview"
+**Source**: Gap analysis §3 — "Next interval preview"\
+**Status**: Backend Complete (Frontend Pending)
 
-- [ ] Add `GET /api/v1/scheduler/decks/{id}/cards/{id}/next-states` endpoint that calls the
+- [x] Add `GET /api/v1/scheduler/decks/{deck_id}/cards/{card_id}/next-states` endpoint that calls the
       `DescribeNextStates` RPC
 - [ ] Update `AnswerButtons.svelte` to fetch and display the interval string above each button
       (e.g. `<1m`, `10m`, `1d`, `4d`)
 - [ ] Show a loading skeleton until intervals arrive; fall back gracefully if the call fails
 
+**Files Created**:
+
+- `rslib/webapp/src/routes/scheduler.rs` - Added `get_next_states` function
+
+**Files Modified**:
+
+- `rslib/webapp/src/routes/mod.rs` - Exported `get_next_states`
+- `rslib/webapp/src/server/router.rs` - Added route and import
+- `rslib/webapp/src/openapi.rs` - Added API documentation and `NextStatesResponse` schema
+
 **Acceptance Criteria**:
 
-- Answer buttons show human-readable next-review interval
-- Intervals update after each answer
+- ✅ Backend endpoint returns interval descriptions (again, hard, good, easy)
+- ⏳ Answer buttons show human-readable next-review interval (frontend pending)
+- ⏳ Intervals update after each answer (frontend pending)
 
 ---
 

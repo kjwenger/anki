@@ -81,6 +81,17 @@ when possible.
 in rslib, use error/mod.rs's AnkiError/Result and snafu. In our other Rust modules, prefer anyhow + additional context where appropriate. Unwrapping
 in build scripts/tests is fine.
 
+## Webapp Styling
+
+The webapp (`ts/routes/webapp/`) uses **Tailwind CSS v4** exclusively for all styling.
+No Bootstrap, no Basecamp, no other CSS framework.
+
+- Tailwind is loaded via the `@tailwindcss/vite` plugin (`ts/vite.config.ts`).
+- The entry stylesheet is `ts/routes/webapp/app.css`, imported by `ts/routes/webapp/+layout.svelte`.
+- Dark mode is toggled by adding/removing the `dark` class on `<html>` (`@custom-variant dark` in `app.css`).
+- Every webapp page must wrap its root element in `<div class="min-h-screen bg-gray-100 dark:bg-gray-900">` so the theme is applied consistently.
+- `app.css` uses `source(none)` on the utilities layer; source scanning is explicit via `@source` — keep those paths current when adding new directories.
+
 ## Individual preferences
 
 See @.claude/user.md

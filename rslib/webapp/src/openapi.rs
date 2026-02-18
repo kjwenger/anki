@@ -1425,6 +1425,43 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/scheduler/decks/{deck_id}/cards/{card_id}/next-states": {
+                "get": {
+                    "tags": ["scheduler"],
+                    "summary": "Get next interval descriptions for answer buttons",
+                    "description": "Returns human-readable interval strings (e.g., '<1m', '10m', '1d', '4d') for each answer button (Again, Hard, Good, Easy). This is used to show users what the next review interval will be before they answer.",
+                    "operationId": "getNextStates",
+                    "security": [{ "bearerAuth": [] }],
+                    "parameters": [
+                        {
+                            "name": "deck_id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Deck ID"
+                        },
+                        {
+                            "name": "card_id",
+                            "in": "path",
+                            "required": true,
+                            "schema": { "type": "integer", "format": "int64" },
+                            "description": "Card ID to get next states for"
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Next interval descriptions for each answer button",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/NextStatesResponse" }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" },
+                        "404": { "$ref": "#/components/responses/NotFound" }
+                    }
+                }
+            },
             "/api/v1/scheduler/decks/{deck_id}/counts": {
                 "get": {
                     "tags": ["scheduler"],
@@ -2111,6 +2148,17 @@ pub fn openapi_spec() -> Value {
                         "learn": { "type": "integer", "format": "uint32", "description": "Learning/relearning cards remaining" },
                         "review": { "type": "integer", "format": "uint32", "description": "Review cards remaining" }
                     }
+                },
+                "NextStatesResponse": {
+                    "type": "object",
+                    "properties": {
+                        "again": { "type": "string", "description": "Interval if answered Again (e.g., '<1m', '10m')", "example": "<1m" },
+                        "hard": { "type": "string", "description": "Interval if answered Hard (e.g., '10m', '1d')", "example": "10m" },
+                        "good": { "type": "string", "description": "Interval if answered Good (e.g., '1d', '4d')", "example": "1d" },
+                        "easy": { "type": "string", "description": "Interval if answered Easy (e.g., '4d', '2mo')", "example": "4d" }
+                    },
+                    "required": ["again", "hard", "good", "easy"],
+                    "description": "Human-readable descriptions of next review intervals for each answer button"
                 },
                 "ErrorResponse": {
                     "type": "object",
