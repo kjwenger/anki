@@ -2,7 +2,8 @@ use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::Extension;
 use axum::Json;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 
 use crate::auth::AuthUser;
 use crate::error::Result;
@@ -77,7 +78,8 @@ pub async fn close_collection(
 }
 
 /// List all collections for the current user
-/// Note: Currently each user has one collection, so this returns a single-item array
+/// Note: Currently each user has one collection, so this returns a single-item
+/// array
 pub async fn list_collections(
     Extension(auth_user): Extension<AuthUser>,
 ) -> Result<impl IntoResponse> {
@@ -100,7 +102,11 @@ pub async fn create_collection(
 ) -> Result<impl IntoResponse> {
     // In the current implementation, we just acknowledge the request
     // The user's collection already exists
-    let path = format!("user_{}_{}", auth_user.user_id, payload.name.replace(' ', "_"));
+    let path = format!(
+        "user_{}_{}",
+        auth_user.user_id,
+        payload.name.replace(' ', "_")
+    );
 
     Ok(Json(CreateCollectionResponse {
         path,
@@ -109,7 +115,8 @@ pub async fn create_collection(
 }
 
 /// Delete a collection
-/// Note: Currently this is a no-op to prevent users from deleting their main collection
+/// Note: Currently this is a no-op to prevent users from deleting their main
+/// collection
 pub async fn delete_collection() -> Result<impl IntoResponse> {
     Ok(Json(MessageResponse {
         success: false,

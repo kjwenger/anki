@@ -84,7 +84,7 @@ in build scripts/tests is fine.
 ## Webapp Styling
 
 The webapp (`ts/routes/webapp/`) uses **Tailwind CSS v4** exclusively for all styling.
-No Bootstrap, no Basecamp, no other CSS framework.
+No Basecamp, no other CSS framework.
 
 - Tailwind is loaded via the `@tailwindcss/vite` plugin (`ts/vite.config.ts`).
 - The entry stylesheet is `ts/routes/webapp/app.css`, imported by `ts/routes/webapp/+layout.svelte`.

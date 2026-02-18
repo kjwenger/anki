@@ -123,28 +123,45 @@
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
         <div class="max-w-[1400px] mx-auto flex justify-between items-center">
-            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">Browse {searchMode === "cards" ? "Cards" : "Notes"}</h1>
+            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">
+                Browse {searchMode === "cards" ? "Cards" : "Notes"}
+            </h1>
             <div class="flex gap-4">
-                <a href="/webapp" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"> &larr; Back </a>
+                <a
+                    href="/webapp"
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                    &larr; Back
+                </a>
             </div>
         </div>
     </header>
 
     <main class="max-w-[1400px] mx-auto p-8">
         {#if error}
-            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6">{error}</div>
+            <div
+                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6"
+            >
+                {error}
+            </div>
         {/if}
 
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6">
             <div class="flex gap-2 mb-4">
                 <button
-                    class="px-4 py-2 border-2 rounded-lg cursor-pointer transition-all duration-200 {searchMode === 'cards' ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
+                    class="px-4 py-2 border-2 rounded-lg cursor-pointer transition-all duration-200 {searchMode ===
+                    'cards'
+                        ? 'bg-indigo-500 border-indigo-500 text-white'
+                        : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
                     on:click={() => (searchMode = "cards")}
                 >
                     Cards
                 </button>
                 <button
-                    class="px-4 py-2 border-2 rounded-lg cursor-pointer transition-all duration-200 {searchMode === 'notes' ? 'bg-indigo-500 border-indigo-500 text-white' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
+                    class="px-4 py-2 border-2 rounded-lg cursor-pointer transition-all duration-200 {searchMode ===
+                    'notes'
+                        ? 'bg-indigo-500 border-indigo-500 text-white'
+                        : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
                     on:click={() => (searchMode = "notes")}
                 >
                     Notes
@@ -170,7 +187,9 @@
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center flex-wrap gap-4">
+            <div
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center flex-wrap gap-4"
+            >
                 <div class="font-semibold text-gray-800 dark:text-gray-200">
                     {results.length}
                     {searchMode} found
@@ -180,17 +199,29 @@
                 </div>
                 {#if results.length > 0}
                     <div class="flex gap-2 flex-wrap">
-                        <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg cursor-pointer text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" on:click={selectAll}>
+                        <button
+                            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg cursor-pointer text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            on:click={selectAll}
+                        >
                             Select All
                         </button>
-                        <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg cursor-pointer text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" on:click={deselectAll}>
+                        <button
+                            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg cursor-pointer text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            on:click={deselectAll}
+                        >
                             Deselect All
                         </button>
                         {#if selectedIds.size > 0}
-                            <button class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors" on:click={handleBulkSuspend}>
+                            <button
+                                class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors"
+                                on:click={handleBulkSuspend}
+                            >
                                 Suspend Selected
                             </button>
-                            <button class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors" on:click={handleBulkDelete}>
+                            <button
+                                class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors"
+                                on:click={handleBulkDelete}
+                            >
                                 Delete Selected
                             </button>
                         {/if}
@@ -200,23 +231,25 @@
 
             <div class="overflow-x-auto">
                 {#if loading}
-                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">Searching...</div>
+                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+                        Searching...
+                    </div>
                 {:else if results.length === 0}
-                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">No {searchMode} found</div>
+                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+                        No {searchMode} found
+                    </div>
                 {:else}
                     <table class="w-full border-collapse">
                         <thead>
                             <tr>
-                                <th class="w-10 text-center px-3 py-3 bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">
+                                <th
+                                    class="w-10 text-center px-3 py-3 bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                >
                                     <input
                                         type="checkbox"
-                                        checked={selectedIds.size ===
-                                            results.length}
+                                        checked={selectedIds.size === results.length}
                                         on:change={() => {
-                                            if (
-                                                selectedIds.size ===
-                                                results.length
-                                            ) {
+                                            if (selectedIds.size === results.length) {
                                                 deselectAll();
                                             } else {
                                                 selectAll();
@@ -224,20 +257,44 @@
                                         }}
                                     />
                                 </th>
-                                <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">ID</th>
+                                <th
+                                    class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                >
+                                    ID
+                                </th>
                                 {#if searchMode === "cards"}
-                                    <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Deck</th>
-                                    <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Due</th>
-                                    <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Interval</th>
+                                    <th
+                                        class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                    >
+                                        Deck
+                                    </th>
+                                    <th
+                                        class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                    >
+                                        Due
+                                    </th>
+                                    <th
+                                        class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                    >
+                                        Interval
+                                    </th>
                                 {/if}
-                                <th class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700">Actions</th>
+                                <th
+                                    class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                >
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {#each results.slice(0, 100) as id}
                                 {@const card = cardDetails.get(id)}
                                 <tr
-                                    class="border-b border-gray-100 dark:border-gray-700/50 transition-colors {selectedIds.has(id) ? 'bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}"
+                                    class="border-b border-gray-100 dark:border-gray-700/50 transition-colors {selectedIds.has(
+                                        id,
+                                    )
+                                        ? 'bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30'
+                                        : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}"
                                 >
                                     <td class="w-10 text-center px-3 py-3">
                                         <input
@@ -246,11 +303,27 @@
                                             on:change={() => toggleSelect(id)}
                                         />
                                     </td>
-                                    <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{id}</td>
+                                    <td
+                                        class="px-3 py-3 text-gray-800 dark:text-gray-200"
+                                    >
+                                        {id}
+                                    </td>
                                     {#if searchMode === "cards"}
-                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{card?.deck_id || "Loading..."}</td>
-                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{card?.due || "-"}</td>
-                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">{card?.interval || "-"}</td>
+                                        <td
+                                            class="px-3 py-3 text-gray-800 dark:text-gray-200"
+                                        >
+                                            {card?.deck_id || "Loading..."}
+                                        </td>
+                                        <td
+                                            class="px-3 py-3 text-gray-800 dark:text-gray-200"
+                                        >
+                                            {card?.due || "-"}
+                                        </td>
+                                        <td
+                                            class="px-3 py-3 text-gray-800 dark:text-gray-200"
+                                        >
+                                            {card?.interval || "-"}
+                                        </td>
                                     {/if}
                                     <td class="px-3 py-3">
                                         <button
@@ -266,7 +339,9 @@
                         </tbody>
                     </table>
                     {#if results.length > 100}
-                        <div class="py-4 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700">
+                        <div
+                            class="py-4 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700"
+                        >
                             Showing first 100 of {results.length}
                             {searchMode}
                         </div>

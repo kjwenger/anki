@@ -1,3 +1,4 @@
+use anki::services::TagsService;
 use axum::extract::Path;
 use axum::extract::State;
 use axum::response::IntoResponse;
@@ -6,7 +7,6 @@ use axum::Json;
 use serde::Deserialize;
 use serde::Serialize;
 
-use anki::services::TagsService;
 use crate::auth::AuthUser;
 use crate::error::Result;
 use crate::error::WebAppError;
@@ -110,7 +110,11 @@ pub async fn get_tag_tree(
 fn convert_tag_tree_node(node: anki_proto::tags::TagTreeNode) -> TagTreeNode {
     TagTreeNode {
         name: node.name,
-        children: node.children.into_iter().map(convert_tag_tree_node).collect(),
+        children: node
+            .children
+            .into_iter()
+            .map(convert_tag_tree_node)
+            .collect(),
         level: node.level,
         collapsed: node.collapsed,
     }

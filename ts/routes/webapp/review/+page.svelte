@@ -8,6 +8,7 @@
     import CardDisplay from "$lib/webapp/components/CardDisplay.svelte";
     import AnswerButtons from "$lib/webapp/components/AnswerButtons.svelte";
     import ReviewProgress from "$lib/webapp/components/ReviewProgress.svelte";
+    import CardActions from "$lib/webapp/components/CardActions.svelte";
 
     export let data: { deckId: number };
 
@@ -99,10 +100,7 @@
         if (loading) return;
 
         // Space or Enter to show answer
-        if (
-            !state.showingAnswer &&
-            (event.key === " " || event.key === "Enter")
-        ) {
+        if (!state.showingAnswer && (event.key === " " || event.key === "Enter")) {
             event.preventDefault();
             reviewerStore.showAnswer();
             return;
@@ -141,10 +139,22 @@
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-4">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <a href="/webapp/decks" class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 no-underline text-sm transition-colors">&larr; Decks</a>
+                <a
+                    href="/webapp/decks"
+                    class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 no-underline text-sm transition-colors"
+                >
+                    &larr; Decks
+                </a>
                 <ReviewProgress />
             </div>
             <div class="flex gap-3">
+                {#if $reviewerStore.currentCard}
+                    <CardActions
+                        cardId={$reviewerStore.currentCard.card_id}
+                        currentFlag={$reviewerStore.currentCard.flags || 0}
+                        on:action={() => loadNextCard()}
+                    />
+                {/if}
                 <button
                     class="px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     on:click={handleUndo}
@@ -167,16 +177,33 @@
 
     <main class="max-w-4xl mx-auto p-8">
         {#if error}
-            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-5">{error}</div>
+            <div
+                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-5"
+            >
+                {error}
+            </div>
         {/if}
 
         {#if loading}
-            <div class="text-center py-16 text-gray-500 dark:text-gray-400 text-lg">Loading card...</div>
+            <div class="text-center py-16 text-gray-500 dark:text-gray-400 text-lg">
+                Loading card...
+            </div>
         {:else if $reviewerStore.finished}
             <div class="text-center py-20">
-                <h2 class="text-3xl mb-5 text-indigo-500 dark:text-indigo-400 font-bold">Study Complete!</h2>
-                <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">You've finished reviewing this deck for now.</p>
-                <a href="/webapp/decks" class="inline-block px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white no-underline rounded-lg text-base font-medium transition-colors">Back to Decks</a>
+                <h2
+                    class="text-3xl mb-5 text-indigo-500 dark:text-indigo-400 font-bold"
+                >
+                    Study Complete!
+                </h2>
+                <p class="text-lg text-gray-500 dark:text-gray-400 mb-8">
+                    You've finished reviewing this deck for now.
+                </p>
+                <a
+                    href="/webapp/decks"
+                    class="inline-block px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white no-underline rounded-lg text-base font-medium transition-colors"
+                >
+                    Back to Decks
+                </a>
             </div>
         {:else if $reviewerStore.currentCard}
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">

@@ -28,11 +28,15 @@
 
 <div class="w-full">
     {#if loading}
-        <div class="py-8 text-center text-gray-500 dark:text-gray-400">Loading decks...</div>
+        <div class="py-8 text-center text-gray-500 dark:text-gray-400">
+            Loading decks...
+        </div>
     {:else if decks.length === 0}
         <div class="py-12 px-8 text-center text-gray-400 dark:text-gray-500">
             <p class="m-0 my-2">No decks found</p>
-            <p class="m-0 my-2 text-sm text-gray-300 dark:text-gray-600">Create a new deck to get started</p>
+            <p class="m-0 my-2 text-sm text-gray-300 dark:text-gray-600">
+                Create a new deck to get started
+            </p>
         </div>
     {:else}
         <div class="flex flex-col">

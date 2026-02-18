@@ -159,7 +159,11 @@ pub async fn find_and_replace(
     let mut col = backend.lock().unwrap();
 
     // Convert note IDs
-    let nids: Vec<anki::notes::NoteId> = request.note_ids.into_iter().map(anki::notes::NoteId).collect();
+    let nids: Vec<anki::notes::NoteId> = request
+        .note_ids
+        .into_iter()
+        .map(anki::notes::NoteId)
+        .collect();
 
     // Build search pattern - if not regex, escape it
     let mut search_pattern = if request.regex {

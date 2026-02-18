@@ -13,6 +13,7 @@ export interface Card {
         learning: number;
         review: number;
     };
+    flags?: number;
 }
 
 export interface ReviewerState {

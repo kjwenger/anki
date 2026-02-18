@@ -7,10 +7,7 @@
     import "./app.css";
 
     // Public routes that don't require authentication
-    const publicRoutes = [
-        "/webapp/auth/login",
-        "/webapp/auth/register",
-    ];
+    const publicRoutes = ["/webapp/auth/login", "/webapp/auth/register"];
 
     let showNav = false;
 
@@ -34,7 +31,7 @@
         const unsubscribe = isAuthenticated.subscribe((authenticated) => {
             const currentPath = $page.url.pathname;
             const isPublicRoute = publicRoutes.some((route) =>
-                currentPath.startsWith(route)
+                currentPath.startsWith(route),
             );
 
             showNav = authenticated && !isPublicRoute;

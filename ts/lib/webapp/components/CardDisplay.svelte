@@ -39,7 +39,9 @@
             </div>
 
             {#if showingAnswer}
-                <hr class="my-8 border-none border-t-2 border-gray-200 dark:border-gray-600" />
+                <hr
+                    class="my-8 border-none border-t-2 border-gray-200 dark:border-gray-600"
+                />
                 <div class="mt-5">
                     {@html card.answer_html}
                 </div>

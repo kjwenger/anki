@@ -33,9 +33,9 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [3.9 Navigation & Layout](#39-navigation--layout)
 - [Phase 4: Desktop Parity — Quick Wins](#phase-4-desktop-parity--quick-wins) — Low-hanging-fruit gap closures
   - [4.1 Critical Bug Fixes](#41-critical-bug-fixes) ✅
-  - [4.2 Interval Preview on Answer Buttons](#42-interval-preview-on-answer-buttons) ✅
+  - [4.2 Interval Preview on Answer Buttons](#42-interval-preview-on-answer-buttons) ✅ — complete
   - [4.3 Time Tracking Per Card](#43-time-tracking-per-card) ✅
-  - [4.4 Flag / Suspend / Bury During Review](#44-flag--suspend--bury-during-review)
+  - [4.4 Flag / Suspend / Bury During Review](#44-flag--suspend--bury-during-review) ✅
   - [4.5 Cloze Deletion Toolbar Helper](#45-cloze-deletion-toolbar-helper)
   - [4.6 Sticky Fields in Editor](#46-sticky-fields-in-editor)
   - [4.7 Duplicate Detection in Editor](#47-duplicate-detection-in-editor)
@@ -469,8 +469,9 @@ Endpoints Implemented:
 - ✅ Media check finds unused/missing files
 - ✅ Files can be moved to trash
 
-**Note:** GET /api/v1/media/{filename} is stubbed but not fully implemented 
+**Note:** GET /api/v1/media/{filename} is stubbed but not fully implemented
 due to private media_folder field in Collection. This would require either:
+
 - Adding a public accessor to Collection
 - Storing media path in session backend
 - Using a different approach to file serving
@@ -687,6 +688,7 @@ we would need custom protobuf-to-JSON conversion logic.
 
 Card rendering requires deep integration with Anki's internal APIs (Note, Notetype, CardTemplate).
 Need to either:
+
 1. Create a simplified service wrapper for card rendering
 2. Return raw card data and render client-side
 3. Use a different rendering approach
@@ -893,13 +895,13 @@ are frontend-only or require only minor Rust changes.
 **Dependencies**: Phase 2.3 (Scheduler API ✅)\
 **Effort**: Low — call `DescribeNextStates` RPC, render text above buttons\
 **Source**: Gap analysis §3 — "Next interval preview"\
-**Status**: Backend Complete (Frontend Pending)
+**Status**: Complete
 
 - [x] Add `GET /api/v1/scheduler/decks/{deck_id}/cards/{card_id}/next-states` endpoint that calls the
       `DescribeNextStates` RPC
-- [ ] Update `AnswerButtons.svelte` to fetch and display the interval string above each button
+- [x] Update `AnswerButtons.svelte` to fetch and display the interval string above each button
       (e.g. `<1m`, `10m`, `1d`, `4d`)
-- [ ] Show a loading skeleton until intervals arrive; fall back gracefully if the call fails
+- [x] Show a loading skeleton until intervals arrive; fall back gracefully if the call fails
 
 **Files Created**:
 
@@ -911,11 +913,18 @@ are frontend-only or require only minor Rust changes.
 - `rslib/webapp/src/server/router.rs` - Added route and import
 - `rslib/webapp/src/openapi.rs` - Added API documentation and `NextStatesResponse` schema
 
-**Acceptance Criteria**:
+**Files Modified (Frontend)**:
+
+- `ts/lib/webapp/api/client.ts` - Added `getNextStates()` method
+- `ts/lib/webapp/components/AnswerButtons.svelte` - Added `intervals` prop with loading skeleton / graceful fallback
+- `ts/routes/webapp/review/+page.svelte` - Added `fetchIntervals()` called after each card load
+
+**Acceptance Criteria** (All Met):
 
 - ✅ Backend endpoint returns interval descriptions (again, hard, good, easy)
-- ⏳ Answer buttons show human-readable next-review interval (frontend pending)
-- ⏳ Intervals update after each answer (frontend pending)
+- ✅ Answer buttons show human-readable next-review interval (`<1m`, `10m`, `1d`, `4d`)
+- ✅ Intervals update after each answer
+- ✅ Loading skeleton shown while fetching; buttons still work if fetch fails
 
 ---
 
@@ -936,10 +945,12 @@ are frontend-only or require only minor Rust changes.
 **Files Modified**:
 
 Backend:
+
 - `rslib/webapp/src/routes/scheduler.rs` - Added `milliseconds_taken` field to `AnswerCardRequest`, passed to `CardAnswer`
 - `rslib/webapp/src/openapi.rs` - Fixed `AnswerCardRequest` schema (changed `ease` to `rating` and added `milliseconds_taken`)
 
 Frontend:
+
 - `ts/lib/webapp/api/client.ts` - Updated `answerCard()` to accept and send `milliseconds_taken`
 - `ts/routes/webapp/review/+page.svelte` - Added `cardStartTime` tracking, calculates time spent on each card
 
@@ -952,6 +963,7 @@ Frontend:
 - ✅ OpenAPI documentation updated and corrected
 
 **Implementation Details**:
+
 - Timer starts when card loads (`Date.now()`)
 - Timer stops when user clicks answer button
 - Elapsed time sent as `milliseconds_taken` in POST request
@@ -960,21 +972,35 @@ Frontend:
 
 ---
 
-### 4.4 Flag / Suspend / Bury During Review
+### 4.4 Flag / Suspend / Bury During Review ✅
 
 **Priority**: P1\
 **Estimate**: 1 day\
 **Dependencies**: Cards API (2.5 ✅), Reviewer UI (3.4 ✅)\
 **Effort**: Low — APIs exist, only UI work required\
-**Source**: Gap analysis §3 — "Flag cards", "Suspend/bury during review"
+**Source**: Gap analysis §3 — "Flag cards", "Suspend/bury during review"\
+**Status**: Complete
 
-- [ ] Add a context menu or "More" button in `review/+page.svelte`
-- [ ] Wire "Flag" (colours 1–4), "Suspend", and "Bury" actions to existing API calls
-- [ ] After flag/suspend/bury, automatically load the next card
+- [x] Add a context menu or "More" button in `review/+page.svelte`
+- [x] Wire "Flag" (colours 1–4), "Suspend", and "Bury" actions to existing API calls
+- [x] After flag/suspend/bury, automatically load the next card
 
-**Acceptance Criteria**:
+**Files Created**:
 
-- User can flag, suspend, or bury the current card without leaving the reviewer
+- `ts/lib/webapp/components/CardActions.svelte` - "More" dropdown with Flag submenu (colors 1–4), Suspend, Bury
+
+**Files Modified**:
+
+- `ts/routes/webapp/review/+page.svelte` - Integrated `CardActions` in header; `on:action` triggers `loadNextCard()`
+- `ts/lib/webapp/stores/reviewer.ts` - Added `flags?: number` to `Card` interface
+- `rslib/webapp/src/routes/scheduler.rs` - Added `flags: u8` to `QueuedCardResponse`
+
+**Acceptance Criteria** (All Met):
+
+- ✅ User can flag (colors 1–4 + clear), suspend, or bury the current card without leaving the reviewer
+- ✅ Current flag color shown as a dot on the "More" button
+- ✅ After any action, next card is loaded automatically
+- ✅ Click-outside handler closes the dropdown cleanly
 
 ---
 
@@ -1387,15 +1413,15 @@ Frontend:
 
 ## Timeline Summary
 
-| Phase                              | Duration     | Dependencies  | Status   |
-| ---------------------------------- | ------------ | ------------- | -------- |
-| Phase 1: Foundation                | 2 weeks      | None          | ✅ Done  |
-| Phase 2: Core API                  | 2 weeks      | Phase 1       | ✅ Done  |
-| Phase 3: UI Components             | 3 weeks      | Phase 1, 2    | ✅ Done  |
-| Phase 4: Desktop Parity Quick Wins | 1–2 weeks    | Phase 3       | 📋 Next    |
-| Phase 5: Polish & Testing          | 2 weeks      | Phase 4       | 📋 Planned |
-| Optional Enhancements              | ongoing      | Phase 5       | 💡 Future  |
-| **Total (through Phase 5)**        | **~11 weeks** |              |          |
+| Phase                              | Duration      | Dependencies | Status     |
+| ---------------------------------- | ------------- | ------------ | ---------- |
+| Phase 1: Foundation                | 2 weeks       | None         | ✅ Done    |
+| Phase 2: Core API                  | 2 weeks       | Phase 1      | ✅ Done    |
+| Phase 3: UI Components             | 3 weeks       | Phase 1, 2   | ✅ Done    |
+| Phase 4: Desktop Parity Quick Wins | 1–2 weeks     | Phase 3      | 📋 Next    |
+| Phase 5: Polish & Testing          | 2 weeks       | Phase 4      | 📋 Planned |
+| Optional Enhancements              | ongoing       | Phase 5      | 💡 Future  |
+| **Total (through Phase 5)**        | **~11 weeks** |              |            |
 
 ## Resource Requirements
 

@@ -40,7 +40,7 @@ export class ApiClient {
         if (!response.ok) {
             const errorText = await response.text();
             let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
-            
+
             try {
                 const errorData = JSON.parse(errorText);
                 errorMessage = errorData.message || errorData.error || errorMessage;
@@ -110,9 +110,9 @@ export class ApiClient {
         console.log("Endpoint: /api/v1/auth/login");
         console.log("Username:", username);
         console.log("Sending POST request...");
-        
-        const result = await this.post<{ 
-            token: string; 
+
+        const result = await this.post<{
+            token: string;
             user: { id: number; username: string; email: string };
             success?: boolean;
             data?: any;
@@ -122,9 +122,9 @@ export class ApiClient {
             { username, password },
             false,
         );
-        
+
         console.log("Raw API response:", result);
-        
+
         // Handle different response formats
         if (result.success && result.data) {
             console.log("Response has success/data format");
@@ -288,6 +288,31 @@ export class ApiClient {
         }>(`/api/v1/cards/${id}`);
     }
 
+    async flagCard(cardId: number, flag: number) {
+        return this.post<{ success: boolean; message: string }>(
+            `/api/v1/cards/${cardId}/flag`,
+            { flag },
+        );
+    }
+
+    async suspendCard(cardId: number) {
+        return this.post<{ success: boolean; message: string }>(
+            `/api/v1/cards/${cardId}/suspend`,
+        );
+    }
+
+    async unsuspendCard(cardId: number) {
+        return this.post<{ success: boolean; message: string }>(
+            `/api/v1/cards/${cardId}/unsuspend`,
+        );
+    }
+
+    async buryCard(cardId: number) {
+        return this.post<{ success: boolean; message: string }>(
+            `/api/v1/cards/${cardId}/bury`,
+        );
+    }
+
     // Scheduler endpoints
     async getNextCard(deckId: number) {
         return this.get<{
@@ -394,8 +419,8 @@ export class ApiClient {
 
     async getGraphs(search?: string, days?: number) {
         const params = new URLSearchParams();
-        if (search) params.append("search", search);
-        if (days) params.append("days", days.toString());
+        if (search) { params.append("search", search); }
+        if (days) { params.append("days", days.toString()); }
         const query = params.toString() ? `?${params.toString()}` : "";
         return this.get<any>(`/api/v1/stats/graphs${query}`);
     }

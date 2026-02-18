@@ -29,9 +29,9 @@ anyhow.workspace = true
 snafu.workspace = true
 
 # Workspace dependencies - Utilities
+regex.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
-regex.workspace = true
 
 # Additional dependencies for webapp
 argon2 = { version = "0.5", features = ["std"] }

@@ -1,8 +1,8 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
+import { derived, writable } from "svelte/store";
 
 export interface User {
     id: number;
@@ -30,11 +30,11 @@ function createAuthStore() {
     if (browser) {
         const storedToken = localStorage.getItem(TOKEN_KEY);
         const storedUser = localStorage.getItem(USER_KEY);
-        
+
         console.log("=== Auth Store Initialization ===");
         console.log("Stored token:", storedToken);
         console.log("Stored user:", storedUser);
-        
+
         if (storedToken && storedUser) {
             try {
                 initialState.token = storedToken;
@@ -60,7 +60,7 @@ function createAuthStore() {
             console.log("=== authStore.login called ===");
             console.log("User:", user);
             console.log("Token:", token);
-            
+
             if (browser) {
                 console.log("Storing in localStorage...");
                 localStorage.setItem(TOKEN_KEY, token);
@@ -68,7 +68,7 @@ function createAuthStore() {
                 console.log("Stored token:", localStorage.getItem(TOKEN_KEY));
                 console.log("Stored user:", localStorage.getItem(USER_KEY));
             }
-            
+
             const newState = {
                 user,
                 token,

@@ -13,7 +13,12 @@
 </script>
 
 <div class="mb-4">
-    <label for="field-{index}" class="block font-semibold text-gray-800 dark:text-gray-200 mb-1.5 text-sm">{label}</label>
+    <label
+        for="field-{index}"
+        class="block font-semibold text-gray-800 dark:text-gray-200 mb-1.5 text-sm"
+    >
+        {label}
+    </label>
     <textarea
         id="field-{index}"
         {value}

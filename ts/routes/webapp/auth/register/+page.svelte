@@ -62,26 +62,45 @@
     }
 </script>
 
-<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+<div
+    class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-4"
+>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md">
-        <h1 class="m-0 mb-2 text-3xl text-gray-800 dark:text-gray-100 text-center font-bold">Create Account</h1>
-        <p class="m-0 mb-8 text-gray-500 dark:text-gray-400 text-center text-sm">Join Anki Web to start learning</p>
+        <h1
+            class="m-0 mb-2 text-3xl text-gray-800 dark:text-gray-100 text-center font-bold"
+        >
+            Create Account
+        </h1>
+        <p class="m-0 mb-8 text-gray-500 dark:text-gray-400 text-center text-sm">
+            Join Anki Web to start learning
+        </p>
 
         {#if error}
-            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-3 mb-4 text-sm" role="alert">
+            <div
+                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-3 mb-4 text-sm"
+                role="alert"
+            >
                 {error}
             </div>
         {/if}
 
         {#if success}
-            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-3 mb-4 text-sm" role="status">
+            <div
+                class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-3 mb-4 text-sm"
+                role="status"
+            >
                 {success}
             </div>
         {/if}
 
         <form on:submit|preventDefault={handleRegister}>
             <div class="mb-6">
-                <label for="username" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Username</label>
+                <label
+                    for="username"
+                    class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm"
+                >
+                    Username
+                </label>
                 <input
                     id="username"
                     type="text"
@@ -95,7 +114,12 @@
             </div>
 
             <div class="mb-6">
-                <label for="email" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Email</label>
+                <label
+                    for="email"
+                    class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm"
+                >
+                    Email
+                </label>
                 <input
                     id="email"
                     type="email"
@@ -109,7 +133,12 @@
             </div>
 
             <div class="mb-6">
-                <label for="password" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Password</label>
+                <label
+                    for="password"
+                    class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm"
+                >
+                    Password
+                </label>
                 <input
                     id="password"
                     type="password"
@@ -123,7 +152,12 @@
             </div>
 
             <div class="mb-6">
-                <label for="confirmPassword" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Confirm Password</label>
+                <label
+                    for="confirmPassword"
+                    class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm"
+                >
+                    Confirm Password
+                </label>
                 <input
                     id="confirmPassword"
                     type="password"
@@ -151,7 +185,12 @@
 
         <div class="mt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
             Already have an account?
-            <a href="/webapp/auth/login" class="text-indigo-500 dark:text-indigo-400 no-underline font-medium hover:underline">Login here</a>
+            <a
+                href="/webapp/auth/login"
+                class="text-indigo-500 dark:text-indigo-400 no-underline font-medium hover:underline"
+            >
+                Login here
+            </a>
         </div>
     </div>
 </div>

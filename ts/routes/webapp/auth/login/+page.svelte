@@ -16,7 +16,7 @@
             console.log("Login page - Auth state:", state);
             console.log("localStorage token:", localStorage.getItem("anki_auth_token"));
             console.log("localStorage user:", localStorage.getItem("anki_user"));
-            
+
             if (state.isAuthenticated && state.token) {
                 console.log("User already authenticated, redirecting to /webapp");
                 goto("/webapp");
@@ -46,18 +46,26 @@
             console.log("Login API response:", response);
             console.log("Response user:", response.user);
             console.log("Response token:", response.token);
-            
+
             console.log("Calling authStore.login...");
             authStore.login(response.user, response.token);
-            
+
             console.log("Checking auth state after login...");
             let authState: any;
-            const unsub = authStore.subscribe(state => { authState = state; });
+            const unsub = authStore.subscribe((state) => {
+                authState = state;
+            });
             unsub();
             console.log("Auth state after login:", authState);
-            console.log("localStorage token after login:", localStorage.getItem("anki_auth_token"));
-            console.log("localStorage user after login:", localStorage.getItem("anki_user"));
-            
+            console.log(
+                "localStorage token after login:",
+                localStorage.getItem("anki_auth_token"),
+            );
+            console.log(
+                "localStorage user after login:",
+                localStorage.getItem("anki_user"),
+            );
+
             console.log("Redirecting to /webapp");
             goto("/webapp");
         } catch (e: any) {
@@ -77,20 +85,36 @@
     }
 </script>
 
-<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+<div
+    class="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-4"
+>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md">
-        <h1 class="m-0 mb-2 text-3xl text-gray-800 dark:text-gray-100 text-center font-bold">Anki Web Login</h1>
-        <p class="m-0 mb-8 text-gray-500 dark:text-gray-400 text-center text-sm">Sign in to your account</p>
+        <h1
+            class="m-0 mb-2 text-3xl text-gray-800 dark:text-gray-100 text-center font-bold"
+        >
+            Anki Web Login
+        </h1>
+        <p class="m-0 mb-8 text-gray-500 dark:text-gray-400 text-center text-sm">
+            Sign in to your account
+        </p>
 
         {#if error}
-            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-3 mb-4 text-sm" role="alert">
+            <div
+                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-3 mb-4 text-sm"
+                role="alert"
+            >
                 {error}
             </div>
         {/if}
 
         <form on:submit|preventDefault={handleLogin}>
             <div class="mb-6">
-                <label for="username" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Username</label>
+                <label
+                    for="username"
+                    class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm"
+                >
+                    Username
+                </label>
                 <input
                     id="username"
                     type="text"
@@ -104,7 +128,12 @@
             </div>
 
             <div class="mb-6">
-                <label for="password" class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm">Password</label>
+                <label
+                    for="password"
+                    class="block mb-2 text-gray-700 dark:text-gray-300 font-medium text-sm"
+                >
+                    Password
+                </label>
                 <input
                     id="password"
                     type="password"
@@ -132,7 +161,12 @@
 
         <div class="mt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
             Don't have an account?
-            <a href="/webapp/auth/register" class="text-indigo-500 dark:text-indigo-400 no-underline font-medium hover:underline">Register here</a>
+            <a
+                href="/webapp/auth/register"
+                class="text-indigo-500 dark:text-indigo-400 no-underline font-medium hover:underline"
+            >
+                Register here
+            </a>
         </div>
     </div>
 </div>

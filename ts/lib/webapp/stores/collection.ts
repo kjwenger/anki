@@ -1,8 +1,8 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
+import { derived, writable } from "svelte/store";
 
 export interface Collection {
     path: string;

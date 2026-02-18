@@ -121,29 +121,51 @@
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">Add Cards</h1>
+            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">
+                Add Cards
+            </h1>
             <div class="flex gap-4">
-                <a href="/webapp" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"> &larr; Back </a>
+                <a
+                    href="/webapp"
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                    &larr; Back
+                </a>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto p-8">
         {#if error}
-            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6">{error}</div>
+            <div
+                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 p-4 mb-6"
+            >
+                {error}
+            </div>
         {/if}
 
         {#if success}
-            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-4 mb-6">{success}</div>
+            <div
+                class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-4 mb-6"
+            >
+                {success}
+            </div>
         {/if}
 
         {#if loading}
-            <div class="text-center py-16 text-gray-500 dark:text-gray-400 text-lg">Loading...</div>
+            <div class="text-center py-16 text-gray-500 dark:text-gray-400 text-lg">
+                Loading...
+            </div>
         {:else}
             <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-8">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md h-fit">
                     <div class="mb-6">
-                        <label for="notetype-select" class="block font-semibold text-gray-800 dark:text-gray-200 mb-2 text-sm">Note Type</label>
+                        <label
+                            for="notetype-select"
+                            class="block font-semibold text-gray-800 dark:text-gray-200 mb-2 text-sm"
+                        >
+                            Note Type
+                        </label>
                         <select
                             id="notetype-select"
                             on:change={handleNotetypeChange}
@@ -157,7 +179,12 @@
                     </div>
 
                     <div>
-                        <label for="deck-select" class="block font-semibold text-gray-800 dark:text-gray-200 mb-2 text-sm">Deck</label>
+                        <label
+                            for="deck-select"
+                            class="block font-semibold text-gray-800 dark:text-gray-200 mb-2 text-sm"
+                        >
+                            Deck
+                        </label>
                         <select
                             id="deck-select"
                             on:change={handleDeckChange}
@@ -209,7 +236,9 @@
                             </div>
                         </form>
                     {:else}
-                        <p class="text-center text-gray-500 dark:text-gray-400 py-10">Please select a note type to begin.</p>
+                        <p class="text-center text-gray-500 dark:text-gray-400 py-10">
+                            Please select a note type to begin.
+                        </p>
                     {/if}
                 </div>
             </div>

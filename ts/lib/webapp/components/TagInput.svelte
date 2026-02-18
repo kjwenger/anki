@@ -31,10 +31,19 @@
 </script>
 
 <div class="mb-4">
-    <label for="tag-input-field" class="block font-semibold text-gray-800 dark:text-gray-200 mb-1.5 text-sm">Tags</label>
-    <div class="flex flex-wrap gap-1.5 p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg min-h-[42px] items-center transition-colors duration-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 bg-white dark:bg-gray-700">
+    <label
+        for="tag-input-field"
+        class="block font-semibold text-gray-800 dark:text-gray-200 mb-1.5 text-sm"
+    >
+        Tags
+    </label>
+    <div
+        class="flex flex-wrap gap-1.5 p-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg min-h-[42px] items-center transition-colors duration-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 bg-white dark:bg-gray-700"
+    >
         {#each tags as tag, index}
-            <span class="inline-flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-2 py-1 rounded-full text-sm font-medium">
+            <span
+                class="inline-flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-2 py-1 rounded-full text-sm font-medium"
+            >
                 {tag}
                 <button
                     type="button"

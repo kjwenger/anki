@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use anki::services::MediaService;
 use axum::body::Body;
 use axum::body::Bytes;
 use axum::extract::Multipart;
@@ -14,7 +15,6 @@ use serde::Deserialize;
 use serde::Serialize;
 use tokio::fs;
 
-use anki::services::MediaService;
 use crate::auth::AuthUser;
 use crate::error::Result;
 use crate::error::WebAppError;
@@ -161,10 +161,10 @@ pub async fn add_media(
     multipart: Multipart,
 ) -> Result<impl IntoResponse> {
     let Extension(user) = auth_user;
-    
+
     // Process multipart first to extract file data
     let (desired_name, file_data) = extract_file_from_multipart(multipart).await?;
-    
+
     let backend = state
         .backend_manager
         .get_or_create_backend(user.user_id, &user.username)?;
@@ -200,12 +200,10 @@ async fn extract_file_from_multipart(mut multipart: Multipart) -> Result<(String
 
         if field_name == "file" {
             filename = field.file_name().map(|s| s.to_string());
-            file_data = Some(
-                field
-                    .bytes()
-                    .await
-                    .map_err(|e| WebAppError::bad_request(&format!("Failed to read file: {}", e)))?,
-            );
+            file_data =
+                Some(field.bytes().await.map_err(|e| {
+                    WebAppError::bad_request(&format!("Failed to read file: {}", e))
+                })?);
         }
     }
 
@@ -228,11 +226,10 @@ pub async fn delete_media(
     let mut col = backend.lock().unwrap();
 
     // Trash files
-    col
-        .trash_media_files(anki_proto::media::TrashMediaFilesRequest {
-            fnames: request.filenames.clone(),
-        })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+    col.trash_media_files(anki_proto::media::TrashMediaFilesRequest {
+        fnames: request.filenames.clone(),
+    })
+    .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
 
     let count = request.filenames.len();
 

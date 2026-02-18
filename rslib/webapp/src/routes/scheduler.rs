@@ -1,5 +1,6 @@
 use anki::scheduler::answering::CardAnswer;
 use anki::scheduler::answering::Rating;
+use anki::services::CardsService;
 use anki::timestamp::TimestampMillis;
 use axum::extract::Path;
 use axum::extract::State;
@@ -21,6 +22,7 @@ pub struct QueuedCardResponse {
     pub answer_html: String,
     pub css: String,
     pub counts: StudyCounts,
+    pub flags: u8,
 }
 
 #[derive(Debug, Serialize)]
@@ -66,6 +68,13 @@ pub async fn get_next_card(
     if let Some(queued_card) = queued_cards.cards.first() {
         let card_id = queued_card.card.id();
 
+        // Get the full card to access flags
+        let full_card = <anki::collection::Collection as CardsService>::get_card(
+            &mut *col,
+            anki_proto::cards::CardId { cid: card_id.0 },
+        )
+        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+
         // Render the card HTML
         let rendered = col
             .render_existing_card(card_id, false, false)
@@ -81,6 +90,7 @@ pub async fn get_next_card(
                 learning: queued_cards.learning_count,
                 review: queued_cards.review_count,
             },
+            flags: full_card.flags as u8,
         };
 
         drop(col);

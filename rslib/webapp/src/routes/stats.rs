@@ -1,3 +1,4 @@
+use anki::services::StatsService;
 use axum::extract::Path;
 use axum::extract::Query;
 use axum::extract::State;
@@ -7,7 +8,6 @@ use axum::Json;
 use serde::Deserialize;
 use serde::Serialize;
 
-use anki::services::StatsService;
 use crate::auth::AuthUser;
 use crate::error::Result;
 use crate::error::WebAppError;
