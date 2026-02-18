@@ -1353,7 +1353,8 @@ pub fn openapi_spec() -> Value {
             "/api/v1/scheduler/decks/{deck_id}/next": {
                 "get": {
                     "tags": ["scheduler"],
-                    "summary": "Get the next card due for review in a deck",
+                    "summary": "Get the next card due for review in a specific deck",
+                    "description": "Returns the next card to review from the specified deck (and its children). The deck is set as the current deck before fetching cards, ensuring only cards from this deck tree are returned.",
                     "operationId": "getNextCard",
                     "security": [{ "bearerAuth": [] }],
                     "parameters": [
@@ -1362,7 +1363,7 @@ pub fn openapi_spec() -> Value {
                             "in": "path",
                             "required": true,
                             "schema": { "type": "integer", "format": "int64" },
-                            "description": "Deck ID to fetch the next card from"
+                            "description": "Deck ID to fetch the next card from (includes child decks)"
                         }
                     ],
                     "responses": {

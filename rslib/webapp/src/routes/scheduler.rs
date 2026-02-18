@@ -45,13 +45,17 @@ pub struct MessageResponse {
 pub async fn get_next_card(
     State(state): State<AuthRouteState>,
     Extension(auth_user): Extension<AuthUser>,
-    Path(_deck_id): Path<i64>,
+    Path(deck_id): Path<i64>,
 ) -> Result<impl IntoResponse> {
     let backend = state
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
+
+    // Set the current deck to scope the scheduler to this deck
+    col.set_current_deck(deck_id.into())
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     let queued_cards = col
         .get_queued_cards(1, false)
@@ -171,13 +175,16 @@ pub async fn answer_card(
 pub async fn get_deck_counts(
     State(state): State<AuthRouteState>,
     Extension(auth_user): Extension<AuthUser>,
-    Path(_deck_id): Path<i64>,
+    Path(deck_id): Path<i64>,
 ) -> Result<impl IntoResponse> {
     let backend = state
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
+
+    col.set_current_deck(deck_id.into())
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     let queued_cards = col
         .get_queued_cards(0, false)

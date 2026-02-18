@@ -287,7 +287,7 @@ Endpoints Implemented:
 - [x] POST /api/v1/decks (create)
 - [x] GET /api/v1/decks/{id} (get)
 - [x] DELETE /api/v1/decks/{id} (delete)
-- [ ] PUT /api/v1/decks/{id} (update) - future
+- [x] PUT /api/v1/decks/{id} (update)
 - [ ] POST /api/v1/decks/{id}/rename - future
 - [ ] GET /api/v1/decks/{id}/stats - future
 - [ ] POST /api/v1/decks/{id}/set-current - future
@@ -860,23 +860,29 @@ Tasks identified in `docs/webapp/FUNCTIONALITY_GAP_ANALYSIS.md` that close meani
 the desktop app with relatively small effort. All required backend APIs already exist; most items
 are frontend-only or require only minor Rust changes.
 
-### 4.1 Critical Bug Fixes
+### 4.1 Critical Bug Fixes ✅
 
 **Priority**: P0\
 **Estimate**: 1 day\
 **Dependencies**: Phase 3 complete\
-**Source**: FUNCTIONALITY_GAP_ANALYSIS.md
+**Source**: FUNCTIONALITY_GAP_ANALYSIS.md\
+**Status**: Complete
 
-- [ ] **Fix deck-scoped study** — `scheduler.rs` ignores `deck_id`; `get_queued_cards` is called
+- [x] **Fix deck-scoped study** — `scheduler.rs` ignores `deck_id`; `get_queued_cards` is called
       without a deck filter so studying always draws from the whole collection. Pass the deck ID
       through to the scheduler call.
-- [ ] **Fix `PUT /api/v1/decks` still listed as future** in TASKS.md — endpoint is already
+- [x] **Fix `PUT /api/v1/decks` still listed as future** in TASKS.md — endpoint is already
       implemented (router.rs) but task 2.2 still marks it as unchecked.
 
-**Acceptance Criteria**:
+**Files Modified**:
 
-- Studying a deck only presents cards from that deck (and its children)
-- TASKS.md accurately reflects implemented state
+- `rslib/webapp/src/routes/scheduler.rs` - Added `set_current_deck()` call before getting queued cards
+- `TASKS.md` - Marked PUT /api/v1/decks as implemented
+
+**Acceptance Criteria** (All Met):
+
+- ✅ Studying a deck only presents cards from that deck (and its children)
+- ✅ TASKS.md accurately reflects implemented state
 
 ---
 
