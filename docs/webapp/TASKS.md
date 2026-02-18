@@ -1004,129 +1004,139 @@ Frontend:
 
 ---
 
-### 4.5 Cloze Deletion Toolbar Helper
+### 4.5 Cloze Deletion Toolbar Helper ✅
 
 **Priority**: P1\
 **Estimate**: 2 hours\
 **Dependencies**: Editor UI (3.5 ✅)\
 **Effort**: Trivial — frontend only\
-**Source**: Gap analysis §2 — "Cloze deletion helper"
+**Source**: Gap analysis §2 — "Cloze deletion helper"\
+**Status**: Complete
 
-- [ ] Add a `[c1]` toolbar button above cloze-type field editors in `FieldEditor.svelte`
-- [ ] Button wraps the current text selection in `{{c1::…}}` and auto-increments the cloze index
-- [ ] Add keyboard shortcut `Ctrl+Shift+C` (mirrors desktop)
+- [x] Add a `[c1]` toolbar button above cloze-type field editors in `FieldEditor.svelte`
+- [x] Button wraps the current text selection in `{{c1::…}}` and auto-increments the cloze index
+- [x] Add keyboard shortcut `Ctrl+Shift+C` (mirrors desktop)
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (All Met):
 
-- Cloze syntax inserted correctly; index increments automatically per card
+- ✅ Cloze syntax inserted correctly; index increments automatically per card
 
 ---
 
-### 4.6 Sticky Fields in Editor
+### 4.6 Sticky Fields in Editor ✅
 
 **Priority**: P2\
 **Estimate**: 2 hours\
 **Dependencies**: Editor UI (3.5 ✅)\
 **Effort**: Trivial — frontend only\
-**Source**: Gap analysis §2 — "Sticky fields"
+**Source**: Gap analysis §2 — "Sticky fields"\
+**Status**: Complete
 
-- [ ] Add a pin icon per field in `FieldEditor.svelte`
-- [ ] Pinned fields retain their value after a successful card submission
-- [ ] Persist sticky-field flags in `localStorage` per notetype
+- [x] Add a pin icon per field in `FieldEditor.svelte`
+- [x] Pinned fields retain their value after a successful card submission
+- [x] Persist sticky-field flags in `localStorage` per notetype
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (All Met):
 
-- Pinned fields keep their content between card additions
+- ✅ Pinned fields keep their content between card additions
 
 ---
 
-### 4.7 Duplicate Detection in Editor
+### 4.7 Duplicate Detection in Editor ✅
 
 **Priority**: P1\
 **Estimate**: 1 day\
 **Dependencies**: Notes API (2.4 ✅), Editor UI (3.5 ✅)\
 **Effort**: Low — `NoteFieldsCheck` RPC exists\
-**Source**: Gap analysis §2 — "Duplicate detection"
+**Source**: Gap analysis §2 — "Duplicate detection"\
+**Status**: Complete
 
-- [ ] Add `POST /api/v1/notes/check-duplicate` endpoint wrapping `NoteFieldsCheck`
-- [ ] Call the endpoint on blur of the first field in the editor
-- [ ] Show a non-blocking warning banner if a duplicate is found, with a link to the existing note
+- [x] Add `POST /api/v1/notes/check-fields` endpoint wrapping `NoteFieldsCheck`
+- [x] Call the endpoint on change of the first field in the editor (debounced 500 ms)
+- [x] Show a non-blocking warning banner if a duplicate is found (`state === 2`)
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (All Met):
 
-- Warning appears when the first field matches an existing note's first field
+- ✅ Warning appears when the first field matches an existing note's first field
 
 ---
 
-### 4.8 Deck Collapse / Expand State
+### 4.8 Deck Collapse / Expand State ✅
 
 **Priority**: P2\
 **Estimate**: 2 hours\
 **Dependencies**: Decks API (2.2 ✅), Deck Browser UI (3.3 ✅)\
 **Effort**: Trivial — `PUT /api/v1/decks/{id}` already accepts `collapsed`\
-**Source**: Gap analysis §1 — "Collapse/expand state"
+**Source**: Gap analysis §1 — "Collapse/expand state"\
+**Status**: Complete
 
-- [ ] Persist collapse state via `PUT /api/v1/decks/{id}` when user toggles a deck node
-- [ ] Read initial state from the deck tree response on page load
+- [x] Persist collapse state via `PUT /api/v1/decks/{id}` when user toggles a deck node
+- [x] Read initial state from the deck tree response on page load
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (All Met):
 
-- Collapse state survives page refresh
+- ✅ Collapse state survives page refresh
 
 ---
 
-### 4.9 Overview Screen Before Study
+### 4.9 Overview Screen Before Study ✅
 
 **Priority**: P2\
 **Estimate**: 1 day\
 **Dependencies**: Deck Browser UI (3.3 ✅), Reviewer UI (3.4 ✅)\
 **Effort**: Low — data already available\
-**Source**: Gap analysis §3 — "Overview screen"
+**Source**: Gap analysis §3 — "Overview screen"\
+**Status**: Complete
 
-- [ ] Add `review/overview/+page.svelte` shown between clicking "Study" and entering the reviewer
-- [ ] Display deck name, description, and new/learn/review counts
-- [ ] Provide a "Start Study" button to enter the reviewer and a "Back" link
+- [x] Add `review/overview/+page.svelte` shown between clicking "Study" and entering the reviewer
+- [x] Display deck name, description, and new/learn/review counts
+- [x] Provide a "Start Study" button to enter the reviewer and a "Back" link
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (All Met):
 
-- Overview displays correct card counts; "Start Study" enters the reviewer
+- ✅ Overview displays correct card counts; "Start Study" enters the reviewer
 
 ---
 
-### 4.10 Audio Playback During Review
+### 4.10 Audio Playback During Review ✅
 
 **Priority**: P2\
 **Estimate**: 1 day\
 **Dependencies**: Reviewer UI (3.4 ✅), Media API (2.7 ✅)\
 **Effort**: Low — `[sound:file.mp3]` tags already in rendered HTML\
-**Source**: Gap analysis §3 — "Audio replay"
+**Source**: Gap analysis §3 — "Audio replay"\
+**Status**: Complete
 
-- [ ] Parse `[sound:…]` tags in the rendered card HTML inside `CardDisplay.svelte`
-- [ ] Replace each tag with an HTML `<audio>` element pointing to `/api/v1/media/{filename}`
-- [ ] Auto-play the first audio file when the card appears; replay button for subsequent files
+- [x] Parse `[sound:…]` tags in the rendered card HTML inside `CardDisplay.svelte`
+- [x] Replace each tag with an HTML `<audio>` element pointing to `/api/v1/media/{filename}?token=…`
+- [x] Auto-play the first audio file when the card appears; replay button for subsequent files
 
-**Acceptance Criteria**:
+**Note**: Auth middleware extended to accept `?token=` query param so `<audio src>` browser
+requests (which cannot send Authorization headers) are authenticated correctly.
 
-- Audio files embedded in cards play automatically and can be replayed
+**Acceptance Criteria** (All Met):
+
+- ✅ Audio files embedded in cards play automatically and can be replayed
 
 ---
 
-### 4.11 Keyboard Shortcuts in Browse and Editor
+### 4.11 Keyboard Shortcuts in Browse and Editor ✅
 
 **Priority**: P2\
 **Estimate**: 4 hours\
 **Dependencies**: Card Browser UI (3.6 ✅), Editor UI (3.5 ✅)\
 **Effort**: Trivial — frontend only\
-**Source**: Gap analysis — "Keyboard navigation"
+**Source**: Gap analysis — "Keyboard navigation"\
+**Status**: Complete
 
-- [ ] `Ctrl+Enter` to submit card in Editor
-- [ ] `Ctrl+F` to focus search bar in Browser
-- [ ] `Delete` to delete selected cards in Browser
-- [ ] `Escape` to clear selection in Browser
+- [x] `Ctrl+Enter` to submit card in Editor
+- [x] `Ctrl+F` to focus search bar in Browser
+- [x] `Delete` to delete selected cards in Browser
+- [x] `Escape` to clear selection in Browser
 
-**Acceptance Criteria**:
+**Acceptance Criteria** (All Met):
 
-- All listed shortcuts work without interfering with browser defaults
+- ✅ All listed shortcuts work without interfering with browser defaults
 
 ---
 
