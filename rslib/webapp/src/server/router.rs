@@ -64,6 +64,8 @@ use crate::routes::me;
 use crate::routes::redo;
 use crate::routes::register;
 use crate::routes::rename_tag;
+use crate::routes::browse_cards;
+use crate::routes::browse_notes;
 use crate::routes::search_cards;
 use crate::routes::search_notes;
 use crate::routes::suspend_card;
@@ -112,6 +114,8 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/cards/batch-update", post(batch_update_cards))
         .route("/api/v1/search/cards", post(search_cards))
         .route("/api/v1/search/notes", post(search_notes))
+        .route("/api/v1/browse/cards", post(browse_cards))
+        .route("/api/v1/browse/notes", post(browse_notes))
         .route("/api/v1/search/find-replace", post(find_and_replace))
         .route("/api/v1/media/check", get(check_media))
         .route("/api/v1/media/{filename}", get(get_media))

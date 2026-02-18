@@ -425,6 +425,30 @@ export class ApiClient {
         });
     }
 
+    async browseCards(ids: number[]) {
+        return this.post<{
+            rows: {
+                card_id: number;
+                sort_field: string;
+                card_type: string;
+                due: string;
+                deck: string;
+            }[];
+        }>("/api/v1/browse/cards", { ids });
+    }
+
+    async browseNotes(ids: number[]) {
+        return this.post<{
+            rows: {
+                note_id: number;
+                sort_field: string;
+                notetype: string;
+                cards: number;
+                tags: string;
+            }[];
+        }>("/api/v1/browse/notes", { ids });
+    }
+
     // Statistics endpoints
     async getTodayStats() {
         return this.get<{

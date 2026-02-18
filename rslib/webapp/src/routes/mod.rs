@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod browse;
 pub mod cards;
 pub mod collection;
 pub mod decks;
@@ -11,6 +12,8 @@ pub mod stats;
 pub mod tags;
 
 pub use auth::login;
+pub use browse::browse_cards;
+pub use browse::browse_notes;
 pub use auth::logout;
 pub use auth::me;
 pub use auth::register;

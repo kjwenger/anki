@@ -11,66 +11,72 @@
     let loading = false;
     let error = "";
     let selectedIds: Set<number> = new Set();
-    let cardDetails: Map<number, any> = new Map();
+
+    // Browse rows returned from the batch endpoints
+    let cardRows: Map<number, { sort_field: string; card_type: string; due: string; deck: string }> = new Map();
+    let noteRows: Map<number, { sort_field: string; notetype: string; cards: number; tags: string }> = new Map();
+
+    const PAGE_SIZE = 100;
 
     onMount(() => {
-        // Optionally load all cards initially
         handleSearch();
     });
 
     async function handleSearch() {
         loading = true;
         error = "";
+        cardRows = new Map();
+        noteRows = new Map();
         try {
-            const query = searchQuery.trim() || ""; // Empty query returns all
-            console.log("=== Browse Search ===");
-            console.log("Query:", query);
-            console.log("Mode:", searchMode);
+            const query = searchQuery.trim();
 
             if (searchMode === "cards") {
-                console.log("Calling api.searchCards...");
                 const response = await api.searchCards(query);
-                console.log("Search response:", response);
                 results = response.card_ids;
-                console.log("Card IDs:", results);
-                // Load card details for first batch (first 50)
-                await loadCardDetails(results.slice(0, 50));
+                await loadCardRows(results.slice(0, PAGE_SIZE));
             } else {
-                console.log("Calling api.searchNotes...");
                 const response = await api.searchNotes(query);
-                console.log("Search response:", response);
                 results = response.note_ids;
+                await loadNoteRows(results.slice(0, PAGE_SIZE));
             }
-                } catch (e: any) {
-                    console.error("Search error:", e);
-                    
-                    // Ensure error message is a string
-                    let msg = "Search failed";
-                    if (e.message) {
-                        msg = typeof e.message === 'string' ? e.message : JSON.stringify(e.message);
-                    }
-                    
-                    error = msg;
-                    results = [];
-                }
-         finally {
+        } catch (e: any) {
+            let msg = "Search failed";
+            if (e.message) {
+                msg = typeof e.message === "string" ? e.message : JSON.stringify(e.message);
+            }
+            error = msg;
+            results = [];
+        } finally {
             loading = false;
         }
     }
 
-    async function loadCardDetails(cardIds: number[]) {
-        // Load card details in parallel
-        const promises = cardIds.map(async (id) => {
-            try {
-                const card = await api.getCard(id);
-                cardDetails.set(id, card);
-                cardDetails = cardDetails; // Trigger reactivity
-            } catch (e) {
-                // Ignore errors for individual cards
-            }
-        });
+    async function loadCardRows(ids: number[]) {
+        if (ids.length === 0) return;
+        const response = await api.browseCards(ids);
+        for (const row of response.rows) {
+            cardRows.set(row.card_id, {
+                sort_field: row.sort_field,
+                card_type: row.card_type,
+                due: row.due,
+                deck: row.deck,
+            });
+        }
+        cardRows = cardRows; // trigger reactivity
+    }
 
-        await Promise.all(promises);
+    async function loadNoteRows(ids: number[]) {
+        if (ids.length === 0) return;
+        const response = await api.browseNotes(ids);
+        for (const row of response.rows) {
+            noteRows.set(row.note_id, {
+                sort_field: row.sort_field,
+                notetype: row.notetype,
+                cards: row.cards,
+                tags: row.tags,
+            });
+        }
+        noteRows = noteRows; // trigger reactivity
     }
 
     function toggleSelect(id: number) {
@@ -79,7 +85,7 @@
         } else {
             selectedIds.add(id);
         }
-        selectedIds = selectedIds; // Trigger reactivity
+        selectedIds = selectedIds;
     }
 
     function selectAll() {
@@ -93,12 +99,10 @@
 
     async function handleBulkSuspend() {
         if (selectedIds.size === 0) return;
-
         try {
-            const promises = Array.from(selectedIds).map((id) =>
-                api.post(`/api/v1/cards/${id}/suspend`, {}),
+            await Promise.all(
+                Array.from(selectedIds).map((id) => api.post(`/api/v1/cards/${id}/suspend`, {})),
             );
-            await Promise.all(promises);
             alert(`Suspended ${selectedIds.size} cards`);
             deselectAll();
         } catch (e: any) {
@@ -108,51 +112,39 @@
 
     async function handleBulkDelete() {
         if (selectedIds.size === 0) return;
-        if (
-            !confirm(
-                `Are you sure you want to delete ${selectedIds.size} ${searchMode}?`,
-            )
-        )
-            return;
-
+        if (!confirm(`Are you sure you want to delete ${selectedIds.size} ${searchMode}?`)) return;
         try {
-            const promises = Array.from(selectedIds).map((id) =>
-                searchMode === "cards"
-                    ? api.delete(`/api/v1/cards/${id}`)
-                    : api.delete(`/api/v1/notes/${id}`),
+            await Promise.all(
+                Array.from(selectedIds).map((id) =>
+                    searchMode === "cards"
+                        ? api.delete(`/api/v1/cards/${id}`)
+                        : api.delete(`/api/v1/notes/${id}`),
+                ),
             );
-            await Promise.all(promises);
             alert(`Deleted ${selectedIds.size} ${searchMode}`);
             deselectAll();
-            handleSearch(); // Refresh
+            handleSearch();
         } catch (e: any) {
             error = e.message || "Bulk delete failed";
         }
     }
 
     function handleKeydown(event: KeyboardEvent) {
-        // Ctrl+F to focus search
         if (event.ctrlKey && event.key === "f") {
             event.preventDefault();
             const input = document.querySelector('input[type="text"]') as HTMLInputElement;
             if (input) input.focus();
             return;
         }
-
-        // Enter to search
         if (event.key === "Enter" && !loading) {
             event.preventDefault();
             handleSearch();
             return;
         }
-
-        // Delete to delete selected
         if (event.key === "Delete" && selectedIds.size > 0) {
             handleBulkDelete();
             return;
         }
-
-        // Escape to clear selection
         if (event.key === "Escape") {
             deselectAll();
         }
@@ -167,14 +159,12 @@
             <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">
                 Browse {searchMode === "cards" ? "Cards" : "Notes"}
             </h1>
-            <div class="flex gap-4">
-                <a
-                    href="/webapp"
-                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                >
-                    &larr; Back
-                </a>
-            </div>
+            <a
+                href="/webapp"
+                class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline rounded-lg inline-block text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+                &larr; Back
+            </a>
         </div>
     </header>
 
@@ -194,7 +184,10 @@
                     'cards'
                         ? 'bg-indigo-500 border-indigo-500 text-white'
                         : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
-                    on:click={() => (searchMode = "cards")}
+                    on:click={() => {
+                        searchMode = "cards";
+                        handleSearch();
+                    }}
                 >
                     Cards
                 </button>
@@ -203,7 +196,10 @@
                     'notes'
                         ? 'bg-indigo-500 border-indigo-500 text-white'
                         : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'}"
-                    on:click={() => (searchMode = "notes")}
+                    on:click={() => {
+                        searchMode = "notes";
+                        handleSearch();
+                    }}
                 >
                     Notes
                 </button>
@@ -213,7 +209,6 @@
                 <input
                     type="text"
                     bind:value={searchQuery}
-                    on:keydown={handleKeydown}
                     placeholder="Search query (empty = all)"
                     class="flex-1 px-3 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 dark:text-gray-100 focus:outline-hidden focus:border-indigo-500 transition-colors"
                 />
@@ -252,13 +247,15 @@
                         >
                             Deselect All
                         </button>
-                        {#if selectedIds.size > 0}
+                        {#if selectedIds.size > 0 && searchMode === "cards"}
                             <button
                                 class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors"
                                 on:click={handleBulkSuspend}
                             >
                                 Suspend Selected
                             </button>
+                        {/if}
+                        {#if selectedIds.size > 0}
                             <button
                                 class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white border-none rounded-lg cursor-pointer text-sm transition-colors"
                                 on:click={handleBulkDelete}
@@ -288,7 +285,8 @@
                                 >
                                     <input
                                         type="checkbox"
-                                        checked={selectedIds.size === results.length}
+                                        checked={selectedIds.size === results.length &&
+                                            results.length > 0}
                                         on:change={() => {
                                             if (selectedIds.size === results.length) {
                                                 deselectAll();
@@ -301,13 +299,13 @@
                                 <th
                                     class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
                                 >
-                                    ID
+                                    Sort Field
                                 </th>
                                 {#if searchMode === "cards"}
                                     <th
                                         class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
                                     >
-                                        Deck
+                                        Card Type
                                     </th>
                                     <th
                                         class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
@@ -317,19 +315,29 @@
                                     <th
                                         class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
                                     >
-                                        Interval
+                                        Deck
+                                    </th>
+                                {:else}
+                                    <th
+                                        class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                    >
+                                        Note Type
+                                    </th>
+                                    <th
+                                        class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                    >
+                                        Cards
+                                    </th>
+                                    <th
+                                        class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
+                                    >
+                                        Tags
                                     </th>
                                 {/if}
-                                <th
-                                    class="px-3 py-3 text-left bg-gray-50 dark:bg-gray-700/50 font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase border-b border-gray-200 dark:border-gray-700"
-                                >
-                                    Actions
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {#each results.slice(0, 100) as id}
-                                {@const card = cardDetails.get(id)}
+                            {#each results.slice(0, PAGE_SIZE) as id}
                                 <tr
                                     class="border-b border-gray-100 dark:border-gray-700/50 transition-colors {selectedIds.has(
                                         id,
@@ -344,46 +352,44 @@
                                             on:change={() => toggleSelect(id)}
                                         />
                                     </td>
-                                    <td
-                                        class="px-3 py-3 text-gray-800 dark:text-gray-200"
-                                    >
-                                        {id}
-                                    </td>
                                     {#if searchMode === "cards"}
-                                        <td
-                                            class="px-3 py-3 text-gray-800 dark:text-gray-200"
-                                        >
-                                            {card?.deck_id || "Loading..."}
+                                        {@const row = cardRows.get(id)}
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200 max-w-xs truncate">
+                                            {row?.sort_field ?? "…"}
                                         </td>
-                                        <td
-                                            class="px-3 py-3 text-gray-800 dark:text-gray-200"
-                                        >
-                                            {card?.due || "-"}
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">
+                                            {row?.card_type ?? "…"}
                                         </td>
-                                        <td
-                                            class="px-3 py-3 text-gray-800 dark:text-gray-200"
-                                        >
-                                            {card?.interval || "-"}
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">
+                                            {row?.due ?? "…"}
+                                        </td>
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">
+                                            {row?.deck ?? "…"}
+                                        </td>
+                                    {:else}
+                                        {@const row = noteRows.get(id)}
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200 max-w-xs truncate">
+                                            {row?.sort_field ?? "…"}
+                                        </td>
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">
+                                            {row?.notetype ?? "…"}
+                                        </td>
+                                        <td class="px-3 py-3 text-gray-800 dark:text-gray-200">
+                                            {row?.cards ?? "…"}
+                                        </td>
+                                        <td class="px-3 py-3 text-gray-500 dark:text-gray-400 text-sm">
+                                            {row?.tags ?? ""}
                                         </td>
                                     {/if}
-                                    <td class="px-3 py-3">
-                                        <button
-                                            class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded cursor-pointer text-xs hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                                            on:click={() =>
-                                                alert(`View ${searchMode} ${id}`)}
-                                        >
-                                            View
-                                        </button>
-                                    </td>
                                 </tr>
                             {/each}
                         </tbody>
                     </table>
-                    {#if results.length > 100}
+                    {#if results.length > PAGE_SIZE}
                         <div
                             class="py-4 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700"
                         >
-                            Showing first 100 of {results.length}
+                            Showing first {PAGE_SIZE} of {results.length}
                             {searchMode}
                         </div>
                     {/if}
