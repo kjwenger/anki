@@ -2,23 +2,58 @@
 
 This document breaks down the implementation into manageable tasks with priorities and time estimates.
 
-## Project Phases
+## Table of Contents
 
-### Phase 1: Foundation (Week 1-2)
-
-Core infrastructure and authentication
-
-### Phase 2: Core API (Week 3-4)
-
-Essential REST endpoints
-
-### Phase 3: UI Components (Week 5-7)
-
-Web interface pages
-
-### Phase 4: Polish & Testing (Week 8-9)
-
-Testing, documentation, deployment
+- [Phase 1: Foundation](#phase-1-foundation-2-weeks) ✅ — Core infrastructure and authentication
+  - [1.1 Project Structure Setup](#11-project-structure-setup)
+  - [1.2 Database Schema for Users](#12-database-schema-for-users-)
+  - [1.3 Authentication System](#13-authentication-system-)
+  - [1.4 Session Management](#14-session-management-)
+  - [1.5 Configuration System](#15-configuration-system-)
+  - [1.6 Error Handling](#16-error-handling-)
+- [Phase 2: Core API](#phase-2-core-api-2-weeks) ✅ — Essential REST endpoints
+  - [2.1 Collections API](#21-collections-api-)
+  - [2.2 Decks API](#22-decks-api-)
+  - [2.3 Scheduler API](#23-scheduler-api-)
+  - [2.4 Notes API](#24-notes-api-)
+  - [2.5 Cards API](#25-cards-api-)
+  - [2.6 Search API](#26-search-api-)
+  - [2.7 Media API](#27-media-api-)
+  - [2.8 Tags API](#28-tags-api-)
+  - [2.9 Statistics API](#29-statistics-api-)
+- [Phase 3: UI Components](#phase-3-ui-components-3-weeks) ✅ — Web interface pages
+  - [3.1 Authentication UI](#31-authentication-ui-)
+  - [3.2 Collection Manager UI](#32-collection-manager-ui-)
+  - [3.3 Deck Browser UI](#33-deck-browser-ui-)
+  - [3.4 Reviewer UI](#34-reviewer-ui-)
+  - [3.5 Editor UI](#35-editor-ui)
+  - [3.6 Card Browser UI](#36-card-browser-ui)
+  - [3.7 Statistics UI](#37-statistics-ui)
+  - [3.8 Settings UI](#38-settings-ui)
+  - [3.9 Navigation & Layout](#39-navigation--layout)
+- [Phase 4: Desktop Parity — Quick Wins](#phase-4-desktop-parity--quick-wins) — Low-hanging-fruit gap closures
+  - [4.1 Critical Bug Fixes](#41-critical-bug-fixes)
+  - [4.2 Interval Preview on Answer Buttons](#42-interval-preview-on-answer-buttons)
+  - [4.3 Time Tracking Per Card](#43-time-tracking-per-card)
+  - [4.4 Flag / Suspend / Bury During Review](#44-flag--suspend--bury-during-review)
+  - [4.5 Cloze Deletion Toolbar Helper](#45-cloze-deletion-toolbar-helper)
+  - [4.6 Sticky Fields in Editor](#46-sticky-fields-in-editor)
+  - [4.7 Duplicate Detection in Editor](#47-duplicate-detection-in-editor)
+  - [4.8 Deck Collapse / Expand State](#48-deck-collapse--expand-state)
+  - [4.9 Overview Screen Before Study](#49-overview-screen-before-study)
+  - [4.10 Audio Playback During Review](#410-audio-playback-during-review)
+  - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor)
+- [Phase 5: Polish & Testing](#phase-5-polish--testing) — Testing, documentation, deployment
+  - [5.1 API Testing](#51-api-testing)
+  - [5.2 UI Testing](#52-ui-testing)
+  - [5.3 Documentation](#53-documentation)
+  - [5.4 Security Audit](#54-security-audit)
+  - [5.5 Performance Optimization](#55-performance-optimization)
+  - [5.6 Deployment Packaging](#56-deployment-packaging)
+- [Optional Enhancements](#optional-enhancements-future)
+- [Timeline Summary](#timeline-summary)
+- [Risk Assessment](#risk-assessment)
+- [Success Criteria](#success-criteria)
 
 ---
 
@@ -819,13 +854,223 @@ Need to either:
 
 ---
 
-## Phase 4: Polish & Testing (2 weeks)
+## Phase 4: Desktop Parity — Quick Wins
 
-### 4.1 API Testing
+Tasks identified in `docs/webapp/FUNCTIONALITY_GAP_ANALYSIS.md` that close meaningful gaps against
+the desktop app with relatively small effort. All required backend APIs already exist; most items
+are frontend-only or require only minor Rust changes.
+
+### 4.1 Critical Bug Fixes
+
+**Priority**: P0\
+**Estimate**: 1 day\
+**Dependencies**: Phase 3 complete\
+**Source**: FUNCTIONALITY_GAP_ANALYSIS.md
+
+- [ ] **Fix deck-scoped study** — `scheduler.rs` ignores `deck_id`; `get_queued_cards` is called
+      without a deck filter so studying always draws from the whole collection. Pass the deck ID
+      through to the scheduler call.
+- [ ] **Fix `PUT /api/v1/decks` still listed as future** in TASKS.md — endpoint is already
+      implemented (router.rs) but task 2.2 still marks it as unchecked.
+
+**Acceptance Criteria**:
+
+- Studying a deck only presents cards from that deck (and its children)
+- TASKS.md accurately reflects implemented state
+
+---
+
+### 4.2 Interval Preview on Answer Buttons
+
+**Priority**: P0\
+**Estimate**: 1 day\
+**Dependencies**: Phase 2.3 (Scheduler API ✅)\
+**Effort**: Low — call `DescribeNextStates` RPC, render text above buttons\
+**Source**: Gap analysis §3 — "Next interval preview"
+
+- [ ] Add `GET /api/v1/scheduler/decks/{id}/cards/{id}/next-states` endpoint that calls the
+      `DescribeNextStates` RPC
+- [ ] Update `AnswerButtons.svelte` to fetch and display the interval string above each button
+      (e.g. `<1m`, `10m`, `1d`, `4d`)
+- [ ] Show a loading skeleton until intervals arrive; fall back gracefully if the call fails
+
+**Acceptance Criteria**:
+
+- Answer buttons show human-readable next-review interval
+- Intervals update after each answer
+
+---
+
+### 4.3 Time Tracking Per Card
+
+**Priority**: P1\
+**Estimate**: 2 hours\
+**Dependencies**: Reviewer UI (3.4 ✅)\
+**Effort**: Trivial — frontend only\
+**Source**: Gap analysis §3 — "Time tracking"
+
+- [ ] Record `Date.now()` when a card is displayed and when an answer is submitted
+- [ ] Pass `milliseconds_taken` in the answer request body to `POST .../answer`
+- [ ] Update `AnswerCardRequest` schema in `openapi.rs`
+- [ ] Update the Rust handler to forward `milliseconds_taken` to `CardAnswer`
+
+**Acceptance Criteria**:
+
+- Card answer includes time spent; visible in card stats
+
+---
+
+### 4.4 Flag / Suspend / Bury During Review
+
+**Priority**: P1\
+**Estimate**: 1 day\
+**Dependencies**: Cards API (2.5 ✅), Reviewer UI (3.4 ✅)\
+**Effort**: Low — APIs exist, only UI work required\
+**Source**: Gap analysis §3 — "Flag cards", "Suspend/bury during review"
+
+- [ ] Add a context menu or "More" button in `review/+page.svelte`
+- [ ] Wire "Flag" (colours 1–4), "Suspend", and "Bury" actions to existing API calls
+- [ ] After flag/suspend/bury, automatically load the next card
+
+**Acceptance Criteria**:
+
+- User can flag, suspend, or bury the current card without leaving the reviewer
+
+---
+
+### 4.5 Cloze Deletion Toolbar Helper
+
+**Priority**: P1\
+**Estimate**: 2 hours\
+**Dependencies**: Editor UI (3.5 ✅)\
+**Effort**: Trivial — frontend only\
+**Source**: Gap analysis §2 — "Cloze deletion helper"
+
+- [ ] Add a `[c1]` toolbar button above cloze-type field editors in `FieldEditor.svelte`
+- [ ] Button wraps the current text selection in `{{c1::…}}` and auto-increments the cloze index
+- [ ] Add keyboard shortcut `Ctrl+Shift+C` (mirrors desktop)
+
+**Acceptance Criteria**:
+
+- Cloze syntax inserted correctly; index increments automatically per card
+
+---
+
+### 4.6 Sticky Fields in Editor
+
+**Priority**: P2\
+**Estimate**: 2 hours\
+**Dependencies**: Editor UI (3.5 ✅)\
+**Effort**: Trivial — frontend only\
+**Source**: Gap analysis §2 — "Sticky fields"
+
+- [ ] Add a pin icon per field in `FieldEditor.svelte`
+- [ ] Pinned fields retain their value after a successful card submission
+- [ ] Persist sticky-field flags in `localStorage` per notetype
+
+**Acceptance Criteria**:
+
+- Pinned fields keep their content between card additions
+
+---
+
+### 4.7 Duplicate Detection in Editor
+
+**Priority**: P1\
+**Estimate**: 1 day\
+**Dependencies**: Notes API (2.4 ✅), Editor UI (3.5 ✅)\
+**Effort**: Low — `NoteFieldsCheck` RPC exists\
+**Source**: Gap analysis §2 — "Duplicate detection"
+
+- [ ] Add `POST /api/v1/notes/check-duplicate` endpoint wrapping `NoteFieldsCheck`
+- [ ] Call the endpoint on blur of the first field in the editor
+- [ ] Show a non-blocking warning banner if a duplicate is found, with a link to the existing note
+
+**Acceptance Criteria**:
+
+- Warning appears when the first field matches an existing note's first field
+
+---
+
+### 4.8 Deck Collapse / Expand State
+
+**Priority**: P2\
+**Estimate**: 2 hours\
+**Dependencies**: Decks API (2.2 ✅), Deck Browser UI (3.3 ✅)\
+**Effort**: Trivial — `PUT /api/v1/decks/{id}` already accepts `collapsed`\
+**Source**: Gap analysis §1 — "Collapse/expand state"
+
+- [ ] Persist collapse state via `PUT /api/v1/decks/{id}` when user toggles a deck node
+- [ ] Read initial state from the deck tree response on page load
+
+**Acceptance Criteria**:
+
+- Collapse state survives page refresh
+
+---
+
+### 4.9 Overview Screen Before Study
+
+**Priority**: P2\
+**Estimate**: 1 day\
+**Dependencies**: Deck Browser UI (3.3 ✅), Reviewer UI (3.4 ✅)\
+**Effort**: Low — data already available\
+**Source**: Gap analysis §3 — "Overview screen"
+
+- [ ] Add `review/overview/+page.svelte` shown between clicking "Study" and entering the reviewer
+- [ ] Display deck name, description, and new/learn/review counts
+- [ ] Provide a "Start Study" button to enter the reviewer and a "Back" link
+
+**Acceptance Criteria**:
+
+- Overview displays correct card counts; "Start Study" enters the reviewer
+
+---
+
+### 4.10 Audio Playback During Review
+
+**Priority**: P2\
+**Estimate**: 1 day\
+**Dependencies**: Reviewer UI (3.4 ✅), Media API (2.7 ✅)\
+**Effort**: Low — `[sound:file.mp3]` tags already in rendered HTML\
+**Source**: Gap analysis §3 — "Audio replay"
+
+- [ ] Parse `[sound:…]` tags in the rendered card HTML inside `CardDisplay.svelte`
+- [ ] Replace each tag with an HTML `<audio>` element pointing to `/api/v1/media/{filename}`
+- [ ] Auto-play the first audio file when the card appears; replay button for subsequent files
+
+**Acceptance Criteria**:
+
+- Audio files embedded in cards play automatically and can be replayed
+
+---
+
+### 4.11 Keyboard Shortcuts in Browse and Editor
+
+**Priority**: P2\
+**Estimate**: 4 hours\
+**Dependencies**: Card Browser UI (3.6 ✅), Editor UI (3.5 ✅)\
+**Effort**: Trivial — frontend only\
+**Source**: Gap analysis — "Keyboard navigation"
+
+- [ ] `Ctrl+Enter` to submit card in Editor
+- [ ] `Ctrl+F` to focus search bar in Browser
+- [ ] `Delete` to delete selected cards in Browser
+- [ ] `Escape` to clear selection in Browser
+
+**Acceptance Criteria**:
+
+- All listed shortcuts work without interfering with browser defaults
+
+---
+
+## Phase 5: Polish & Testing
+
+### 5.1 API Testing
 
 **Priority**: P0\
 **Estimate**: 3 days\
-**Dependencies**: Phase 2 complete
+**Dependencies**: Phase 4 complete
 
 - [ ] Write integration tests for auth
 - [ ] Write integration tests for collections
@@ -851,11 +1096,11 @@ Need to either:
 
 ---
 
-### 4.2 UI Testing
+### 5.2 UI Testing
 
 **Priority**: P1\
 **Estimate**: 2 days\
-**Dependencies**: Phase 3 complete
+**Dependencies**: Phase 4 complete
 
 - [ ] Write component tests
 - [ ] Write E2E tests (Playwright)
@@ -877,7 +1122,7 @@ Need to either:
 
 ---
 
-### 4.3 Documentation
+### 5.3 Documentation
 
 **Priority**: P1\
 **Estimate**: 2 days\
@@ -905,7 +1150,7 @@ Need to either:
 
 ---
 
-### 4.4 Security Audit
+### 5.4 Security Audit
 
 **Priority**: P0\
 **Estimate**: 2 days\
@@ -929,7 +1174,7 @@ Need to either:
 
 ---
 
-### 4.5 Performance Optimization
+### 5.5 Performance Optimization
 
 **Priority**: P1\
 **Estimate**: 2 days\
@@ -952,7 +1197,7 @@ Need to either:
 
 ---
 
-### 4.6 Deployment Packaging
+### 5.6 Deployment Packaging
 
 **Priority**: P1\
 **Estimate**: 3 days\
@@ -985,16 +1230,82 @@ Need to either:
 
 ## Optional Enhancements (Future)
 
-### Import/Export UI
+### Rich Text Editor
+
+**Priority**: P1\
+**Estimate**: 5 days\
+**Source**: Gap analysis §2 — largest functional gap
+
+- [ ] Replace `<textarea>` fields with a rich text editor (ProseMirror or TipTap)
+- [ ] Toolbar: bold, italic, underline, ordered/unordered list, text colour
+- [ ] Toggle between rich-text and raw HTML per field (mirrors desktop)
+- [ ] Paste images from clipboard directly into fields; upload to media API
+
+---
+
+### Media Attachments in Note Fields
+
+**Priority**: P1\
+**Estimate**: 2 days\
+**Source**: Gap analysis §2 — "Media attachments"
+
+- [ ] Drag-and-drop file onto a field editor to upload and embed `<img>` / `[sound:…]` tag
+- [ ] Attachment button in field toolbar to open file picker
+- [ ] Files uploaded via `POST /api/v1/media`; tag inserted at cursor position
+
+---
+
+### Deck Options / Configuration UI
+
+**Priority**: P1\
+**Estimate**: 4 days\
+**Source**: Gap analysis §1 — "Deck options/config"
+
+- [ ] Backend: expose `GET/PUT /api/v1/decks/{id}/config` wrapping the existing protobuf deck
+      config RPCs
+- [ ] Frontend: settings modal for new-card limit, review limit, learning steps, lapse settings,
+      and FSRS parameters
+- [ ] Changes persist to the deck's config group
+
+---
+
+### Import / Export UI
+
+**Priority**: P1\
+**Estimate**: 3 days\
+**Source**: Gap analysis — cross-cutting "Import/Export"
+
+- [ ] Import `.apkg` wizard — upload file, call backend importer, show progress
+- [ ] Import CSV wizard
+- [ ] Export deck as `.apkg` — backend endpoint + download trigger
+- [ ] Export full collection as `.colpkg`
+
+---
+
+### Filtered Decks / Custom Study
 
 **Priority**: P2\
-**Estimate**: 3 days
+**Estimate**: 4 days\
+**Source**: Gap analysis §1 & §3 — "Filtered/custom study decks"
 
-- [ ] Import .apkg wizard
-- [ ] Import CSV wizard
-- [ ] Export deck dialog
-- [ ] Export collection dialog
-- [ ] Progress tracking
+- [ ] Backend: `POST /api/v1/decks/filtered` wrapping `GetOrCreateFilteredDeck` +
+      `RebuildFilteredDeck`
+- [ ] Custom study dialog (extend daily limits, review ahead, study by tag, preview new)
+- [ ] Filtered deck shown in deck tree with rebuild/empty actions
+
+---
+
+### Note Type Management
+
+**Priority**: P2\
+**Estimate**: 5 days\
+**Source**: Gap analysis §2 — "Note type management"
+
+- [ ] List, create, rename, and delete note types
+- [ ] Add / remove / reorder fields
+- [ ] Edit card template HTML (front / back) and CSS
+- [ ] Change sort field
+- [ ] Change note type for existing notes with field mapping dialog
 
 ---
 
@@ -1014,10 +1325,10 @@ Need to either:
 **Priority**: P2\
 **Estimate**: 3 days
 
-- [ ] Touch gesture support
+- [ ] Touch gesture support (swipe to reveal / rate)
 - [ ] Mobile-specific layouts
-- [ ] PWA manifest
-- [ ] Offline support
+- [ ] PWA manifest + install prompt
+- [ ] Offline support with service worker
 
 ---
 
@@ -1036,13 +1347,15 @@ Need to either:
 
 ## Timeline Summary
 
-| Phase                     | Duration    | Dependencies  |
-| ------------------------- | ----------- | ------------- |
-| Phase 1: Foundation       | 2 weeks     | None          |
-| Phase 2: Core API         | 2 weeks     | Phase 1       |
-| Phase 3: UI Components    | 3 weeks     | Phase 1, 2    |
-| Phase 4: Polish & Testing | 2 weeks     | Phase 1, 2, 3 |
-| **Total**                 | **9 weeks** |               |
+| Phase                              | Duration     | Dependencies  | Status   |
+| ---------------------------------- | ------------ | ------------- | -------- |
+| Phase 1: Foundation                | 2 weeks      | None          | ✅ Done  |
+| Phase 2: Core API                  | 2 weeks      | Phase 1       | ✅ Done  |
+| Phase 3: UI Components             | 3 weeks      | Phase 1, 2    | ✅ Done  |
+| Phase 4: Desktop Parity Quick Wins | 1–2 weeks    | Phase 3       | 📋 Next    |
+| Phase 5: Polish & Testing          | 2 weeks      | Phase 4       | 📋 Planned |
+| Optional Enhancements              | ongoing      | Phase 5       | 💡 Future  |
+| **Total (through Phase 5)**        | **~11 weeks** |              |          |
 
 ## Resource Requirements
 
