@@ -32,9 +32,9 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [3.8 Settings UI](#38-settings-ui)
   - [3.9 Navigation & Layout](#39-navigation--layout)
 - [Phase 4: Desktop Parity — Quick Wins](#phase-4-desktop-parity--quick-wins) — Low-hanging-fruit gap closures
-  - [4.1 Critical Bug Fixes](#41-critical-bug-fixes)
-  - [4.2 Interval Preview on Answer Buttons](#42-interval-preview-on-answer-buttons)
-  - [4.3 Time Tracking Per Card](#43-time-tracking-per-card)
+  - [4.1 Critical Bug Fixes](#41-critical-bug-fixes) ✅
+  - [4.2 Interval Preview on Answer Buttons](#42-interval-preview-on-answer-buttons) ✅
+  - [4.3 Time Tracking Per Card](#43-time-tracking-per-card) ✅
   - [4.4 Flag / Suspend / Bury During Review](#44-flag--suspend--bury-during-review)
   - [4.5 Cloze Deletion Toolbar Helper](#45-cloze-deletion-toolbar-helper)
   - [4.6 Sticky Fields in Editor](#46-sticky-fields-in-editor)
