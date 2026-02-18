@@ -33,6 +33,8 @@ pub struct StudyCounts {
 #[derive(Debug, Deserialize)]
 pub struct AnswerCardRequest {
     pub rating: u8, // 0=Again, 1=Hard, 2=Good, 3=Easy
+    #[serde(default)]
+    pub milliseconds_taken: u32,
 }
 
 #[derive(Debug, Serialize)]
@@ -151,7 +153,7 @@ pub async fn answer_card(
             new_state,
             rating,
             answered_at: TimestampMillis::now(),
-            milliseconds_taken: 0,
+            milliseconds_taken: request.milliseconds_taken,
             custom_data: None,
             from_queue: true,
         };

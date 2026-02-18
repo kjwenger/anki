@@ -13,6 +13,7 @@
 
     let loading = true;
     let error = "";
+    let cardStartTime = 0;
 
     /** Interval descriptions for the current card's answer buttons.
      *  undefined = fetching, null = fetch failed, object = ready */
@@ -34,6 +35,7 @@
             const response = await api.getNextCard(data.deckId);
             reviewerStore.setCard(response.card, response.finished);
             if (response.card) {
+                cardStartTime = Date.now(); // Start timing when card is displayed
                 // Pre-fetch intervals in the background so they are ready
                 // when the user reveals the answer.
                 fetchIntervals(response.card.card_id);
@@ -57,11 +59,14 @@
         const state = $reviewerStore;
         if (!state.currentCard) return;
 
+        const millisecondsTaken = cardStartTime > 0 ? Date.now() - cardStartTime : 0;
+
         try {
             await api.answerCard(
                 data.deckId,
                 state.currentCard.card_id,
                 rating,
+                millisecondsTaken,
             );
             reviewerStore.setUndoRedo(true, false);
             await loadNextCard();

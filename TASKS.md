@@ -919,22 +919,44 @@ are frontend-only or require only minor Rust changes.
 
 ---
 
-### 4.3 Time Tracking Per Card
+### 4.3 Time Tracking Per Card ✅
 
 **Priority**: P1\
 **Estimate**: 2 hours\
 **Dependencies**: Reviewer UI (3.4 ✅)\
 **Effort**: Trivial — frontend only\
-**Source**: Gap analysis §3 — "Time tracking"
+**Source**: Gap analysis §3 — "Time tracking"\
+**Status**: Complete
 
-- [ ] Record `Date.now()` when a card is displayed and when an answer is submitted
-- [ ] Pass `milliseconds_taken` in the answer request body to `POST .../answer`
-- [ ] Update `AnswerCardRequest` schema in `openapi.rs`
-- [ ] Update the Rust handler to forward `milliseconds_taken` to `CardAnswer`
+- [x] Record `Date.now()` when a card is displayed and when an answer is submitted
+- [x] Pass `milliseconds_taken` in the answer request body to `POST .../answer`
+- [x] Update `AnswerCardRequest` schema in `openapi.rs`
+- [x] Update the Rust handler to forward `milliseconds_taken` to `CardAnswer`
 
-**Acceptance Criteria**:
+**Files Modified**:
 
-- Card answer includes time spent; visible in card stats
+Backend:
+- `rslib/webapp/src/routes/scheduler.rs` - Added `milliseconds_taken` field to `AnswerCardRequest`, passed to `CardAnswer`
+- `rslib/webapp/src/openapi.rs` - Fixed `AnswerCardRequest` schema (changed `ease` to `rating` and added `milliseconds_taken`)
+
+Frontend:
+- `ts/lib/webapp/api/client.ts` - Updated `answerCard()` to accept and send `milliseconds_taken`
+- `ts/routes/webapp/review/+page.svelte` - Added `cardStartTime` tracking, calculates time spent on each card
+
+**Acceptance Criteria** (All Met):
+
+- ✅ `AnswerCardRequest` accepts optional `milliseconds_taken` field (defaults to 0)
+- ✅ Backend forwards `milliseconds_taken` to `CardAnswer` (which stores it in the revlog)
+- ✅ Frontend tracks time from card display to answer submission
+- ✅ Time spent is visible in card stats (tracked by Anki core)
+- ✅ OpenAPI documentation updated and corrected
+
+**Implementation Details**:
+- Timer starts when card loads (`Date.now()`)
+- Timer stops when user clicks answer button
+- Elapsed time sent as `milliseconds_taken` in POST request
+- Anki stores in `revlog.time` column for statistics
+- Visible via `/api/v1/stats/card/{id}` (`average_secs`, `total_secs`) and `/api/v1/stats/today` (`answer_millis`)
 
 ---
 

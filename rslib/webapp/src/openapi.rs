@@ -2123,14 +2123,22 @@ pub fn openapi_spec() -> Value {
                 },
                 "AnswerCardRequest": {
                     "type": "object",
-                    "required": ["ease"],
+                    "required": ["rating"],
                     "properties": {
-                        "ease": {
+                        "rating": {
                             "type": "integer",
-                            "minimum": 1,
-                            "maximum": 4,
-                            "description": "Rating: 1=Again, 2=Hard, 3=Good, 4=Easy",
-                            "example": 3
+                            "minimum": 0,
+                            "maximum": 3,
+                            "description": "Rating: 0=Again, 1=Hard, 2=Good, 3=Easy",
+                            "example": 2
+                        },
+                        "milliseconds_taken": {
+                            "type": "integer",
+                            "format": "uint32",
+                            "minimum": 0,
+                            "description": "Time spent reviewing the card in milliseconds (for statistics)",
+                            "example": 5230,
+                            "default": 0
                         }
                     }
                 },

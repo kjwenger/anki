@@ -306,10 +306,10 @@ export class ApiClient {
         }>(`/api/v1/scheduler/decks/${deckId}/next`);
     }
 
-    async answerCard(deckId: number, cardId: number, rating: number) {
+    async answerCard(deckId: number, cardId: number, rating: number, millisecondsTaken: number = 0) {
         return this.post<{ success: boolean; message: string }>(
             `/api/v1/scheduler/decks/${deckId}/cards/${cardId}/answer`,
-            { rating },
+            { rating, milliseconds_taken: millisecondsTaken },
         );
     }
 
