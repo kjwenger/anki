@@ -1,4 +1,5 @@
 use anki::services::StatsService;
+use anki::services::SearchService;
 use axum::extract::Path;
 use axum::extract::Query;
 use axum::extract::State;
@@ -126,7 +127,6 @@ pub async fn get_graphs(
 pub async fn get_collection_stats(
     State(state): State<AuthRouteState>,
     Extension(auth_user): Extension<AuthUser>,
-    Query(query): Query<GraphsQuery>,
 ) -> Result<impl IntoResponse> {
     let backend = state
         .backend_manager
@@ -134,45 +134,52 @@ pub async fn get_collection_stats(
 
     let mut col = backend.lock().unwrap();
 
-    // Get graphs data (includes today stats and card counts)
+    // Get graphs data (includes card counts)
     let result = col
         .graphs(anki_proto::stats::GraphsRequest {
-            search: query.search.unwrap_or_default(),
-            days: query.days.unwrap_or(1),
+            search: String::new(),
+            days: 1,
         })
         .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
 
+    // Get total notes count using search with empty query
+    let search_result = <anki::collection::Collection as SearchService>::search_notes(
+        &mut *col,
+        anki_proto::search::SearchRequest {
+            search: String::new(),
+            order: None,
+        },
+    )
+    .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+    
+    let total_notes = search_result.ids.len() as u32;
+
     drop(col);
 
-    // Extract today stats
-    let today = result.today.unwrap_or_default();
+    // Extract card counts
     let card_counts = result
         .card_counts
         .and_then(|cc| cc.excluding_inactive)
         .unwrap_or_default();
 
-    Ok(Json(CollectionStatsResponse {
-        today: TodayStatsResponse {
-            answer_count: today.answer_count,
-            answer_millis: today.answer_millis,
-            correct_count: today.correct_count,
-            mature_correct: today.mature_correct,
-            mature_count: today.mature_count,
-            learn_count: today.learn_count,
-            review_count: today.review_count,
-            relearn_count: today.relearn_count,
-            early_review_count: today.early_review_count,
-        },
-        card_counts: CardCountsResponse {
-            new_cards: card_counts.new_cards,
-            learn: card_counts.learn,
-            relearn: card_counts.relearn,
-            young: card_counts.young,
-            mature: card_counts.mature,
-            suspended: card_counts.suspended,
-            buried: card_counts.buried,
-        },
-    }))
+    // Calculate total cards
+    let total_cards = card_counts.new_cards
+        + card_counts.learn
+        + card_counts.relearn
+        + card_counts.young
+        + card_counts.mature
+        + card_counts.suspended
+        + card_counts.buried;
+
+    Ok(Json(serde_json::json!({
+        "total_cards": total_cards,
+        "new_cards": card_counts.new_cards,
+        "young_cards": card_counts.young,
+        "mature_cards": card_counts.mature,
+        "suspended_cards": card_counts.suspended,
+        "buried_cards": card_counts.buried,
+        "total_notes": total_notes,
+    })))
 }
 
 /// Get today's study statistics
