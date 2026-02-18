@@ -30,6 +30,7 @@ pub fn openapi_spec() -> Value {
             { "name": "notes", "description": "Note management" },
             { "name": "cards", "description": "Card management" },
             { "name": "search", "description": "Search and find-replace operations" },
+            { "name": "browse", "description": "Browse-table batch row fetching" },
             { "name": "media", "description": "Media file management" },
             { "name": "tags", "description": "Tag management" },
             { "name": "stats", "description": "Statistics and analytics" },
@@ -155,6 +156,25 @@ pub fn openapi_spec() -> Value {
                                             "message": { "type": "string", "example": "Logged out successfully" }
                                         }
                                     }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/collection": {
+                "get": {
+                    "tags": ["collection"],
+                    "summary": "Get collection info (alias for /collection/info)",
+                    "operationId": "getCollection",
+                    "security": [{ "bearerAuth": [] }],
+                    "responses": {
+                        "200": {
+                            "description": "Collection info",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/CollectionInfo" }
                                 }
                             }
                         },
@@ -370,6 +390,51 @@ pub fn openapi_spec() -> Value {
                             }
                         },
                         "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/notes/check-fields": {
+                "post": {
+                    "tags": ["notes"],
+                    "summary": "Check note fields for duplicates",
+                    "operationId": "checkNoteFields",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["notetype_id", "fields"],
+                                    "properties": {
+                                        "notetype_id": { "type": "integer", "format": "int64" },
+                                        "fields": {
+                                            "type": "array",
+                                            "items": { "type": "string" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Field check result",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "state": {
+                                                "type": "integer",
+                                                "description": "0=Normal, 1=Empty, 2=Duplicate"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                         "401": { "$ref": "#/components/responses/Unauthorized" }
                     }
                 }
@@ -848,6 +913,98 @@ pub fn openapi_spec() -> Value {
                         },
                         "401": { "$ref": "#/components/responses/Unauthorized" },
                         "400": { "$ref": "#/components/responses/BadRequest" }
+                    }
+                }
+            },
+            "/api/v1/browse/cards": {
+                "post": {
+                    "tags": ["browse"],
+                    "summary": "Fetch browse-table rows for a batch of card IDs",
+                    "description": "Returns Sort Field, Card Type (template name), Due (human-readable), and Deck name for each card — matching the desktop app's card browser columns.",
+                    "operationId": "browseCards",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["ids"],
+                                    "properties": {
+                                        "ids": {
+                                            "type": "array",
+                                            "items": { "type": "integer", "format": "int64" },
+                                            "description": "Card IDs to fetch browse rows for"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Browse rows for the requested cards",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "rows": {
+                                                "type": "array",
+                                                "items": { "$ref": "#/components/schemas/CardBrowseRow" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
+            "/api/v1/browse/notes": {
+                "post": {
+                    "tags": ["browse"],
+                    "summary": "Fetch browse-table rows for a batch of note IDs",
+                    "description": "Returns Sort Field, Note Type, Cards count, and Tags for each note — matching the desktop app's note browser columns.",
+                    "operationId": "browseNotes",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["ids"],
+                                    "properties": {
+                                        "ids": {
+                                            "type": "array",
+                                            "items": { "type": "integer", "format": "int64" },
+                                            "description": "Note IDs to fetch browse rows for"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Browse rows for the requested notes",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "rows": {
+                                                "type": "array",
+                                                "items": { "$ref": "#/components/schemas/NoteBrowseRow" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
                     }
                 }
             },
@@ -1709,6 +1866,7 @@ pub fn openapi_spec() -> Value {
                     "type": "object",
                     "properties": {
                         "id": { "type": "integer", "format": "int64" },
+                        "notetype_id": { "type": "integer", "format": "int64" },
                         "fields": {
                             "type": "array",
                             "items": { "type": "string" }
@@ -1717,6 +1875,27 @@ pub fn openapi_spec() -> Value {
                             "type": "array",
                             "items": { "type": "string" }
                         }
+                    }
+                },
+                "CardBrowseRow": {
+                    "type": "object",
+                    "properties": {
+                        "card_id": { "type": "integer", "format": "int64" },
+                        "note_id": { "type": "integer", "format": "int64" },
+                        "sort_field": { "type": "string", "description": "First field of the note" },
+                        "card_type": { "type": "string", "description": "Template name (e.g. 'Forward')" },
+                        "due": { "type": "string", "description": "Human-readable due date (e.g. 'Today', 'In 3 days', '#5')" },
+                        "deck": { "type": "string", "description": "Deck human name" }
+                    }
+                },
+                "NoteBrowseRow": {
+                    "type": "object",
+                    "properties": {
+                        "note_id": { "type": "integer", "format": "int64" },
+                        "sort_field": { "type": "string", "description": "First field of the note" },
+                        "notetype": { "type": "string", "description": "Note type name" },
+                        "cards": { "type": "integer", "description": "Number of cards generated from this note" },
+                        "tags": { "type": "string", "description": "Space-separated tag list" }
                     }
                 },
                 "CardInfo": {
