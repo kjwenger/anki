@@ -36,13 +36,13 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [4.2 Interval Preview on Answer Buttons](#42-interval-preview-on-answer-buttons) ✅ — complete
   - [4.3 Time Tracking Per Card](#43-time-tracking-per-card) ✅
   - [4.4 Flag / Suspend / Bury During Review](#44-flag--suspend--bury-during-review) ✅
-  - [4.5 Cloze Deletion Toolbar Helper](#45-cloze-deletion-toolbar-helper)
-  - [4.6 Sticky Fields in Editor](#46-sticky-fields-in-editor)
-  - [4.7 Duplicate Detection in Editor](#47-duplicate-detection-in-editor)
-  - [4.8 Deck Collapse / Expand State](#48-deck-collapse--expand-state)
-  - [4.9 Overview Screen Before Study](#49-overview-screen-before-study)
-  - [4.10 Audio Playback During Review](#410-audio-playback-during-review)
-  - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor)
+  - [4.5 Cloze Deletion Toolbar Helper](#45-cloze-deletion-toolbar-helper) ✅
+  - [4.6 Sticky Fields in Editor](#46-sticky-fields-in-editor) ✅
+  - [4.7 Duplicate Detection in Editor](#47-duplicate-detection-in-editor) ✅
+  - [4.8 Deck Collapse / Expand State](#48-deck-collapse--expand-state) ✅
+  - [4.9 Overview Screen Before Study](#49-overview-screen-before-study) ✅
+  - [4.10 Audio Playback During Review](#410-audio-playback-during-review) ✅
+  - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor) ✅
 - [Phase 5: Polish & Testing](#phase-5-polish--testing) — Testing, documentation, deployment
   - [5.1 API Testing](#51-api-testing)
   - [5.2 UI Testing](#52-ui-testing)

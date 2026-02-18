@@ -1,7 +1,7 @@
 # Phase 2.6: Search API - Implementation Complete ✅
 
-**Date Completed:** 2026-02-15  
-**Duration:** ~1 hour  
+**Date Completed:** 2026-02-15\
+**Duration:** ~1 hour\
 **Status:** Complete
 
 ---
@@ -15,18 +15,21 @@ Phase 2.6 successfully implements the Search API for the Anki Web App, providing
 ## Endpoints Implemented (3 total)
 
 ### 1. POST /api/v1/search/cards
+
 Search for cards using Anki's powerful search syntax.
 
 **Request:**
+
 ```json
 {
-  "query": "deck:Spanish is:due",
-  "sort_column": "cardDue",
-  "reverse": false
+    "query": "deck:Spanish is:due",
+    "sort_column": "cardDue",
+    "reverse": false
 }
 ```
 
 **Response:**
+
 ```json
 {
   "card_ids": [1, 2, 3, ...],
@@ -35,23 +38,27 @@ Search for cards using Anki's powerful search syntax.
 ```
 
 **Features:**
+
 - Full Anki search syntax support
 - Optional sorting by any column
 - Reverse sort option
 
 ### 2. POST /api/v1/search/notes
+
 Search for notes using Anki's search syntax.
 
 **Request:**
+
 ```json
 {
-  "query": "tag:important added:7",
-  "sort_column": "noteCrt",
-  "reverse": true
+    "query": "tag:important added:7",
+    "sort_column": "noteCrt",
+    "reverse": true
 }
 ```
 
 **Response:**
+
 ```json
 {
   "note_ids": [10, 20, 30, ...],
@@ -60,35 +67,40 @@ Search for notes using Anki's search syntax.
 ```
 
 **Features:**
+
 - Full Anki search syntax support
 - Optional sorting
 - Efficient note-level search
 
 ### 3. POST /api/v1/search/find-replace
+
 Find and replace text in note fields.
 
 **Request:**
+
 ```json
 {
-  "note_ids": [1, 2, 3],
-  "search": "color",
-  "replacement": "colour",
-  "regex": false,
-  "match_case": false,
-  "field_name": "Front"
+    "note_ids": [1, 2, 3],
+    "search": "color",
+    "replacement": "colour",
+    "regex": false,
+    "match_case": false,
+    "field_name": "Front"
 }
 ```
 
 **Response:**
+
 ```json
 {
-  "success": true,
-  "message": "Replaced in 3 note(s)",
-  "replaced_count": 3
+    "success": true,
+    "message": "Replaced in 3 note(s)",
+    "replaced_count": 3
 }
 ```
 
 **Features:**
+
 - Regex pattern support
 - Case-sensitive or insensitive matching
 - Field-specific or all-fields search
@@ -100,12 +112,14 @@ Find and replace text in note fields.
 ## Files Created/Modified
 
 ### New Files
+
 - **`rslib/webapp/src/routes/search.rs`** (206 lines)
   - 3 route handlers (search_cards, search_notes, find_and_replace)
   - Request/response type definitions
   - Search query parsing and execution
 
 ### Modified Files
+
 - **`rslib/webapp/src/routes/mod.rs`**
   - Added search module
   - Exported 3 search functions
@@ -137,13 +151,16 @@ Find and replace text in note fields.
 ## Technical Implementation
 
 ### Search Syntax Support
+
 The implementation uses Anki's native search functionality directly:
+
 - Supports all Anki search operators (deck:, tag:, is:, added:, etc.)
 - Column-based sorting via `SortMode::Builtin`
 - Custom sort strings via `SortMode::Custom`
 - No-order option for fastest results
 
 ### Find and Replace
+
 - Direct use of Collection's `find_and_replace` method
 - Automatic regex escaping when regex=false
 - Case-insensitive search via (?i) flag
@@ -151,7 +168,9 @@ The implementation uses Anki's native search functionality directly:
 - Returns count of modified notes
 
 ### Error Handling
+
 All endpoints follow consistent error handling:
+
 ```rust
 col.search_cards(&request.query, sort_mode)
     .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?
@@ -162,6 +181,7 @@ col.search_cards(&request.query, sort_mode)
 ## Search Query Examples
 
 ### Card Searches
+
 ```
 "is:new"                          # All new cards
 "deck:Spanish is:due"              # Due cards in Spanish deck
@@ -172,6 +192,7 @@ col.search_cards(&request.query, sort_mode)
 ```
 
 ### Note Searches
+
 ```
 "tag:grammar"                     # Notes with grammar tag
 "added:30"                        # Notes added in last 30 days
@@ -181,6 +202,7 @@ col.search_cards(&request.query, sort_mode)
 ```
 
 ### Find and Replace Use Cases
+
 ```json
 // Fix spelling across all notes
 {
@@ -206,10 +228,10 @@ col.search_cards(&request.query, sort_mode)
 
 ## Build Status
 
-✅ **Compilation:** Clean  
-✅ **Clippy:** No warnings  
-✅ **Integration:** All routes registered  
-✅ **Documentation:** Complete OpenAPI 3.0 spec  
+✅ **Compilation:** Clean\
+✅ **Clippy:** No warnings\
+✅ **Integration:** All routes registered\
+✅ **Documentation:** Complete OpenAPI 3.0 spec\
 ✅ **Authentication:** Required on all endpoints
 
 ---
@@ -217,6 +239,7 @@ col.search_cards(&request.query, sort_mode)
 ## API Documentation
 
 Complete OpenAPI documentation available at:
+
 - **Swagger UI:** http://localhost:8080/swagger-ui
 - **JSON Spec:** http://localhost:8080/api-docs/openapi.json
 
@@ -286,14 +309,14 @@ curl -X POST http://localhost:8080/api/v1/search/find-replace \
 ## Acceptance Criteria Status
 
 | Criteria                      | Status | Notes                   |
-|-------------------------------|--------|-------------------------|
-| Search query syntax supported | ✅      | Full Anki syntax        |
-| Results returned efficiently  | ✅      | Direct ID arrays        |
-| Sorting options               | ✅      | Column + reverse        |
-| Find-replace works correctly  | ✅      | Regex + case options    |
-| Field-specific search         | ✅      | Optional field_name     |
-| Authentication required       | ✅      | All endpoints protected |
-| OpenAPI documentation         | ✅      | Complete with examples  |
+| ----------------------------- | ------ | ----------------------- |
+| Search query syntax supported | ✅     | Full Anki syntax        |
+| Results returned efficiently  | ✅     | Direct ID arrays        |
+| Sorting options               | ✅     | Column + reverse        |
+| Find-replace works correctly  | ✅     | Regex + case options    |
+| Field-specific search         | ✅     | Optional field_name     |
+| Authentication required       | ✅     | All endpoints protected |
+| OpenAPI documentation         | ✅     | Complete with examples  |
 
 ---
 
@@ -330,12 +353,14 @@ curl -X POST http://localhost:8080/api/v1/search/find-replace \
 ## Next Phase: 2.7 Media API
 
 **Endpoints to Implement:**
+
 - GET /api/v1/media/{filename}
 - POST /api/v1/media (upload)
 - DELETE /api/v1/media/{filename}
 - GET /api/v1/media/check
 
 **Files to Create:**
+
 - `rslib/webapp/src/routes/media.rs`
 
 ---
@@ -344,8 +369,8 @@ curl -X POST http://localhost:8080/api/v1/search/find-replace \
 
 Phase 2.6 Search API is **complete** with all 3 endpoints implemented, tested, and documented. The implementation leverages Anki's powerful native search engine, providing full search syntax support without reimplementation.
 
-**Build Status:** ✅ Passing  
-**Documentation:** ✅ Complete  
-**Integration:** ✅ All routes active  
+**Build Status:** ✅ Passing\
+**Documentation:** ✅ Complete\
+**Integration:** ✅ All routes active
 
 Total project endpoints: **30** (Authentication, Collections, Decks, Notes, Cards, Search)

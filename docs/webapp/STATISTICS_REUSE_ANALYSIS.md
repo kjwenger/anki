@@ -11,7 +11,7 @@ The stats page lives in `ts/routes/graphs/` and follows this pipeline:
 ### Components
 
 | Component                                                                                | Role                                                                                             |
-|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `+page.svelte`                                                                           | SvelteKit page entry; defines 14 graph components, sets initial state (`deck:current`, 365 days) |
 | `WithGraphData.svelte`                                                                   | Centralized data orchestration; calls `graphs()` RPC, manages `GraphPreferences`                 |
 | `GraphsPage.svelte`                                                                      | Responsive grid layout (3 → 2 → 1 columns); conditionally renders each graph                     |
@@ -40,6 +40,7 @@ Individual graphs → gatherData() → renderGraph()
 **GraphsRequest**: `{ search: string, days: uint32 }`
 
 **GraphsResponse** contains nested messages for:
+
 - `CardCounts` (new, learn, relearn, young, mature, suspended, buried)
 - `ReviewCountsAndTimes`
 - `FutureDue` (future_due map, have_backlog, daily_load)
@@ -55,8 +56,8 @@ Individual graphs → gatherData() → renderGraph()
 Each graph has a companion TypeScript module (e.g., `card-counts.ts`, `reviews.ts`) with pure functions:
 
 ```typescript
-export function gatherData(data: GraphsResponse, ...options): GraphData
-export function renderCards(svg: SVGElement, bounds, graphData): TableDatum[]
+export function gatherData(data: GraphsResponse, ...options): GraphData;
+export function renderCards(svg: SVGElement, bounds, graphData): TableDatum[];
 ```
 
 These transform modules are **pure TypeScript** with no Svelte or Qt dependencies.
@@ -73,6 +74,7 @@ Qt Dialog "NewDeckStats"
 ```
 
 Key integration points:
+
 - `QWebChannel` bridge for JavaScript → Python communication
 - `browserSearch` command opens the desktop card browser
 - `AuthInterceptor` injects auth headers for local API access
@@ -111,7 +113,7 @@ The layout grid (`GraphsPage.svelte`) is designed for a desktop dialog window, n
 ## Reusability Assessment
 
 | Layer                                                         | Reusability      | Notes                                                             |
-|---------------------------------------------------------------|------------------|-------------------------------------------------------------------|
+| ------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------- |
 | Data transform modules (`card-counts.ts`, `reviews.ts`, etc.) | **High**         | Pure TypeScript functions, no framework dependencies              |
 | Graph helper utilities (`graph-helpers.ts`)                   | **High**         | Enums, types, utility functions                                   |
 | Protobuf data contracts (`stats.proto`)                       | **High**         | Can define API shape for any client                               |

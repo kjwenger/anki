@@ -23,6 +23,7 @@ tower-http.workspace = true
 prost.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+serde_urlencoded = "0.7"
 
 # Workspace dependencies - Error handling
 anyhow.workspace = true

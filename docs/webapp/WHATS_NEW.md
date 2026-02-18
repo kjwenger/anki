@@ -9,9 +9,11 @@ This session successfully completed the entire Cards API implementation for the 
 ## What Was Accomplished
 
 ### 🎯 Main Achievement
+
 Implemented a complete, production-ready Cards API with 9 endpoints covering all essential card operations including CRUD, state management, and batch operations.
 
 ### 📊 By The Numbers
+
 - **9** new API endpoints
 - **650+** lines of code written
 - **290** lines of OpenAPI documentation
@@ -24,6 +26,7 @@ Implemented a complete, production-ready Cards API with 9 endpoints covering all
 ## New Features
 
 ### Individual Card Operations
+
 1. **Get Card** - Retrieve complete card information
 2. **Update Card** - Modify deck, due date, or flags
 3. **Delete Card** - Remove a card
@@ -33,6 +36,7 @@ Implemented a complete, production-ready Cards API with 9 endpoints covering all
 7. **Bury Card** - Hide card until next day
 
 ### Batch Operations
+
 8. **Batch Get** - Retrieve multiple cards in one request
 9. **Batch Update** - Update multiple cards efficiently
 
@@ -65,16 +69,19 @@ Implemented a complete, production-ready Cards API with 9 endpoints covering all
 ## Files Enhanced
 
 ### Core Implementation
+
 - `rslib/webapp/src/routes/mod.rs` - Added 9 card route exports
 - `rslib/webapp/src/server/router.rs` - Integrated routes with authentication
 - `rslib/webapp/src/openapi.rs` - Added complete API documentation
 
 ### Code Quality Fixes
+
 - `rslib/webapp/src/error.rs` - Removed unused imports
 - `rslib/webapp/src/routes/auth.rs` - Fixed duplicate import
 - `rslib/webapp/src/db/mod.rs` - Fixed clippy auto-deref warning
 
 ### Documentation
+
 - `TASKS.md` - Marked Phase 2.5 as complete
 - `.copilot/user.md` - Documented setup and key learnings
 - `CONTRIBUTORS` - Added developer email
@@ -84,6 +91,7 @@ Implemented a complete, production-ready Cards API with 9 endpoints covering all
 ## Technical Highlights
 
 ### Architectural Decisions
+
 - ✅ Used Anki's protobuf service layer (not internal types)
 - ✅ Implemented proper trait disambiguation for method conflicts
 - ✅ Efficient batch operations with single transactions
@@ -91,6 +99,7 @@ Implemented a complete, production-ready Cards API with 9 endpoints covering all
 - ✅ Complete OpenAPI 3.0 documentation
 
 ### Key Learnings
+
 1. **Protobuf First** - Always use `anki_proto::*` types for service APIs
 2. **Trait Conflicts** - Use fully qualified syntax when needed:
    ```rust
@@ -104,10 +113,13 @@ Implemented a complete, production-ready Cards API with 9 endpoints covering all
 ## API Documentation
 
 ### Interactive Documentation
+
 Access the Swagger UI at: `http://localhost:8080/swagger-ui`
 
 ### Quick Reference
+
 See `CARDS_API_REFERENCE.md` for:
+
 - Endpoint URLs and methods
 - Request/response formats
 - Example curl commands
@@ -118,6 +130,7 @@ See `CARDS_API_REFERENCE.md` for:
 ## Build Status
 
 ✅ **All checks passing:**
+
 - Compilation (cargo build --release)
 - Linting (cargo clippy)
 - No warnings or errors
@@ -126,6 +139,7 @@ See `CARDS_API_REFERENCE.md` for:
 - OpenAPI documentation complete
 
 ⏳ **Pending:**
+
 - Full `./check` (requires CONTRIBUTORS git commit)
 
 ---
@@ -159,14 +173,17 @@ curl -X POST http://localhost:8080/api/v1/cards/1/flag \
 ## What's Next
 
 ### Immediate Actions
+
 1. **Commit** - Commit CONTRIBUTORS file to satisfy build validation
 2. **Test** - Manual testing of all endpoints
 3. **Verify** - Run full `./check` to ensure no regressions
 
 ### Next Phase: 2.6 Search API
+
 **Estimated:** 1 day
 
 **Planned Endpoints:**
+
 - POST /api/v1/search/cards
 - POST /api/v1/search/notes
 - POST /api/v1/search/find-replace
@@ -176,6 +193,7 @@ curl -X POST http://localhost:8080/api/v1/cards/1/flag \
 ## Progress Update
 
 ### Overall Project
+
 - **Phase 1 (Foundation):** ✅ Complete
 - **Phase 2 (Core API):** 🔄 55% Complete (5/9 tasks done)
   - 2.1 Collections ✅
@@ -189,6 +207,7 @@ curl -X POST http://localhost:8080/api/v1/cards/1/flag \
   - 2.9 Statistics 📋
 
 ### Remaining in Phase 2
+
 - 4 tasks remaining (Search, Media, Tags, Statistics)
 - Estimated time: ~1 week
 - Then Phase 3 (UI) can begin
@@ -208,6 +227,7 @@ curl -X POST http://localhost:8080/api/v1/cards/1/flag \
 ## Summary
 
 Phase 2.5 Cards API is **production-ready** with:
+
 - ✅ Complete implementation (9 endpoints)
 - ✅ Full documentation (OpenAPI 3.0)
 - ✅ Clean build (no warnings)
@@ -219,4 +239,4 @@ The implementation follows Anki's architectural patterns and is ready for integr
 
 ---
 
-*Session completed: 2026-02-15*
+_Session completed: 2026-02-15_

@@ -1,12 +1,15 @@
 # Cards API - Quick Reference
 
 ## Base URL
+
 ```
 http://localhost:8080/api/v1
 ```
 
 ## Authentication
+
 All endpoints require JWT token in Authorization header:
+
 ```
 Authorization: Bearer <token>
 ```
@@ -18,28 +21,32 @@ Authorization: Bearer <token>
 ### Individual Card Operations
 
 #### Get Card
+
 ```http
 GET /cards/{id}
 ```
+
 **Response:**
+
 ```json
 {
-  "id": 1,
-  "note_id": 1,
-  "deck_id": 1,
-  "ordinal": 0,
-  "card_type": 0,
-  "queue": 0,
-  "due": 1,
-  "interval": 0,
-  "ease_factor": 2500,
-  "reps": 0,
-  "lapses": 0,
-  "flags": 0
+    "id": 1,
+    "note_id": 1,
+    "deck_id": 1,
+    "ordinal": 0,
+    "card_type": 0,
+    "queue": 0,
+    "due": 1,
+    "interval": 0,
+    "ease_factor": 2500,
+    "reps": 0,
+    "lapses": 0,
+    "flags": 0
 }
 ```
 
 #### Update Card
+
 ```http
 PUT /cards/{id}
 Content-Type: application/json
@@ -52,11 +59,13 @@ Content-Type: application/json
 ```
 
 #### Delete Card
+
 ```http
 DELETE /cards/{id}
 ```
 
 #### Flag Card
+
 ```http
 POST /cards/{id}/flag
 Content-Type: application/json
@@ -67,16 +76,19 @@ Content-Type: application/json
 ```
 
 #### Suspend Card
+
 ```http
 POST /cards/{id}/suspend
 ```
 
 #### Unsuspend Card
+
 ```http
 POST /cards/{id}/unsuspend
 ```
 
 #### Bury Card
+
 ```http
 POST /cards/{id}/bury
 ```
@@ -84,6 +96,7 @@ POST /cards/{id}/bury
 ### Batch Operations
 
 #### Batch Get Cards
+
 ```http
 POST /cards/batch
 Content-Type: application/json
@@ -92,7 +105,9 @@ Content-Type: application/json
   "card_ids": [1, 2, 3]
 }
 ```
+
 **Response:**
+
 ```json
 {
   "cards": [
@@ -104,6 +119,7 @@ Content-Type: application/json
 ```
 
 #### Batch Update Cards
+
 ```http
 POST /cards/batch-update
 Content-Type: application/json
@@ -123,24 +139,28 @@ Content-Type: application/json
   ]
 }
 ```
+
 **Response:**
+
 ```json
 {
-  "success": true,
-  "message": "Updated 2 cards successfully",
-  "updated_count": 2
+    "success": true,
+    "message": "Updated 2 cards successfully",
+    "updated_count": 2
 }
 ```
 
 ---
 
 ## Card Types
+
 - `0` = New
 - `1` = Learn
 - `2` = Review
 - `3` = Relearn
 
 ## Queue States
+
 - `0` = New
 - `1` = Learn (due is unix timestamp)
 - `2` = Review (due is days since creation)
@@ -151,6 +171,7 @@ Content-Type: application/json
 - `-3` = UserBuried
 
 ## Flag Colors
+
 - `0` = None
 - `1` = Red
 - `2` = Orange
@@ -162,14 +183,16 @@ Content-Type: application/json
 ## Error Responses
 
 All errors return:
+
 ```json
 {
-  "success": false,
-  "error": "Error message"
+    "success": false,
+    "error": "Error message"
 }
 ```
 
 **HTTP Status Codes:**
+
 - `200` - Success
 - `400` - Bad Request
 - `401` - Unauthorized (missing/invalid token)
@@ -208,6 +231,7 @@ curl -X POST http://localhost:8080/api/v1/cards/batch-update \
 ## Swagger UI
 
 Interactive API documentation:
+
 ```
 http://localhost:8080/swagger-ui
 ```

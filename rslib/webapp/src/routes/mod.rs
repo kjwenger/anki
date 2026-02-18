@@ -38,6 +38,7 @@ pub use media::add_media;
 pub use media::check_media;
 pub use media::delete_media;
 pub use media::get_media;
+pub use notes::check_note_fields;
 pub use notes::create_note;
 pub use notes::delete_note;
 pub use notes::get_note;

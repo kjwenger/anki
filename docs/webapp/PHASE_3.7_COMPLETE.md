@@ -1,6 +1,6 @@
 # Phase 3.7 - Statistics UI - COMPLETE ✅
 
-**Completed:** 2026-02-16  
+**Completed:** 2026-02-16\
 **Status:** Functional statistics overview with today's stats and collection stats
 
 ## Overview
@@ -12,6 +12,7 @@ Phase 3.7 implements a statistics dashboard for the Anki web app showing today's
 ### Backend API (Existing - 0 new endpoints)
 
 Statistics API already implemented in Phase 2.9:
+
 - GET `/api/v1/stats/today` - Today's study statistics
 - GET `/api/v1/stats/collection` - Collection overview statistics
 - GET `/api/v1/stats/graphs` - Graph data (not yet used in UI)
@@ -20,39 +21,45 @@ Statistics API already implemented in Phase 2.9:
 ### Frontend UI (NEW - 1 file, ~430 lines)
 
 #### 1. API Client Extensions
-**File:** `ts/lib/webapp/api/client.ts`  
+
+**File:** `ts/lib/webapp/api/client.ts`\
 **Added Methods:**
+
 - `getTodayStats()` - Fetch today's study statistics
 - `getCollectionStats()` - Fetch collection overview
 - `getGraphs(search, days)` - Fetch graph data
 
 #### 2. Statistics Page
+
 **File:** `ts/routes/webapp/stats/+page.svelte` (430 lines)
 
 Features:
+
 - **Today's Stats Card**
   - Cards answered count
   - Correct answers count
   - Study time (formatted as hours/minutes)
   - Accuracy percentage
   - Learn/Review/Relearn breakdown
-  
+
 - **Collection Overview Card**
   - Total cards and notes
   - New/Young/Mature card counts
   - Suspended/Buried cards
-  
+
 - **Mature Cards Performance** (when available)
   - Mature cards reviewed today
   - Retention rate percentage
-  
+
 - **Info Card**
   - Motivational message about tracking progress
 
 #### 3. Dashboard Integration
+
 **File:** `ts/routes/webapp/+page.svelte` (updated)
 
 Changes:
+
 - Updated "Statistics" card to navigate to stats page
 - Navigation function `handleStats()`
 
@@ -66,16 +73,19 @@ Changes:
 ## Technical Implementation
 
 ### Data Loading
+
 - Parallel API calls for today and collection stats
 - Single load on component mount
 - Error handling with user-friendly messages
 
 ### Data Formatting
+
 - Time display: milliseconds → hours/minutes/seconds
 - Percentage calculations with zero-handling
 - Conditional rendering based on data availability
 
 ### Responsive Design
+
 - CSS Grid for card layout
 - Auto-fit columns (min 300px)
 - Mobile-friendly single column on small screens
@@ -84,6 +94,7 @@ Changes:
 ## Build Status
 
 ✅ **All Checks Passing**
+
 - TypeScript: 0 errors, 10 warnings (accessibility only)
 - Rust: Clean compilation
 - No breaking changes to existing code
@@ -91,11 +102,13 @@ Changes:
 ## Files Changed Summary
 
 ### New Files (1)
+
 ```
 ts/routes/webapp/stats/+page.svelte (430 lines)
 ```
 
 ### Modified Files (2)
+
 ```
 ts/lib/webapp/api/client.ts (added 3 methods, ~40 lines)
 ts/routes/webapp/+page.svelte (added stats navigation)
@@ -149,9 +162,10 @@ ts/routes/webapp/+page.svelte (added stats navigation)
 
 ### Phase 3.8 - Settings UI (Next Task)
 
-**Estimate:** 2 days  
+**Estimate:** 2 days
 
 **Components:**
+
 - User preferences
 - Collection settings
 - Appearance settings
@@ -162,6 +176,7 @@ ts/routes/webapp/+page.svelte (added stats navigation)
 **Estimate:** 2 days
 
 **Components:**
+
 - Unified navigation bar
 - Breadcrumbs
 - Responsive layout improvements

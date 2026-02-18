@@ -5,16 +5,9 @@
     import { currentCollection } from "$lib/webapp/stores/collection";
     import DeckTree from "$lib/webapp/components/DeckTree.svelte";
     import DeckDialog from "$lib/webapp/components/DeckDialog.svelte";
+    import type { DeckNode } from "$lib/webapp/api/client";
 
-    interface Deck {
-        id: number;
-        name: string;
-        new_count: number;
-        learn_count: number;
-        review_count: number;
-    }
-
-    let decks: Deck[] = [];
+    let decks: DeckNode[] = [];
     let loading = true;
     let error = "";
     let showCreateDialog = false;

@@ -1,6 +1,6 @@
 # Phase 3.4 - Reviewer UI - COMPLETE ✅
 
-**Completed:** 2026-02-16  
+**Completed:** 2026-02-16\
 **Status:** Fully functional study interface with keyboard shortcuts
 
 ## Overview
@@ -10,6 +10,7 @@ Phase 3.4 implements the complete study/review interface for the Anki web app. U
 ## Components Implemented
 
 ### Backend API (Already existed)
+
 - `rslib/webapp/src/routes/scheduler.rs` - Scheduler endpoints (254 lines)
   - GET `/api/v1/scheduler/decks/{deck_id}/next` - Get next card to study
   - POST `/api/v1/scheduler/decks/{deck_id}/cards/{card_id}/answer` - Answer a card
@@ -20,8 +21,10 @@ Phase 3.4 implements the complete study/review interface for the Anki web app. U
 ### Frontend UI (NEW)
 
 #### 1. API Client Extensions
-**File:** `ts/lib/webapp/api/client.ts`  
+
+**File:** `ts/lib/webapp/api/client.ts`\
 **Added:** Scheduler endpoint methods
+
 - `getNextCard(deckId)` - Fetch next card with rendered HTML
 - `answerCard(deckId, cardId, rating)` - Submit answer (0-3)
 - `getDeckCounts(deckId)` - Get current counts
@@ -29,10 +32,12 @@ Phase 3.4 implements the complete study/review interface for the Anki web app. U
 - `redo()` - Redo last undone action
 
 #### 2. Reviewer Store
-**File:** `ts/lib/webapp/stores/reviewer.ts` (69 lines)  
+
+**File:** `ts/lib/webapp/stores/reviewer.ts` (69 lines)\
 **Purpose:** Centralized state management for review session
 
 State:
+
 ```typescript
 {
     currentCard: Card | null,
@@ -45,6 +50,7 @@ State:
 ```
 
 Actions:
+
 - `setCard(card, finished)` - Update current card
 - `showAnswer()` - Reveal answer side
 - `setDeckId(deckId)` - Set active deck
@@ -52,10 +58,12 @@ Actions:
 - `reset()` - Clear all state
 
 #### 3. Review Page
-**File:** `ts/routes/webapp/review/+page.svelte` (283 lines)  
+
+**File:** `ts/routes/webapp/review/+page.svelte` (283 lines)\
 **File:** `ts/routes/webapp/review/+page.ts` (10 lines)
 
 Features:
+
 - **URL Parameter**: `?deck={id}` specifies which deck to study
 - **Automatic Card Loading**: Fetches next card on mount and after each answer
 - **Keyboard Shortcuts**:
@@ -70,9 +78,11 @@ Features:
 - **Error Handling**: Displays errors gracefully
 
 #### 4. Card Display Component
+
 **File:** `ts/lib/webapp/components/CardDisplay.svelte` (96 lines)
 
 Features:
+
 - **Dynamic CSS Injection**: Injects card-specific CSS into document head
 - **Question/Answer Rendering**: Shows question first, answer after reveal
 - **HTML Content**: Renders formatted card content with `@html`
@@ -81,9 +91,11 @@ Features:
 - **Cleanup**: Removes injected CSS on component destroy
 
 #### 5. Answer Buttons Component
+
 **File:** `ts/lib/webapp/components/AnswerButtons.svelte` (97 lines)
 
 Features:
+
 - **Four Rating Buttons**:
   - Again (Red, rating 0)
   - Hard (Orange, rating 1)
@@ -95,9 +107,11 @@ Features:
 - **Event Dispatch**: Emits rating to parent component
 
 #### 6. Review Progress Component
+
 **File:** `ts/lib/webapp/components/ReviewProgress.svelte` (100 lines)
 
 Features:
+
 - **Live Counts Display**:
   - New cards (blue badge)
   - Learning cards (orange badge)
@@ -107,9 +121,11 @@ Features:
 - **Responsive**: Compact layout on mobile
 
 #### 7. Deck Browser Integration
+
 **File:** `ts/routes/webapp/decks/+page.svelte` (updated)
 
 Changes:
+
 - Updated "Study Now" button to navigate to `/webapp/review?deck={id}`
 - Removed placeholder alert message
 
@@ -128,7 +144,7 @@ Changes:
 ## Keyboard Shortcuts Summary
 
 | Key                       | Action       | When Available   |
-|---------------------------|--------------|------------------|
+| ------------------------- | ------------ | ---------------- |
 | `Space` / `Enter`         | Show answer  | Question showing |
 | `1`                       | Rate "Again" | Answer showing   |
 | `2`                       | Rate "Hard"  | Answer showing   |
@@ -140,25 +156,30 @@ Changes:
 ## Technical Implementation
 
 ### Card Rendering
+
 The reviewer uses Anki's existing `render_existing_card()` method which returns:
+
 - `question_html` - HTML for question side
-- `answer_html` - HTML for answer side  
+- `answer_html` - HTML for answer side
 - `css` - Card-specific CSS styling
 
 This ensures 100% compatibility with desktop Anki card templates.
 
 ### State Management
+
 - Svelte stores (`reviewerStore`) manage review session state
 - Card state updated reactively when answers submitted
 - Undo/redo state tracked for UI button states
 
 ### Error Handling
+
 - Network errors shown in red banner at top
 - "Nothing to undo" handled gracefully
 - Empty queue shows completion screen
 - Missing deck ID defaults to deck 1
 
 ### Styling
+
 - Clean, modern interface with card shadows
 - Color-coded buttons matching Anki conventions:
   - Red (Again) - Card returns to learning queue
@@ -170,6 +191,7 @@ This ensures 100% compatibility with desktop Anki card templates.
 ## Testing Recommendations
 
 ### Manual Testing Checklist
+
 - [ ] Navigate from decks to review page
 - [ ] View question, press Space to show answer
 - [ ] Answer with keyboard shortcuts (1-4)
@@ -186,6 +208,7 @@ This ensures 100% compatibility with desktop Anki card templates.
   - [ ] Custom CSS
 
 ### Integration Testing
+
 - [ ] Cards update Anki database correctly
 - [ ] Schedule algorithms (FSRS) applied properly
 - [ ] Study counts update in real-time
@@ -215,6 +238,7 @@ This ensures 100% compatibility with desktop Anki card templates.
 ## Files Changed
 
 ### New Files (6)
+
 - `ts/lib/webapp/stores/reviewer.ts` (69 lines)
 - `ts/routes/webapp/review/+page.svelte` (283 lines)
 - `ts/routes/webapp/review/+page.ts` (10 lines)
@@ -223,6 +247,7 @@ This ensures 100% compatibility with desktop Anki card templates.
 - `ts/lib/webapp/components/ReviewProgress.svelte` (100 lines)
 
 ### Modified Files (2)
+
 - `ts/lib/webapp/api/client.ts` - Added 5 scheduler methods
 - `ts/routes/webapp/decks/+page.svelte` - Updated handleStudy() to navigate
 

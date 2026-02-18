@@ -15,6 +15,8 @@
     let saving = false;
     let error = "";
     let success = "";
+    let duplicateWarning = "";
+    let checkTimeout: any;
 
     onMount(async () => {
         await loadDecksAndNotetypes();
@@ -58,6 +60,40 @@
     function handleFieldChange(event: CustomEvent) {
         const { index, value } = event.detail;
         editorStore.setField(index, value);
+
+        // Check for duplicates when fields change (debounced)
+        clearTimeout(checkTimeout);
+        checkTimeout = setTimeout(() => {
+            checkForDuplicates();
+        }, 500);
+    }
+
+    async function checkForDuplicates() {
+        const state = $editorStore;
+        if (!state.notetypeId || state.fields.length === 0) return;
+
+        // Don't check if the first field is empty
+        if (!state.fields[0].trim()) {
+            duplicateWarning = "";
+            return;
+        }
+
+        try {
+            const result = await api.checkNoteFields(state.notetypeId, state.fields);
+            // State 2 is DUPLICATE in anki_proto
+            if (result.state === 2) {
+                duplicateWarning = "Warning: This card appears to be a duplicate.";
+            } else {
+                duplicateWarning = "";
+            }
+        } catch (e) {
+            console.error("Duplicate check failed:", e);
+        }
+    }
+
+    function handleStickyChange(event: CustomEvent) {
+        const { index, sticky } = event.detail;
+        editorStore.setSticky(index, sticky);
     }
 
     function handleTagsChange(event: CustomEvent) {
@@ -116,7 +152,17 @@
         const select = event.target as HTMLSelectElement;
         await selectNotetype(parseInt(select.value));
     }
+
+    function handleKeydown(event: KeyboardEvent) {
+        // Ctrl+Enter to submit
+        if (event.ctrlKey && event.key === "Enter") {
+            event.preventDefault();
+            handleSubmit();
+        }
+    }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
@@ -149,6 +195,15 @@
                 class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400 p-4 mb-6"
             >
                 {success}
+            </div>
+        {/if}
+
+        {#if duplicateWarning}
+            <div
+                class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-700 dark:text-amber-400 p-4 mb-6 flex items-center gap-3"
+            >
+                <span class="text-xl">⚠️</span>
+                {duplicateWarning}
             </div>
         {/if}
 
@@ -207,7 +262,10 @@
                                         label={field.name}
                                         value={$editorStore.fields[index] || ""}
                                         {index}
+                                        isCloze={$editorStore.notetype.is_cloze}
+                                        isSticky={$editorStore.stickyFields[index]}
                                         on:change={handleFieldChange}
+                                        on:stickyChange={handleStickyChange}
                                     />
                                 {/each}
                             </div>

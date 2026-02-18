@@ -1,6 +1,6 @@
 # Phase 3.6 - Card Browser UI - COMPLETE ✅
 
-**Completed:** 2026-02-16  
+**Completed:** 2026-02-16\
 **Status:** Functional search and browse interface with bulk operations
 
 ## Overview
@@ -12,23 +12,28 @@ Phase 3.6 implements a card/note browser interface for the Anki web app. Users c
 ### Backend API (Existing - 0 new endpoints)
 
 The search API was already implemented in Phase 2.6:
+
 - POST `/api/v1/search/cards` - Search for cards
-- POST `/api/v1/search/notes` - Search for notes  
+- POST `/api/v1/search/notes` - Search for notes
 - POST `/api/v1/search/find-replace` - Find and replace in fields
 
 ### Frontend UI (NEW - 1 file, ~600 lines)
 
 #### 1. API Client Extensions
-**File:** `ts/lib/webapp/api/client.ts`  
+
+**File:** `ts/lib/webapp/api/client.ts`\
 **Added Methods:**
+
 - `searchCards(query, sortColumn, reverse)` - Search cards with Anki query syntax
 - `searchNotes(query, sortColumn, reverse)` - Search notes with Anki query syntax
 - `getCard(id)` - Get card details by ID
 
 #### 2. Browse Page
+
 **File:** `ts/routes/webapp/browse/+page.svelte` (590 lines)
 
 Features:
+
 - **Search Interface**
   - Text input for Anki search queries
   - Mode toggle (Cards / Notes)
@@ -54,9 +59,11 @@ Features:
   - Error handling with banners
 
 #### 3. Dashboard Integration
+
 **File:** `ts/routes/webapp/+page.svelte` (updated)
 
 Changes:
+
 - Added "Browse" card to dashboard
 - Links to `/webapp/browse`
 - Navigation function `handleBrowse()`
@@ -75,6 +82,7 @@ Changes:
 ## Search Query Syntax
 
 The browser supports Anki's powerful search syntax:
+
 - `deck:"Deck Name"` - Cards in specific deck
 - `tag:mytag` - Cards with tag
 - `is:due` - Cards due now
@@ -86,24 +94,28 @@ The browser supports Anki's powerful search syntax:
 ## Technical Implementation
 
 ### Search Integration
+
 - Uses existing search API from Phase 2.6
 - Supports full Anki query syntax
 - Sorting and reverse options available
 - Results returned as ID arrays
 
 ### Async Data Loading
+
 - Search returns IDs immediately
 - Card details loaded in parallel for first 50
 - Progressive loading prevents UI blocking
 - Graceful handling of failed card fetches
 
 ### Multi-Select Management
+
 - Set-based selection tracking
 - Reactive updates on selection changes
 - Bulk actions only enabled when items selected
 - Keyboard-friendly checkbox interface
 
 ### Performance
+
 - Limits display to first 100 results
 - Shows pagination note if more results
 - Parallel API calls for card details
@@ -112,6 +124,7 @@ The browser supports Anki's powerful search syntax:
 ## Build Status
 
 ✅ **All Checks Passing**
+
 - TypeScript: 0 errors, 10 warnings (accessibility only)
 - Rust: Clean compilation
 - No breaking changes to existing code
@@ -119,11 +132,13 @@ The browser supports Anki's powerful search syntax:
 ## Files Changed Summary
 
 ### New Files (1)
+
 ```
 ts/routes/webapp/browse/+page.svelte (590 lines)
 ```
 
 ### Modified Files (2)
+
 ```
 ts/lib/webapp/api/client.ts (added 3 methods, ~50 lines)
 ts/routes/webapp/+page.svelte (added Browse card link)
@@ -138,7 +153,7 @@ ts/routes/webapp/+page.svelte (added Browse card link)
 - ✅ Multi-select functional (checkboxes + select all)
 - ✅ Bulk operations work (suspend, delete)
 - ❌ Preview shows card content (not implemented - future enhancement)
-- ⚠️  Performant with large datasets (limited to 100 displayed)
+- ⚠️ Performant with large datasets (limited to 100 displayed)
 
 **Note:** Card preview and full dataset pagination are deferred to future enhancements. The core browse and bulk operation workflow is complete.
 
@@ -169,6 +184,7 @@ ts/routes/webapp/+page.svelte (added Browse card link)
 ## Testing Recommendations
 
 ### Manual Testing
+
 - [ ] Navigate to browse from dashboard
 - [ ] Switch between Cards and Notes modes
 - [ ] Search with empty query (returns all)
@@ -181,6 +197,7 @@ ts/routes/webapp/+page.svelte (added Browse card link)
 - [ ] Test with large result sets (100+ cards)
 
 ### Integration Testing
+
 - [ ] Search results match desktop Anki
 - [ ] Suspended cards don't appear in study
 - [ ] Deleted cards are removed from collection
@@ -190,11 +207,13 @@ ts/routes/webapp/+page.svelte (added Browse card link)
 ## Progress Update
 
 ### Before Phase 3.6
+
 - Phase 1: ✅ Complete (100%)
 - Phase 2: ✅ Complete (100%)
 - Phase 3: 🔄 56% complete (5/9 tasks)
 
 ### After Phase 3.6
+
 - Phase 1: ✅ Complete (100%)
 - Phase 2: ✅ Complete (100%)
 - Phase 3: 🔄 67% complete (6/9 tasks)
@@ -205,10 +224,11 @@ ts/routes/webapp/+page.svelte (added Browse card link)
 
 ### Phase 3.7 - Statistics UI (Next Task)
 
-**Estimate:** 2 days  
+**Estimate:** 2 days\
 **Dependencies:** Phase 2.9 (Statistics API) ✅
 
 **Components:**
+
 - Statistics overview page
 - Integrate existing graphs
 - Calendar heatmap
@@ -216,6 +236,7 @@ ts/routes/webapp/+page.svelte (added Browse card link)
 - Retention graphs
 
 ### Remaining Phase 3 Tasks
+
 - 3.8 Settings UI (2 days)
 - 3.9 Navigation & Layout (2 days)
 

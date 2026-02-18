@@ -1,14 +1,9 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import DeckNode from "./DeckNode.svelte";
+    import type { DeckNode as IDeckNode } from "../api/client";
 
-    export let decks: Array<{
-        id: number;
-        name: string;
-        new_count: number;
-        learn_count: number;
-        review_count: number;
-    }> = [];
+    export let decks: IDeckNode[] = [];
     export let loading = false;
 
     const dispatch = createEventDispatcher();
@@ -43,6 +38,7 @@
             {#each decks as deck (deck.id)}
                 <DeckNode
                     {deck}
+                    level={0}
                     on:study={handleStudy}
                     on:rename={handleRename}
                     on:delete={handleDelete}

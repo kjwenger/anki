@@ -15,6 +15,7 @@ pub struct NotetypeInfo {
     pub name: String,
     pub fields: Vec<NotetypeField>,
     pub templates: Vec<NotetypeTemplate>,
+    pub is_cloze: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -103,6 +104,8 @@ pub async fn get_notetype(
         })
         .collect();
 
+    let is_cloze = notetype.config.kind == anki::notetype::NotetypeKind::Cloze as i32;
+
     drop(col);
 
     Ok(Json(NotetypeInfo {
@@ -110,5 +113,6 @@ pub async fn get_notetype(
         name: notetype.name.clone(),
         fields,
         templates,
+        is_cloze,
     }))
 }

@@ -25,6 +25,7 @@ use crate::routes::batch_get_cards;
 use crate::routes::batch_update_cards;
 use crate::routes::bury_card;
 use crate::routes::check_media;
+use crate::routes::check_note_fields;
 use crate::routes::clear_unused_tags;
 use crate::routes::close_collection;
 use crate::routes::create_collection;
@@ -93,6 +94,7 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/decks/{id}", put(update_deck))
         .route("/api/v1/decks/{id}", delete(delete_deck))
         .route("/api/v1/notes", post(create_note))
+        .route("/api/v1/notes/check-fields", post(check_note_fields))
         .route("/api/v1/notes/{id}", get(get_note))
         .route("/api/v1/notes/{id}", put(update_note))
         .route("/api/v1/notes/{id}", delete(delete_note))

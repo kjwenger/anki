@@ -1,7 +1,7 @@
 # Phase 2.5: Cards API - Implementation Complete ✅
 
-**Date Completed:** 2026-02-15  
-**Status:** Implementation Complete, Build Verified  
+**Date Completed:** 2026-02-15\
+**Status:** Implementation Complete, Build Verified\
 **Next Phase:** 2.6 Search API
 
 ---
@@ -173,10 +173,12 @@ col.get_card(anki_proto::cards::CardId { cid: card_id })
 ## API Documentation
 
 Complete OpenAPI 3.0 documentation is available at:
+
 - **Swagger UI:** http://localhost:8080/swagger-ui
 - **JSON Spec:** http://localhost:8080/api-docs/openapi.json
 
 All card endpoints are documented with:
+
 - Request/response schemas
 - Parameter descriptions
 - Example values
@@ -187,9 +189,9 @@ All card endpoints are documented with:
 
 ## Build Status
 
-✅ **Compilation:** Successful  
-✅ **Cargo Build:** Clean (release mode)  
-✅ **Clippy:** No warnings or errors  
+✅ **Compilation:** Successful\
+✅ **Cargo Build:** Clean (release mode)\
+✅ **Clippy:** No warnings or errors\
 ⏳ **Full Check:** Blocked by CONTRIBUTORS validation (requires git commit)
 
 ### Build Commands Used
@@ -215,7 +217,7 @@ Once the CONTRIBUTORS issue is resolved and server is running:
    curl -X POST http://localhost:8080/api/v1/auth/register \
      -H "Content-Type: application/json" \
      -d '{"username":"test","password":"password123"}'
-   
+
    # Login (get token)
    TOKEN=$(curl -X POST http://localhost:8080/api/v1/auth/login \
      -H "Content-Type: application/json" \
@@ -326,8 +328,8 @@ Once the CONTRIBUTORS issue is resolved and server is running:
 
 ## Acceptance Criteria Status
 
-| Criteria                   | Status     | Notes                                      |
-|----------------------------|------------|--------------------------------------------|
+| Criteria                   | Status      | Notes                                      |
+| -------------------------- | ----------- | ------------------------------------------ |
 | Card CRUD operations work  | ✅ Complete | GET, PUT, DELETE implemented               |
 | State changes work         | ✅ Complete | Flag, suspend, unsuspend, bury all working |
 | Batch operations efficient | ✅ Complete | Batch get and update use single queries    |
@@ -360,14 +362,17 @@ From TASKS.md:
 - **Dependencies:** 2.1 (Collections API)
 
 **Endpoints to Implement:**
+
 - POST /api/v1/search/cards
 - POST /api/v1/search/notes
 - POST /api/v1/search/find-replace
 
 **Files to Create:**
+
 - `rslib/webapp/src/routes/search.rs`
 
 **Acceptance Criteria:**
+
 - Search query syntax supported
 - Results paginated
 - Find-replace works correctly
@@ -381,10 +386,11 @@ Phase 2.5 Cards API is **functionally complete** with all 9 endpoints implemente
 The only remaining item is the administrative task of committing the CONTRIBUTORS file change to satisfy the build validation script, which does not affect the functionality of the code itself.
 
 **Total Lines of Code Added:** ~650 lines
+
 - cards.rs: 352 lines
 - openapi.rs: ~290 lines (card endpoints + schemas)
 - Other files: ~8 lines
 
-**Build Status:** ✅ Passing (cargo build, cargo clippy)  
-**Documentation:** ✅ Complete (OpenAPI 3.0 + inline comments)  
+**Build Status:** ✅ Passing (cargo build, cargo clippy)\
+**Documentation:** ✅ Complete (OpenAPI 3.0 + inline comments)\
 **Integration:** ✅ Complete (router + auth middleware)

@@ -114,11 +114,35 @@
     }
 
     function handleKeydown(event: KeyboardEvent) {
+        // Ctrl+F to focus search
+        if (event.ctrlKey && event.key === "f") {
+            event.preventDefault();
+            const input = document.querySelector('input[type="text"]') as HTMLInputElement;
+            if (input) input.focus();
+            return;
+        }
+
+        // Enter to search
         if (event.key === "Enter" && !loading) {
+            event.preventDefault();
             handleSearch();
+            return;
+        }
+
+        // Delete to delete selected
+        if (event.key === "Delete" && selectedIds.size > 0) {
+            handleBulkDelete();
+            return;
+        }
+
+        // Escape to clear selection
+        if (event.key === "Escape") {
+            deselectAll();
         }
     }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">

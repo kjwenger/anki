@@ -35,6 +35,7 @@ docker-compose up -d
 ```
 
 This will:
+
 - Build both the API and frontend Docker images
 - Start the services in the background
 - Create a persistent volume for user data
@@ -42,6 +43,7 @@ This will:
 ### 2. Access the Application
 
 Open your browser and navigate to:
+
 - **Frontend**: http://localhost
 - **API**: http://localhost:8080
 
@@ -72,6 +74,7 @@ ALLOWED_ORIGINS=http://localhost,http://yourdomain.com
 ### Ports
 
 By default:
+
 - Frontend: `80` (HTTP)
 - API: `8080`
 
@@ -127,6 +130,7 @@ yarn dev
 ```
 
 Then access:
+
 - Frontend: http://localhost:5173
 - API: http://localhost:8080
 
@@ -276,11 +280,13 @@ docker-compose up -d
 ## Resource Requirements
 
 ### Minimum
+
 - CPU: 1 core
 - RAM: 512MB
 - Disk: 1GB
 
 ### Recommended
+
 - CPU: 2 cores
 - RAM: 2GB
 - Disk: 5GB
@@ -288,6 +294,7 @@ docker-compose up -d
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/kjwenger/anki/issues
 - Documentation: See `README.webapp.md` in the repository root
 

@@ -1,6 +1,6 @@
 # Phase 3.5 - Editor UI - COMPLETE ✅
 
-**Completed:** 2026-02-16  
+**Completed:** 2026-02-16\
 **Status:** Fully functional card creation interface
 
 ## Overview
@@ -17,14 +17,17 @@ Phase 3.5 implements a complete card editor interface for the Anki web app. User
 - GET `/api/v1/notetypes/{id}` - Get notetype details with fields and templates
 
 **Integration:**
+
 - Updated `rslib/webapp/src/routes/mod.rs` - Added notetype exports
 - Updated `rslib/webapp/src/server/router.rs` - Added notetype routes
 
 ### Frontend UI (NEW - 4 files, ~500 lines)
 
 #### 1. API Client Extensions
-**File:** `ts/lib/webapp/api/client.ts`  
+
+**File:** `ts/lib/webapp/api/client.ts`\
 **Added Methods:**
+
 - `getNotetypes()` - List available notetypes
 - `getNotetype(id)` - Get notetype with field definitions
 - `createNote(deckId, notetypeId, fields, tags)` - Create new note/card
@@ -32,10 +35,12 @@ Phase 3.5 implements a complete card editor interface for the Anki web app. User
 - `updateNote(id, fields, tags)` - Update existing note
 
 #### 2. Editor State Store
-**File:** `ts/lib/webapp/stores/editor.ts` (94 lines)  
+
+**File:** `ts/lib/webapp/stores/editor.ts` (94 lines)\
 **Purpose:** Manage editor form state
 
 State Management:
+
 - Deck selection
 - Notetype selection with field definitions
 - Field values (dynamic based on notetype)
@@ -43,6 +48,7 @@ State Management:
 - Edit mode (create vs update)
 
 Actions:
+
 - `setDeck(deckId)` - Select target deck
 - `setNotetype(notetypeId, notetype)` - Load notetype and initialize fields
 - `setField(index, value)` - Update individual field
@@ -51,9 +57,11 @@ Actions:
 - `loadNote(...)` - Load existing note for editing
 
 #### 3. Field Editor Component
+
 **File:** `ts/lib/webapp/components/FieldEditor.svelte` (68 lines)
 
 Features:
+
 - Label showing field name
 - Multi-line textarea input
 - Auto-expanding with min 3 rows
@@ -62,9 +70,11 @@ Features:
 - Event dispatch for value changes
 
 #### 4. Tag Input Component
+
 **File:** `ts/lib/webapp/components/TagInput.svelte` (142 lines)
 
 Features:
+
 - Visual tag pills with remove buttons
 - Inline text input for adding tags
 - Keyboard shortcuts:
@@ -75,9 +85,11 @@ Features:
 - Color-coded tag styling
 
 #### 5. Editor Page
+
 **File:** `ts/routes/webapp/editor/+page.svelte` (384 lines)
 
 Features:
+
 - **Deck Selection** - Dropdown with all available decks
 - **Notetype Selection** - Dropdown with all notetypes
 - **Dynamic Fields** - Renders fields based on selected notetype
@@ -90,9 +102,11 @@ Features:
 - **Responsive Design** - Sidebar + main layout, mobile-friendly
 
 #### 6. Dashboard Integration
+
 **File:** `ts/routes/webapp/+page.svelte` (updated)
 
 Changes:
+
 - Added "Add Cards" card to dashboard
 - Links to `/webapp/editor`
 - Navigation function `handleEditor()`
@@ -111,24 +125,28 @@ Changes:
 ## Technical Implementation
 
 ### Dynamic Field Generation
+
 - Fields are generated based on notetype definition
 - Each notetype can have different number/types of fields
 - Field state managed in Svelte store
 - Reactive updates ensure UI stays in sync
 
 ### API Integration
+
 - Parallel loading of decks and notetypes on mount
 - Automatic notetype details loading when selected
 - Proper error handling with user-friendly messages
 - Success feedback with auto-dismiss
 
 ### Form Management
+
 - Controlled components with two-way binding
 - Validation before submission
 - Clear/reset functionality
 - Maintains state until explicitly reset
 
 ### Styling
+
 - Consistent with existing UI components
 - Professional card-based layout
 - Sidebar for selectors, main area for content
@@ -138,6 +156,7 @@ Changes:
 ## Build Status
 
 ✅ **All Checks Passing**
+
 - Rust: Clean compilation (anki-webapp)
 - TypeScript: 0 errors, 10 warnings (accessibility only)
 - No breaking changes to existing code
@@ -145,6 +164,7 @@ Changes:
 ## Files Changed Summary
 
 ### New Files (6)
+
 ```
 Backend:
 rslib/webapp/src/routes/notetypes.rs (117 lines)
@@ -157,6 +177,7 @@ ts/routes/webapp/editor/+page.svelte (384 lines)
 ```
 
 ### Modified Files (4)
+
 ```
 rslib/webapp/src/routes/mod.rs (added notetype exports)
 rslib/webapp/src/server/router.rs (added notetype routes)
@@ -169,6 +190,7 @@ ts/routes/webapp/+page.svelte (added Add Cards link)
 ## API Endpoints Summary
 
 ### New Endpoints (2)
+
 - GET `/api/v1/notetypes` - List all notetypes
 - GET `/api/v1/notetypes/{id}` - Get notetype details
 
@@ -211,6 +233,7 @@ ts/routes/webapp/+page.svelte (added Add Cards link)
 ## Testing Recommendations
 
 ### Manual Testing
+
 - [ ] Navigate to editor from dashboard
 - [ ] Select different notetypes (verify fields change)
 - [ ] Fill in all fields and submit
@@ -223,6 +246,7 @@ ts/routes/webapp/+page.svelte (added Add Cards link)
 - [ ] Verify cards appear in deck after creation
 
 ### Integration Testing
+
 - [ ] Created cards appear in deck browser
 - [ ] Created cards can be studied
 - [ ] Tags are saved correctly
@@ -233,11 +257,13 @@ ts/routes/webapp/+page.svelte (added Add Cards link)
 ## Progress Update
 
 ### Before Phase 3.5
+
 - Phase 1: ✅ Complete (100%)
 - Phase 2: ✅ Complete (100%)
 - Phase 3: 🔄 44% complete (4/9 tasks)
 
 ### After Phase 3.5
+
 - Phase 1: ✅ Complete (100%)
 - Phase 2: ✅ Complete (100%)
 - Phase 3: 🔄 56% complete (5/9 tasks)
@@ -248,10 +274,11 @@ ts/routes/webapp/+page.svelte (added Add Cards link)
 
 ### Phase 3.6 - Card Browser UI (Next Task)
 
-**Estimate:** 4 days  
+**Estimate:** 4 days\
 **Dependencies:** Phase 2.6 (Search API) ✅
 
 **Components:**
+
 - Search input with query builder
 - Card/note list table with sorting
 - Column selection/customization

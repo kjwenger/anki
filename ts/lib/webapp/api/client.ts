@@ -11,6 +11,16 @@ export interface ApiError {
     status: number;
 }
 
+export interface DeckNode {
+    id: number;
+    name: string;
+    collapsed: boolean;
+    new_count: number;
+    learn_count: number;
+    review_count: number;
+    children: DeckNode[];
+}
+
 export class ApiClient {
     private baseUrl: string;
 
@@ -179,13 +189,7 @@ export class ApiClient {
     // Deck endpoints
     async getDecks() {
         return this.get<{
-            decks: Array<{
-                id: number;
-                name: string;
-                new_count: number;
-                learn_count: number;
-                review_count: number;
-            }>;
+            decks: Array<DeckNode>;
         }>("/api/v1/decks");
     }
 
@@ -196,15 +200,22 @@ export class ApiClient {
         );
     }
 
+    async updateDeck(id: number, request: { name?: string; collapsed?: boolean }) {
+        return this.put<{ success: boolean; message: string }>(
+            `/api/v1/decks/${id}`,
+            request,
+        );
+    }
+
+    async getDeck(id: number) {
+        return this.get<{
+            id: number;
+            name: string;
+        }>(`/api/v1/decks/${id}`);
+    }
+
     async renameDeck(id: number, name: string) {
-        console.log("=== API client.renameDeck ===");
-        console.log("Deck ID:", id);
-        console.log("New name:", name);
-        console.log("Endpoint:", `/api/v1/decks/${id}`);
-        console.log("Request body:", { name });
-        const result = await this.put<{ message: string }>(`/api/v1/decks/${id}`, { name });
-        console.log("Rename API response:", result);
-        return result;
+        return this.updateDeck(id, { name });
     }
 
     async deleteDeck(id: number) {
@@ -233,6 +244,7 @@ export class ApiClient {
                 name: string;
                 ord: number;
             }>;
+            is_cloze: boolean;
         }>(`/api/v1/notetypes/${id}`);
     }
 
@@ -267,6 +279,13 @@ export class ApiClient {
         return this.put<{ success: boolean; message: string }>(
             `/api/v1/notes/${id}`,
             { fields, tags },
+        );
+    }
+
+    async checkNoteFields(notetypeId: number, fields: string[]) {
+        return this.post<{ state: number }>(
+            "/api/v1/notes/check-fields",
+            { notetype_id: notetypeId, fields },
         );
     }
 

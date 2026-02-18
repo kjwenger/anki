@@ -32,22 +32,30 @@ pub async fn require_auth(
     mut request: Request,
     next: Next,
 ) -> Result<Response, WebAppError> {
-    // Extract token from Authorization header
-    let auth_header = request
-        .headers()
-        .get(header::AUTHORIZATION)
-        .and_then(|h| h.to_str().ok())
-        .ok_or_else(|| WebAppError::unauthorized("Missing authorization header"))?;
-
-    // Parse "Bearer <token>"
-    let token = auth_header
-        .strip_prefix("Bearer ")
-        .ok_or_else(|| WebAppError::unauthorized("Invalid authorization header format"))?;
+    // Try to extract token from Authorization header first
+    let token = if let Some(auth_header) = request.headers().get(header::AUTHORIZATION) {
+        let auth_str = auth_header
+            .to_str()
+            .map_err(|_| WebAppError::unauthorized("Invalid authorization header"))?;
+        auth_str
+            .strip_prefix("Bearer ")
+            .ok_or_else(|| WebAppError::unauthorized("Invalid authorization header format"))?
+            .to_string()
+    } else {
+        // Fallback to "token" query parameter (useful for media files in audio/img tags)
+        let query = request.uri().query().unwrap_or("");
+        let params = serde_urlencoded::from_str::<std::collections::HashMap<String, String>>(query)
+            .unwrap_or_default();
+        params
+            .get("token")
+            .cloned()
+            .ok_or_else(|| WebAppError::unauthorized("Missing authentication token"))?
+    };
 
     // Verify JWT
     let claims = state
         .jwt_manager
-        .verify_token(token)
+        .verify_token(&token)
         .map_err(|e| WebAppError::unauthorized(&format!("Invalid token: {}", e)))?;
 
     // Verify session is still valid in database

@@ -45,6 +45,56 @@ pub struct MessageResponse {
     pub message: String,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CheckNoteFieldsRequest {
+    pub notetype_id: i64,
+    pub fields: Vec<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct CheckNoteFieldsResponse {
+    pub state: i32, // 0=NORMAL, 1=EMPTY, 2=DUPLICATE, etc.
+}
+
+/// Check note fields for duplicates or errors
+pub async fn check_note_fields(
+    State(state): State<AuthRouteState>,
+    Extension(auth_user): Extension<AuthUser>,
+    Json(request): Json<CheckNoteFieldsRequest>,
+) -> Result<impl IntoResponse> {
+    let backend = state
+        .backend_manager
+        .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
+
+    let mut col = backend.lock().unwrap();
+
+    // Get the notetype
+    let notetype = col
+        .get_notetype(anki::notetype::NotetypeId(request.notetype_id))
+        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?
+        .ok_or_else(|| WebAppError::bad_request("Notetype not found"))?;
+
+    // Create a temporary note
+    let mut note = anki::notes::Note::new(&notetype);
+
+    // Set fields
+    for (idx, field_value) in request.fields.iter().enumerate() {
+        if idx < note.fields().len() {
+            note.set_field(idx, field_value.clone())
+                .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        }
+    }
+
+    // Run the check
+    let state = col
+        .note_fields_check(&note)
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    drop(col);
+
+    Ok(Json(CheckNoteFieldsResponse { state: state as i32 }))
+}
+
 /// Get a note by ID
 pub async fn get_note(
     State(state): State<AuthRouteState>,

@@ -3,6 +3,7 @@
 ## Overview
 
 Single-container production deployment combining:
+
 - Rust API backend (port 8080)
 - Svelte frontend served by Nginx (port 80)
 
@@ -29,7 +30,7 @@ Single-container production deployment combining:
 The Dockerfile uses multi-stage builds:
 
 1. **Stage 1**: Build Rust API binary
-2. **Stage 2**: Build Svelte frontend  
+2. **Stage 2**: Build Svelte frontend
 3. **Stage 3**: Combine into nginx:alpine runtime
 
 ## Prerequisites for Building
@@ -53,6 +54,7 @@ docker-compose up -d
 ## Configuration
 
 Environment variables in `docker-compose.yml`:
+
 - `JWT_SECRET`: Secret for JWT token signing (change in production!)
 - `RUST_LOG`: Log level (info, debug, warn, error)
 - `DATABASE_PATH`: Where SQLite databases are stored

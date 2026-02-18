@@ -42,6 +42,7 @@
 ## 📋 Remaining Tasks (Before Next Phase)
 
 ### Git & Repository
+
 - [ ] Commit CONTRIBUTORS file change
   ```bash
   git add CONTRIBUTORS
@@ -75,6 +76,7 @@
   ```
 
 ### Testing
+
 - [ ] Start the server
   ```bash
   cargo run --bin anki-webapp
@@ -86,7 +88,7 @@
   curl -X POST http://localhost:8080/api/v1/auth/register \
     -H "Content-Type: application/json" \
     -d '{"username":"test","password":"password123"}'
-  
+
   # Login
   TOKEN=$(curl -X POST http://localhost:8080/api/v1/auth/login \
     -H "Content-Type: application/json" \
@@ -96,6 +98,7 @@
 - [ ] Test card operations (see CARDS_API_REFERENCE.md for examples)
 
 ### Documentation Review
+
 - [ ] Review Swagger UI at http://localhost:8080/swagger-ui
 - [ ] Verify all endpoints are documented
 - [ ] Test example requests from documentation
@@ -103,17 +106,20 @@
 ## 🎯 Next Phase Preparation
 
 ### Phase 2.6: Search API
+
 - [ ] Review existing search functionality in Anki
 - [ ] Plan search query syntax support
 - [ ] Design pagination approach
 - [ ] Prepare search endpoint specifications
 
 **Files to Create:**
+
 - `rslib/webapp/src/routes/search.rs`
 
 **Endpoints to Implement:**
+
 - POST /api/v1/search/cards
-- POST /api/v1/search/notes  
+- POST /api/v1/search/notes
 - POST /api/v1/search/find-replace
 
 ## 📊 Success Metrics
@@ -141,21 +147,24 @@ All ✅ - Ready to proceed!
 ## 📝 Notes
 
 **Known Issues:**
+
 - CONTRIBUTORS validation blocks ./check (requires git commit)
 - No impact on functionality, only build script
 
 **Documentation Files:**
+
 - PHASE_2.5_COMPLETE.md - Read this for full technical details
 - CARDS_API_REFERENCE.md - Use this for API reference
 - PROJECT_STATUS.md - Check overall project progress
 - WHATS_NEW.md - Quick summary of what changed
 
 **Support:**
+
 - All setup instructions in .copilot/user.md
 - Git configuration documented
 - Build troubleshooting included
 
 ---
 
-**Status:** Phase 2.5 is FUNCTIONALLY COMPLETE ✅  
+**Status:** Phase 2.5 is FUNCTIONALLY COMPLETE ✅\
 **Next Action:** Commit changes and proceed to Phase 2.6
