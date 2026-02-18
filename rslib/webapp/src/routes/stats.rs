@@ -1,5 +1,5 @@
-use anki::services::StatsService;
 use anki::services::SearchService;
+use anki::services::StatsService;
 use axum::extract::Path;
 use axum::extract::Query;
 use axum::extract::State;
@@ -123,6 +123,36 @@ pub async fn get_graphs(
     ))
 }
 
+/// Count cards matching an Anki search query.
+fn count_cards(
+    col: &mut anki::collection::Collection,
+    query: &str,
+) -> anki::error::Result<u32> {
+    let result = <anki::collection::Collection as SearchService>::search_cards(
+        col,
+        anki_proto::search::SearchRequest {
+            search: query.to_string(),
+            order: None,
+        },
+    )?;
+    Ok(result.ids.len() as u32)
+}
+
+/// Count notes matching an Anki search query.
+fn count_notes(
+    col: &mut anki::collection::Collection,
+    query: &str,
+) -> anki::error::Result<u32> {
+    let result = <anki::collection::Collection as SearchService>::search_notes(
+        col,
+        anki_proto::search::SearchRequest {
+            search: query.to_string(),
+            order: None,
+        },
+    )?;
+    Ok(result.ids.len() as u32)
+}
+
 /// Get collection-wide statistics
 pub async fn get_collection_stats(
     State(state): State<AuthRouteState>,
@@ -134,50 +164,49 @@ pub async fn get_collection_stats(
 
     let mut col = backend.lock().unwrap();
 
-    // Get graphs data (includes card counts)
-    let result = col
-        .graphs(anki_proto::stats::GraphsRequest {
-            search: String::new(),
-            days: 1,
-        })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+    // Each search is independent — no heavyweight graphs() call or temp-table
+    // interactions that could silently return zeros.
+    //
+    // Query notes:
+    //   is:new               → c.type = 0  (CardType::New, any queue)
+    //   -is:suspended        → exclude queue = -1
+    //   -is:buried           → exclude queue = -2 / -3
+    //   is:review            → c.type in (2, 3)  (Review + Relearn)
+    //   prop:ivl<21          → interval < 21 days  (young)
+    //   prop:ivl>=21         → interval ≥ 21 days  (mature)
 
-    // Get total notes count using search with empty query
-    let search_result = <anki::collection::Collection as SearchService>::search_notes(
-        &mut *col,
-        anki_proto::search::SearchRequest {
-            search: String::new(),
-            order: None,
-        },
-    )
-    .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
-    
-    let total_notes = search_result.ids.len() as u32;
+    let total_cards = count_cards(&mut *col, "")
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    let total_notes = count_notes(&mut *col, "")
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    let new_cards = count_cards(&mut *col, "is:new -is:suspended -is:buried")
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    let young_cards =
+        count_cards(&mut *col, "is:review prop:ivl<21 -is:suspended -is:buried")
+            .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    let mature_cards =
+        count_cards(&mut *col, "is:review prop:ivl>=21 -is:suspended -is:buried")
+            .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    let suspended_cards = count_cards(&mut *col, "is:suspended")
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
+
+    let buried_cards = count_cards(&mut *col, "is:buried")
+        .map_err(|e| WebAppError::internal(&e.to_string()))?;
 
     drop(col);
 
-    // Extract card counts
-    let card_counts = result
-        .card_counts
-        .and_then(|cc| cc.excluding_inactive)
-        .unwrap_or_default();
-
-    // Calculate total cards
-    let total_cards = card_counts.new_cards
-        + card_counts.learn
-        + card_counts.relearn
-        + card_counts.young
-        + card_counts.mature
-        + card_counts.suspended
-        + card_counts.buried;
-
     Ok(Json(serde_json::json!({
         "total_cards": total_cards,
-        "new_cards": card_counts.new_cards,
-        "young_cards": card_counts.young,
-        "mature_cards": card_counts.mature,
-        "suspended_cards": card_counts.suspended,
-        "buried_cards": card_counts.buried,
+        "new_cards": new_cards,
+        "young_cards": young_cards,
+        "mature_cards": mature_cards,
+        "suspended_cards": suspended_cards,
+        "buried_cards": buried_cards,
         "total_notes": total_notes,
     })))
 }
