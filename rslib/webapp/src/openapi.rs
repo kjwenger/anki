@@ -1120,6 +1120,44 @@ pub fn openapi_spec() -> Value {
                     }
                 }
             },
+            "/api/v1/import/apkg": {
+                "post": {
+                    "tags": ["import"],
+                    "summary": "Import an Anki package (.apkg)",
+                    "operationId": "importApkg",
+                    "security": [{ "bearerAuth": [] }],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "multipart/form-data": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["file"],
+                                    "properties": {
+                                        "file": {
+                                            "type": "string",
+                                            "format": "binary",
+                                            "description": "The .apkg file to import"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Package imported successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": { "$ref": "#/components/schemas/WebImportResponse" }
+                                }
+                            }
+                        },
+                        "400": { "$ref": "#/components/responses/BadRequest" },
+                        "401": { "$ref": "#/components/responses/Unauthorized" }
+                    }
+                }
+            },
             "/api/v1/tags": {
                 "get": {
                     "tags": ["tags"],
@@ -2346,6 +2384,15 @@ pub fn openapi_spec() -> Value {
                     },
                     "required": ["again", "hard", "good", "easy"],
                     "description": "Human-readable descriptions of next review intervals for each answer button"
+                },
+                "WebImportResponse": {
+                    "type": "object",
+                    "properties": {
+                        "success": { "type": "boolean", "example": true },
+                        "message": { "type": "string", "example": "Successfully imported 'deck.apkg'" },
+                        "notes_new": { "type": "integer", "format": "uint32" },
+                        "notes_updated": { "type": "integer", "format": "uint32" }
+                    }
                 },
                 "ErrorResponse": {
                     "type": "object",

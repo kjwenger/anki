@@ -485,6 +485,31 @@ export class ApiClient {
         const query = params.toString() ? `?${params.toString()}` : "";
         return this.get<any>(`/api/v1/stats/graphs${query}`);
     }
+
+    // Import/Export endpoints
+    async importApkg(file: File) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const headers: HeadersInit = {};
+        const authState = get(authStore);
+        if (authState?.token) {
+            headers["Authorization"] = `Bearer ${authState.token}`;
+        }
+
+        const response = await fetch(`${this.baseUrl}/api/v1/import/apkg`, {
+            method: "POST",
+            headers,
+            body: formData,
+        });
+
+        return this.handleResponse<{
+            success: boolean;
+            message: string;
+            notes_new: number;
+            notes_updated: number;
+        }>(response);
+    }
 }
 
 export const api = new ApiClient();

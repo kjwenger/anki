@@ -56,6 +56,7 @@ use crate::routes::get_notetype;
 use crate::routes::get_tag_tree;
 use crate::routes::get_tags;
 use crate::routes::get_today_stats;
+use crate::routes::import_apkg;
 use crate::routes::list_collections;
 use crate::routes::list_notetypes;
 use crate::routes::login;
@@ -121,6 +122,7 @@ pub fn create_router(config: &WebAppConfig, auth_state: AuthState) -> Router {
         .route("/api/v1/media/{filename}", get(get_media))
         .route("/api/v1/media", post(add_media))
         .route("/api/v1/media", delete(delete_media))
+        .route("/api/v1/import/apkg", post(import_apkg))
         .route("/api/v1/tags", get(get_tags))
         .route("/api/v1/tags/tree", get(get_tag_tree))
         .route("/api/v1/tags/rename", put(rename_tag))

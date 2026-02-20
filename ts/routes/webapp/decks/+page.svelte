@@ -140,8 +140,8 @@
     }
 </script>
 
-<div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-    <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
+<div class="w-full">
+    <header class="bg-white dark:bg-gray-800 shadow-xs px-8 py-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">
                 Decks

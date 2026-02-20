@@ -45,9 +45,11 @@
     });
 </script>
 
-<div id="webapp-root" class="w-full min-h-screen">
+<div id="webapp-root" class="w-full min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
     {#if showNav}
         <NavBar />
     {/if}
-    <slot />
+    <div class="flex-1">
+        <slot />
+    </div>
 </div>

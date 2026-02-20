@@ -25,32 +25,13 @@
     function handleSettings() {
         goto("/webapp/settings");
     }
+
+    function handleImport() {
+        goto("/webapp/import");
+    }
 </script>
 
-<div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800"
->
-    <header
-        class="bg-white dark:bg-gray-800 shadow-md px-8 py-4 flex justify-between items-center"
-    >
-        <h1 class="m-0 text-2xl text-gray-800 dark:text-gray-100 font-bold">
-            Anki Web Dashboard
-        </h1>
-        <div class="flex items-center gap-4">
-            {#if $currentUser}
-                <span class="text-gray-500 dark:text-gray-400 text-sm">
-                    Welcome, {$currentUser.username}!
-                </span>
-                <button
-                    class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg cursor-pointer text-sm font-medium transition-colors duration-200"
-                    on:click={handleProfile}
-                >
-                    Profile
-                </button>
-            {/if}
-        </div>
-    </header>
-
+<div class="w-full">
     <main class="max-w-7xl mx-auto p-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div
@@ -145,6 +126,25 @@
                     on:click={handleSettings}
                 >
                     Settings
+                </button>
+            </div>
+
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group"
+            >
+                <h2
+                    class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold"
+                >
+                    Import
+                </h2>
+                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">
+                    Upload Anki package files
+                </p>
+                <button
+                    class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200"
+                    on:click={handleImport}
+                >
+                    Import Package
                 </button>
             </div>
         </div>

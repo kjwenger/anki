@@ -95,6 +95,16 @@
                 >
                     Stats
                 </button>
+                <button
+                    class="bg-transparent border-none px-4 py-2 cursor-pointer text-sm font-medium rounded transition-all duration-200 {showMobileMenu
+                        ? 'w-full text-left'
+                        : ''} {isActive('/webapp/import')
+                        ? 'bg-indigo-500 text-white'
+                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200'}"
+                    on:click={() => navigateTo("/webapp/import")}
+                >
+                    Import
+                </button>
             </div>
 
             <div class="relative {showMobileMenu ? 'w-full mt-2' : ''}">
