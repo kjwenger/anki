@@ -55,7 +55,7 @@ log "INFO" "SYS" "=== Starting Anki Webapp ==="
 log "INFO" "API" "Building and starting Rust backend..."
 cd "$SCRIPT_DIR"
 # Pipe both stdout and stderr through the prefixer
-RUST_LOG="${RUST_LOG:-info}" cargo run --manifest-path rslib/webapp/Cargo.toml 2>&1 | prefix_logs "API" &
+RUST_LOG="${RUST_LOG:-debug}" cargo run --manifest-path rslib/webapp/Cargo.toml 2>&1 | prefix_logs "API" &
 API_PID=$!
 log "INFO" "API" "Process started (PID $API_PID)"
 
