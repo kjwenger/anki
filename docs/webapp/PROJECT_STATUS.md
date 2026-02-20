@@ -61,9 +61,9 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 4.11 Keyboard Shortcuts (Browse & Editor) | ✅      | Ctrl+Enter, Ctrl+F, Delete, Escape        |
 | 4.12 APKG Import                          | ✅      | REST endpoint + upload UI                 |
 | 4.13 APKG Export                          | 📋     | REST endpoint + download trigger          |
-| 4.14 PWA Support                          | 📋     | Manifest + Service Worker                 |
+| 4.14 PWA Support                          | ✅      | Manifest + Service Worker                 |
 
-**Progress:** 12/14 tasks (85%)
+**Progress:** 13/14 tasks (92%)
 
 **Detailed Reports:**
 - [PHASE_4.3_COMPLETE.md](PHASE_4.3_COMPLETE.md)
@@ -76,6 +76,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 - [PHASE_4.10_COMPLETE.md](PHASE_4.10_COMPLETE.md)
 - [PHASE_4.11_COMPLETE.md](PHASE_4.11_COMPLETE.md)
 - [PHASE_4.12_COMPLETE.md](PHASE_4.12_COMPLETE.md)
+- [PHASE_4.14_COMPLETE.md](PHASE_4.14_COMPLETE.md)
 
 ---
 
@@ -95,6 +96,28 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 **Detailed Reports:**
 - [PHASE_5.1_COMPLETE.md](PHASE_5.1_COMPLETE.md)
+
+---
+
+## Latest Completion: Phase 4.14 - PWA Support ✅
+
+**Completed:** 2026-02-20
+**Summary:** Transformed the web application into a Progressive Web App (PWA), allowing users to install it on their devices and providing faster access with basic offline support.
+
+### Features Delivered
+
+1. **App Identity & Branding**
+   - Created `manifest.webmanifest` with Anki branding and theme colors.
+   - Provisioned app icons for various resolutions (192px and 512px).
+   - Integrated manifest link and theme-color meta tags into the main HTML template.
+
+2. **Offline & Performance**
+   - Implemented a Service Worker (`service-worker.js`) with a "stale-while-revalidate" caching strategy.
+   - Pre-caches core app assets (JS/CSS) and static files for faster subsequent loads and basic offline shell support.
+
+3. **User Experience**
+   - Integrated PWA installation logic into the Settings page.
+   - Added a dedicated "Install App" section that appears only when the app is installable.
 
 ---
 

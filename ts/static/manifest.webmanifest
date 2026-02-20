@@ -1,0 +1,23 @@
+{
+  "name": "Anki Web",
+  "short_name": "Anki",
+  "description": "Powerful, intelligent flashcards.",
+  "start_url": "/webapp",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/icons/anki-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/anki-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

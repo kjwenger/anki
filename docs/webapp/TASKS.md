@@ -45,7 +45,7 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor-) ✅
   - [4.12 APKG Import](#412-apkg-import-) ✅
   - [4.13 APKG Export](#413-apkg-export)
-  - [4.14 PWA Support](#414-pwa-support)
+  - [4.14 PWA Support](#414-pwa-support) ✅
 - [Phase 5: Polish & Testing](#phase-5-polish--testing) — Testing, documentation, deployment
   - [5.1 API Testing](#51-api-testing-) ✅
   - [5.2 UI Testing](#52-ui-testing)
@@ -1186,24 +1186,25 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 
 ---
 
-### 4.14 PWA Support
+### 4.14 PWA Support ✅
 
 **Priority**: P2\
 **Estimate**: 2 days\
 **Dependencies**: Navigation (3.9 ✅)\
 **Effort**: Medium — standard PWA implementation\
 **Source**: User request / Mobile Optimization
+**Status**: Complete
 
-- [ ] Create `manifest.webmanifest` with Anki branding
-- [ ] Add app icons for various resolutions
-- [ ] Implement a basic Service Worker for asset caching
-- [ ] Add "Install App" prompt/logic in Settings or User Menu
+- [x] Create `manifest.webmanifest` with Anki branding
+- [x] Add app icons for various resolutions
+- [x] Implement a basic Service Worker for asset caching
+- [x] Add "Install App" prompt/logic in Settings or User Menu
 
 **Acceptance Criteria**:
 
-- App is installable on Chrome (Desktop/Android) and Safari (iOS)
-- App has a dedicated icon and splash screen when launched from home screen
-- Basic UI assets (CSS/JS) are cached for faster subsequent loads
+- ✅ App is installable on Chrome (Desktop/Android) and Safari (iOS)
+- ✅ App has a dedicated icon and splash screen when launched from home screen
+- ✅ Basic UI assets (CSS/JS) are cached for faster subsequent loads
 
 ---
 

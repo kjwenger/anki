@@ -12,9 +12,42 @@
     let enableKeyboardShortcuts = true;
     let saved = false;
 
+    // PWA Install logic
+    let installPrompt: any = null;
+    let isInstallable = false;
+
     onMount(() => {
         loadSettings();
+
+        window.addEventListener("beforeinstallprompt", (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            installPrompt = e;
+            isInstallable = true;
+        });
+
+        window.addEventListener("appinstalled", () => {
+            isInstallable = false;
+            installPrompt = null;
+            console.log("PWA was installed");
+        });
     });
+
+    async function handleInstallClick() {
+        if (!installPrompt) return;
+        
+        // Show the install prompt
+        installPrompt.prompt();
+        
+        // Wait for the user to respond to the prompt
+        const { outcome } = await installPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        
+        // We've used the prompt, and can't use it again
+        installPrompt = null;
+        isInstallable = false;
+    }
 
     function loadSettings() {
         const stored = localStorage.getItem("anki-webapp-settings");
@@ -235,6 +268,23 @@
                     </p>
                 </div>
             </section>
+
+            {#if isInstallable}
+                <section class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg shadow-md p-8 border-2 border-indigo-200 dark:border-indigo-800">
+                    <h2 class="m-0 mb-4 text-xl text-indigo-900 dark:text-indigo-100 font-bold flex items-center gap-2">
+                        <span>📱</span> Install Anki Web
+                    </h2>
+                    <p class="text-indigo-800 dark:text-indigo-300 mb-6 leading-relaxed">
+                        Install Anki Web on your device for a better experience, including a dedicated app icon and faster access.
+                    </p>
+                    <button
+                        class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white border-none rounded-lg text-base font-bold cursor-pointer transition-all shadow-md hover:shadow-lg active:scale-95"
+                        on:click={handleInstallClick}
+                    >
+                        Install App
+                    </button>
+                </section>
+            {/if}
 
             <section
                 class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-lg shadow-md p-8"
