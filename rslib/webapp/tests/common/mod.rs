@@ -15,9 +15,13 @@ use anki_webapp::server::router::create_router;
 pub struct TestContext {
     pub client: Client,
     pub base_url: String,
+    #[allow(dead_code)]
     pub config: WebAppConfig,
+    #[allow(dead_code)]
     pub database: Arc<Database>,
+    #[allow(dead_code)]
     pub jwt_manager: Arc<JwtManager>,
+    #[allow(dead_code)]
     pub backend_manager: Arc<BackendManager>,
     _temp_dir: TempDir,
 }
@@ -75,6 +79,7 @@ impl TestContext {
         }
     }
 
+    #[allow(dead_code)]
     pub fn generate_token(&self, user_id: i64, username: &str) -> String {
         let claims = Claims::new(user_id, username.to_string(), "test-session".to_string(), self.config.session_timeout_hours as i64);
         self.jwt_manager.generate_token(&claims)
