@@ -18,12 +18,16 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Duration:** Completed
 **Status:** All tasks complete and tested
 
+**Detailed Reports:**
+- [PHASE_1_COMPLETE.md](PHASE_1_COMPLETE.md)
+
 ### ✅ Phase 2: Core API (COMPLETE)
 
 **Duration:** Completed
 **Status:** 9 of 9 tasks complete (100%)
 
 **Detailed Reports:**
+- [PHASE_2_COMPLETE.md](PHASE_2_COMPLETE.md)
 - [PHASE_2.5_COMPLETE.md](PHASE_2.5_COMPLETE.md)
 - [PHASE_2.6_COMPLETE.md](PHASE_2.6_COMPLETE.md)
 
@@ -33,6 +37,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Status:** 9 of 9 tasks complete (100%)
 
 **Detailed Reports:**
+- [PHASE_3_COMPLETE.md](PHASE_3_COMPLETE.md)
 - [PHASE_3.4_COMPLETE.md](PHASE_3.4_COMPLETE.md)
 - [PHASE_3.5_COMPLETE.md](PHASE_3.5_COMPLETE.md)
 - [PHASE_3.6_COMPLETE.md](PHASE_3.6_COMPLETE.md)
@@ -66,6 +71,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Progress:** 13/14 tasks (92%)
 
 **Detailed Reports:**
+- [PHASE_4.1_COMPLETE.md](PHASE_4.1_COMPLETE.md)
 - [PHASE_4.3_COMPLETE.md](PHASE_4.3_COMPLETE.md)
 - [PHASE_4.4_COMPLETE.md](PHASE_4.4_COMPLETE.md)
 - [PHASE_4.5_COMPLETE.md](PHASE_4.5_COMPLETE.md)
