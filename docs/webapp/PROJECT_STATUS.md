@@ -46,8 +46,10 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 4.9 Overview Screen                       | ✅      | Deck stats + start study button           |
 | 4.10 Audio Playback                       | ✅      | [sound:...] tag parsing + <audio>         |
 | 4.11 Keyboard Shortcuts (Browse & Editor) | ✅      | Ctrl+Enter, Ctrl+F, Delete, Escape        |
+| 4.12 APKG Import                          | 📋     | REST endpoint + upload UI                 |
+| 4.13 APKG Export                          | 📋     | REST endpoint + download trigger          |
 
-**Progress:** 11/11 tasks (100%) - **PHASE COMPLETE!**
+**Progress:** 11/13 tasks (85%)
 
 ---
 

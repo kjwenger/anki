@@ -43,6 +43,8 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [4.9 Overview Screen Before Study](#49-overview-screen-before-study-) ✅
   - [4.10 Audio Playback During Review](#410-audio-playback-during-review-) ✅
   - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor-) ✅
+  - [4.12 APKG Import](#412-apkg-import)
+  - [4.13 APKG Export](#413-apkg-export)
 - [Phase 5: Polish & Testing](#phase-5-polish--testing) — Testing, documentation, deployment
   - [5.1 API Testing](#51-api-testing-) ✅
   - [5.2 UI Testing](#52-ui-testing)
@@ -1137,6 +1139,48 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 **Acceptance Criteria** (All Met):
 
 - ✅ All listed shortcuts work without interfering with browser defaults
+
+---
+
+### 4.12 APKG Import
+
+**Priority**: P1\
+**Estimate**: 2 days\
+**Dependencies**: Media API (2.7 ✅), Navigation (3.9 ✅)\
+**Effort**: Medium — Rust core supports it, needs API plumbing and UI\
+**Source**: Gap analysis — cross-cutting "Import/Export"
+
+- [ ] Add `POST /api/v1/import/apkg` endpoint wrapping `import_anki_package`
+- [ ] Save uploaded multipart file to temporary storage for processing
+- [ ] Create `import/+page.svelte` with file drop zone and processing state
+- [ ] Display results summary (notes added/updated, media imported)
+
+**Acceptance Criteria**:
+
+- User can upload an `.apkg` file and have its contents merged into their collection
+- Media files from the package are correctly placed in the user's media folder
+- UI shows clear progress and success/error reporting
+
+---
+
+### 4.13 APKG Export
+
+**Priority**: P1\
+**Estimate**: 1 day\
+**Dependencies**: Navigation (3.9 ✅), Decks API (2.2 ✅)\
+**Effort**: Low — Rust core handles the packaging, needs endpoint and download trigger\
+**Source**: Gap analysis — cross-cutting "Import/Export"
+
+- [ ] Add `POST /api/v1/export/apkg` endpoint wrapping `export_anki_package`
+- [ ] Implement deck-specific and collection-wide export logic
+- [ ] Add "Export" action to Deck menu and Browser toolbar
+- [ ] Implement file download trigger in frontend
+
+**Acceptance Criteria**:
+
+- User can export a deck or the entire collection as a valid `.apkg` file
+- Export options (like including scheduling) are respected
+- Download starts automatically and contains the correct data/media
 
 ---
 
