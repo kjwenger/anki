@@ -144,7 +144,7 @@ Changes:
 ## Keyboard Shortcuts Summary
 
 | Key                       | Action       | When Available   |
-| ------------------------- | ------------ | ---------------- |
+|---------------------------|--------------|------------------|
 | `Space` / `Enter`         | Show answer  | Question showing |
 | `1`                       | Rate "Again" | Answer showing   |
 | `2`                       | Rate "Hard"  | Answer showing   |

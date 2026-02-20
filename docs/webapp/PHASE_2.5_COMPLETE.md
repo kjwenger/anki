@@ -328,8 +328,8 @@ Once the CONTRIBUTORS issue is resolved and server is running:
 
 ## Acceptance Criteria Status
 
-| Criteria                   | Status      | Notes                                      |
-| -------------------------- | ----------- | ------------------------------------------ |
+| Criteria                   | Status     | Notes                                      |
+|----------------------------|------------|--------------------------------------------|
 | Card CRUD operations work  | ✅ Complete | GET, PUT, DELETE implemented               |
 | State changes work         | ✅ Complete | Flag, suspend, unsuspend, bury all working |
 | Batch operations efficient | ✅ Complete | Batch get and update use single queries    |

@@ -266,7 +266,7 @@ pub fn openapi_spec() -> Value {
                         }
                     },
                     "responses": {
-                        "200": {
+                        "201": {
                             "description": "Deck created",
                             "content": {
                                 "application/json": {
@@ -374,7 +374,7 @@ pub fn openapi_spec() -> Value {
                         }
                     },
                     "responses": {
-                        "200": {
+                        "201": {
                             "description": "Note created",
                             "content": {
                                 "application/json": {
@@ -1465,7 +1465,7 @@ pub fn openapi_spec() -> Value {
                         }
                     },
                     "responses": {
-                        "200": {
+                        "201": {
                             "description": "Collection created",
                             "content": {
                                 "application/json": {

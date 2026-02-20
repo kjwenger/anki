@@ -56,7 +56,7 @@ To fully integrate the rich graph components, we would need to:
 2. **Option B - Simplified Graph API**:
    - Create simplified REST endpoints for individual graphs
    - `/api/v1/stats/graphs/reviews`, `/api/v1/stats/graphs/intervals`, etc.
-   - Easier to implement, less data overhead
+   - Easier to implement, fewer data overhead
 
 3. **Option C - Hybrid Approach**:
    - Keep current statistics dashboard

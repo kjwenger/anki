@@ -309,14 +309,14 @@ curl -X POST http://localhost:8080/api/v1/search/find-replace \
 ## Acceptance Criteria Status
 
 | Criteria                      | Status | Notes                   |
-| ----------------------------- | ------ | ----------------------- |
-| Search query syntax supported | ✅     | Full Anki syntax        |
-| Results returned efficiently  | ✅     | Direct ID arrays        |
-| Sorting options               | ✅     | Column + reverse        |
-| Find-replace works correctly  | ✅     | Regex + case options    |
-| Field-specific search         | ✅     | Optional field_name     |
-| Authentication required       | ✅     | All endpoints protected |
-| OpenAPI documentation         | ✅     | Complete with examples  |
+|-------------------------------|--------|-------------------------|
+| Search query syntax supported | ✅      | Full Anki syntax        |
+| Results returned efficiently  | ✅      | Direct ID arrays        |
+| Sorting options               | ✅      | Column + reverse        |
+| Find-replace works correctly  | ✅      | Regex + case options    |
+| Field-specific search         | ✅      | Optional field_name     |
+| Authentication required       | ✅      | All endpoints protected |
+| OpenAPI documentation         | ✅      | Complete with examples  |
 
 ---
 

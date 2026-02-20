@@ -9,7 +9,7 @@ Scope: Creating decks, adding notes/cards, and studying. Statistics are excluded
 ### What the Web App Has
 
 | Feature                         | API                         | UI                                                   |
-| ------------------------------- | --------------------------- | ---------------------------------------------------- |
+|---------------------------------|-----------------------------|------------------------------------------------------|
 | Create deck                     | `POST /api/v1/decks`        | Dialog with name input                               |
 | List decks (flat with counts)   | `GET /api/v1/decks`         | `DeckTree` component showing new/learn/review counts |
 | Rename deck                     | `PUT /api/v1/decks/{id}`    | Rename dialog                                        |
@@ -19,7 +19,7 @@ Scope: Creating decks, adding notes/cards, and studying. Statistics are excluded
 ### What the Desktop App Adds
 
 | Feature                         | Desktop Implementation                                                                                                            | Gap Severity |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|--------------|
 | **Drag-and-drop reparenting**   | `ReparentDecks` RPC; drag decks in tree to reorganize hierarchy                                                                   | Medium       |
 | **Deck options/config**         | `DeckOptionsPage.svelte` (SvelteKit); configures new/review limits, FSRS params, learning steps, leech thresholds, audio settings | **High**     |
 | **Filtered/custom study decks** | `GetOrCreateFilteredDeck`, `RebuildFilteredDeck`; build temporary decks from search queries with custom ordering                  | **High**     |
@@ -39,7 +39,7 @@ The webapp covers the basic CRUD loop for decks. The biggest gaps are **deck opt
 ### What the Web App Has
 
 | Feature                        | API                                                   | UI                                                 |
-| ------------------------------ | ----------------------------------------------------- | -------------------------------------------------- |
+|--------------------------------|-------------------------------------------------------|----------------------------------------------------|
 | Create note with fields + tags | `POST /api/v1/notes`                                  | `editor/+page.svelte` with deck/notetype selectors |
 | Select note type               | `GET /api/v1/notetypes`, `GET /api/v1/notetypes/{id}` | Dropdown listing available notetypes               |
 | Select target deck             | `GET /api/v1/decks`                                   | Dropdown listing all decks                         |
@@ -51,7 +51,7 @@ The webapp covers the basic CRUD loop for decks. The biggest gaps are **deck opt
 ### What the Desktop App Adds
 
 | Feature                        | Desktop Implementation                                                                                                                           | Gap Severity               |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
 | **Rich text editor (WYSIWYG)** | `NoteEditor.svelte` + `PlainTextInput.svelte` + rich text toolbar; bold, italic, underline, lists, colors, subscript/superscript, text alignment | **High**                   |
 | **HTML editing mode**          | Toggle between rich text and raw HTML per field                                                                                                  | Medium                     |
 | **Image support**              | Paste from clipboard, drag-and-drop, inline display; stored in media folder                                                                      | **High**                   |
@@ -79,7 +79,7 @@ The webapp's editor is essentially a **plain text area per field**. The desktop 
 ### What the Web App Has
 
 | Feature                            | API                                                       | UI                                        |
-| ---------------------------------- | --------------------------------------------------------- | ----------------------------------------- |
+|------------------------------------|-----------------------------------------------------------|-------------------------------------------|
 | Get next card (rendered HTML)      | `GET /api/v1/scheduler/decks/{id}/next`                   | `review/+page.svelte`                     |
 | Answer card (Again/Hard/Good/Easy) | `POST /api/v1/scheduler/decks/{id}/cards/{cardId}/answer` | `AnswerButtons.svelte` — 4 buttons        |
 | Show question → show answer flow   | N/A                                                       | "Show Answer" button + Space key          |
@@ -92,7 +92,7 @@ The webapp's editor is essentially a **plain text area per field**. The desktop 
 ### What the Desktop App Adds
 
 | Feature                          | Desktop Implementation                                                                                  | Gap Severity |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------ |
+|----------------------------------|---------------------------------------------------------------------------------------------------------|--------------|
 | **Overview screen**              | `overview.py`; shows deck name, description, counts, study button, config access before entering review | Medium       |
 | **Next interval preview**        | `DescribeNextStates` RPC; shows "1d", "4d", "1.2mo" on each answer button                               | **High**     |
 | **Time tracking**                | `milliseconds_taken` field in `CardAnswer`; tracks how long user spent on each card                     | Medium       |
@@ -123,7 +123,7 @@ The webapp has a functional basic review loop. The biggest gaps are: no **interv
 ## Cross-Cutting Gaps
 
 | Area                    | Gap                                                                                                                                                             | Severity                    |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
 | **Import/Export**       | Desktop supports `.apkg`, `.colpkg`, CSV import/export. Webapp has no import UI.                                                                                | **High**                    |
 | **Sync**                | Desktop syncs with AnkiWeb. Webapp is fully isolated.                                                                                                           | **High** (for multi-device) |
 | **Search/Browse**       | Webapp has `browse/+page.svelte` and search API but limited editing capabilities compared to desktop's full browser with inline editing, sort, bulk operations. | Medium                      |

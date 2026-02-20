@@ -227,7 +227,7 @@ ts/routes/webapp/+page.svelte (added Add Cards link)
 6. **Field Templates** - Auto-fill patterns or snippets
 7. **Keyboard Shortcuts** - Quick save (Ctrl+Enter), clear (Ctrl+K)
 8. **Cloze Helper** - Visual cloze deletion tool
-9. **Import from Text** - Paste formatted text to auto-populate
+9. **Import from Text** - Paste formatted text to autopopulate
 10. **Auto-save Drafts** - Save work-in-progress locally
 
 ## Testing Recommendations

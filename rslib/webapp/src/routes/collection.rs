@@ -108,10 +108,13 @@ pub async fn create_collection(
         payload.name.replace(' ', "_")
     );
 
-    Ok(Json(CreateCollectionResponse {
-        path,
-        message: format!("Collection '{}' is ready", payload.name),
-    }))
+    Ok((
+        axum::http::StatusCode::CREATED,
+        Json(CreateCollectionResponse {
+            path,
+            message: format!("Collection '{}' is ready", payload.name),
+        }),
+    ))
 }
 
 /// Delete a collection

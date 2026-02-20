@@ -1142,32 +1142,38 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 
 ## Phase 5: Polish & Testing
 
-### 5.1 API Testing
+### 5.1 API Testing ✅
 
 **Priority**: P0\
 **Estimate**: 3 days\
 **Dependencies**: Phase 4 complete
 
-- [ ] Write integration tests for auth
-- [ ] Write integration tests for collections
-- [ ] Write integration tests for scheduler
-- [ ] Write integration tests for CRUD operations
+- [x] Write integration tests for auth
+- [x] Write integration tests for collections
+- [x] Write integration tests for scheduler
+- [x] Write integration tests for CRUD operations
 - [ ] Write load tests
-- [ ] Test error handling
-- [ ] Test edge cases
+- [x] Test error handling
+- [x] Test edge cases
 
-**Files to Create**:
+**Files Created**:
 
-- `rslib/webapp/tests/integration/auth.rs`
-- `rslib/webapp/tests/integration/collections.rs`
-- `rslib/webapp/tests/integration/scheduler.rs`
-- `rslib/webapp/benches/api.rs`
+- `rslib/webapp/tests/auth_test.rs`
+- `rslib/webapp/tests/collection_test.rs`
+- `rslib/webapp/tests/deck_test.rs`
+- `rslib/webapp/tests/note_test.rs`
+- `rslib/webapp/tests/card_test.rs`
+- `rslib/webapp/tests/scheduler_test.rs`
+- `rslib/webapp/tests/search_test.rs`
+- `rslib/webapp/tests/stats_test.rs`
+- `rslib/webapp/tests/media_test.rs`
+- `test-webapp.sh`
 
 **Acceptance Criteria**:
 
 - 80%+ code coverage
 - All critical paths tested
-- Load tests pass
+- Load tests pass (deferred)
 - Edge cases handled
 
 ---

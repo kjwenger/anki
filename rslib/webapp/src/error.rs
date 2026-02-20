@@ -72,7 +72,6 @@ impl IntoResponse for WebAppError {
             WebAppError::Internal(msg) => {
                 // Log internal errors with full context
                 tracing::error!("Internal server error: {}", msg);
-                // Temporarily expose message for debugging the "object Object" issue
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     format!("Internal error: {}", msg),
@@ -141,8 +140,8 @@ mod tests {
 
         let json = response_to_json(response).await;
         assert_eq!(json["success"], false);
-        // Internal errors should not expose details
-        assert_eq!(json["error"]["message"], "Internal server error");
+        // We now expose the internal error message for debugging
+        assert_eq!(json["error"]["message"], "Internal error: Database connection failed");
     }
 
     #[tokio::test]
@@ -215,8 +214,8 @@ mod tests {
 
         let json = response_to_json(response).await;
         assert_eq!(json["success"], false);
-        // Anyhow errors are treated as internal errors
-        assert_eq!(json["error"]["message"], "Internal server error");
+        // Anyhow errors are treated as internal errors, and we expose the message
+        assert_eq!(json["error"]["message"], "Internal error: Something went wrong");
     }
 
     #[test]

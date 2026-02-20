@@ -16,7 +16,7 @@ Implemented support for audio playback and image rendering during card reviews, 
 - **`[sound:...]` Tag Parsing**: Implemented `processHtml()` to scan for Anki's standard sound tags and replace them with HTML5 `<audio>` elements.
 - **Authenticated Media Access**: Generated media URLs that include the current session's JWT token as a query parameter (`/api/v1/media/filename.mp3?token=...`).
 - **Image Rendering**: Updated `<img>` tag processing to ensure local media filenames are correctly prefixed with the API path and authenticated.
-- **Auto-play Support**: Integrated the `autoPlayAudio` user preference. If enabled, the first audio file on each side of the card will automatically play when displayed.
+- **Autoplay Support**: Integrated the `autoPlayAudio` user preference. If enabled, the first audio file on each side of the card will automatically play when displayed.
 - **Dark Mode Styling**: Added CSS filters to the `<audio>` player to ensure it remains legible and aesthetically consistent in dark mode.
 
 ### Settings Integration

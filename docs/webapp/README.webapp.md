@@ -606,9 +606,7 @@ curl -X POST http://localhost:8080/api/v1/notes \
   }'
 ```
 
-Full API documentation: [docs/webapp/api.yaml](docs/webapp/api.yaml) (OpenAPI spec)
-
-Or visit: `http://localhost:8080/api/docs` (Swagger UI)
+Full API documentation visit: `http://localhost:8080/api/docs` (Swagger UI)
 
 ## Development
 
@@ -800,7 +798,7 @@ ls -la /opt/anki-webapp
 sudo chown -R anki:anki /opt/anki-webapp
 ```
 
-### Can't Login
+### Can't Log In
 
 **Forgot password**:
 
@@ -933,11 +931,11 @@ This is a web application accessed via browser, not a native mobile app. It can 
 
 ### Can I contribute?
 
-Yes! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Yes! See [CONTRIBUTORS](../../CONTRIBUTORS) for guidelines.
 
 ## Support
 
-- **Documentation**: [docs/webapp/](docs/webapp/)
+- **Documentation**: [.](.)
 - **Issues**: https://github.com/ankitects/anki/issues
 - **Forum**: https://forums.ankiweb.net
 - **Discord**: https://discord.gg/ankiforums
@@ -946,4 +944,4 @@ Yes! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Anki Web App is licensed under the same terms as Anki: AGPL-3.0-or-later
 
-See [LICENSE](LICENSE) for details.
+See [LICENSE](../../LICENSE) for details.

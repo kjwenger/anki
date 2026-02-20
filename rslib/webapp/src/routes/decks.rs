@@ -96,11 +96,14 @@ pub async fn create_deck(
 
     drop(col);
 
-    Ok(Json(MessageResponse {
-        success: true,
-        message: format!("Deck '{}' created", request.name),
-        id: Some(deck_id),
-    }))
+    Ok((
+        axum::http::StatusCode::CREATED,
+        Json(MessageResponse {
+            success: true,
+            message: format!("Deck '{}' created", request.name),
+            id: Some(deck_id),
+        }),
+    ))
 }
 
 /// Get deck by ID

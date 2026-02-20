@@ -33,32 +33,32 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Status:** Closing functional gaps against the desktop app
 **Dependencies:** Phase 3 completion ✅
 
-| Task                                      | Status | Notes                                      |
-| ----------------------------------------- | ------ | ------------------------------------------ |
-| 4.1 Critical Bug Fixes                    | ✅     | Deck-scoped study fixed                    |
-| 4.2 Interval Preview on Answer Buttons    | ✅     | Human-readable intervals above buttons     |
-| 4.3 Time Tracking Per Card                | ✅     | millisecond_taken sent to revlog           |
-| 4.4 Flag / Suspend / Bury During Review   | ✅     | "More" menu in reviewer with card actions |
-| 4.5 Cloze Deletion Toolbar Helper         | ✅     | Keyboard shortcut + button          |
-| 4.6 Sticky Fields in Editor               | ✅     | Pin icon + persistence        |
-| 4.7 Duplicate Detection                    | ✅     | NoteFieldsCheck RPC integration |
-| 4.8 Deck Collapse State                   | ✅     | Persist collapse via PUT  |
-| 4.9 Overview Screen                       | ✅     | Deck stats + start study button |
-| 4.10 Audio Playback                       | ✅     | [sound:...] tag parsing + <audio> |
-| 4.11 Keyboard Shortcuts (Browse & Editor) | ✅     | Ctrl+Enter, Ctrl+F, Delete, Escape |
+| Task                                      | Status | Notes                                     |
+|-------------------------------------------|--------|-------------------------------------------|
+| 4.1 Critical Bug Fixes                    | ✅      | Deck-scoped study fixed                   |
+| 4.2 Interval Preview on Answer Buttons    | ✅      | Human-readable intervals above buttons    |
+| 4.3 Time Tracking Per Card                | ✅      | millisecond_taken sent to revlog          |
+| 4.4 Flag / Suspend / Bury During Review   | ✅      | "More" menu in reviewer with card actions |
+| 4.5 Cloze Deletion Toolbar Helper         | ✅      | Keyboard shortcut + button                |
+| 4.6 Sticky Fields in Editor               | ✅      | Pin icon + persistence                    |
+| 4.7 Duplicate Detection                   | ✅      | NoteFieldsCheck RPC integration           |
+| 4.8 Deck Collapse State                   | ✅      | Persist collapse via PUT                  |
+| 4.9 Overview Screen                       | ✅      | Deck stats + start study button           |
+| 4.10 Audio Playback                       | ✅      | [sound:...] tag parsing + <audio>         |
+| 4.11 Keyboard Shortcuts (Browse & Editor) | ✅      | Ctrl+Enter, Ctrl+F, Delete, Escape        |
 
 **Progress:** 11/11 tasks (100%) - **PHASE COMPLETE!**
 
 ---
 
-### 📋 Phase 5: Polish & Testing (NEXT)
+### 📋 Phase 5: Polish & Testing (IN PROGRESS)
 
-**Status:** Ready to begin!
+**Status:** Testing suite implemented
 **Dependencies:** Phase 4 completion ✅
 
 | Task                         | Status | Estimate |
-| ---------------------------- | ------ | -------- |
-| 5.1 API Testing              | 📋     | 3 days   |
+|------------------------------|--------|----------|
+| 5.1 API Testing              | ✅     | 3 days   |
 | 5.2 UI Testing               | 📋     | 3 days   |
 | 5.3 Performance Optimization | 📋     | 2 days   |
 | 5.4 Security Audit           | 📋     | 2 days   |
@@ -67,7 +67,25 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 ---
 
-## Latest Completion: Phase 4 - Desktop Parity Quick Wins ✅
+## Latest Completion: Phase 5.1 - API Testing ✅
+
+**Completed:** 2026-02-20
+**Summary:** Implemented a comprehensive integration test suite for the REST API backend, covering all major functional areas.
+
+### Features Delivered
+
+1. **Integration Test Suite**
+   - 10 new integration test files in `rslib/webapp/tests/`.
+   - Full coverage of Auth, Collections, Decks, Notes, Cards, Scheduler, Search, Stats, and Media.
+   - Robust test infrastructure using `reqwest` and ephemeral SQLite databases.
+
+2. **Automated Testing Script**
+   - Created `test-webapp.sh` to run the entire test suite (Rust unit/integration, Vitest, and svelte-check).
+
+3. **Bug Fixes & Refinement**
+   - Improved API error reporting to expose internal errors for easier debugging.
+   - Fixed `404 Not Found` handling for card and deck retrieval.
+   - Standardized authentication flow validation in tests.
 
 **Completed:** 2026-02-18
 **Summary:** Successfully closed critical functional gaps against the Anki desktop application, significantly improving user productivity and the overall study experience.
@@ -128,16 +146,16 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 ## Success Criteria Progress
 
 | Criteria                                 | Status | Notes                            |
-| ---------------------------------------- | ------ | -------------------------------- |
-| Users can study cards via web browser    | ✅     | Complete with audio & actions    |
-| Users can create cards via web browser   | ✅     | Complete with sticky/duplicates  |
-| Users can browse/search cards            | ✅     | Complete with hierarchy & delete |
-| API fully functional for core operations | ✅     | 100% complete (48 endpoints)     |
-| Performance comparable to desktop app    | ⏳     | To be measured in Phase 5        |
-| Security audit passes                    | ⏳     | Pending Phase 5                  |
+|------------------------------------------|--------|----------------------------------|
+| Users can study cards via web browser    | ✅      | Complete with audio & actions    |
+| Users can create cards via web browser   | ✅      | Complete with sticky/duplicates  |
+| Users can browse/search cards            | ✅      | Complete with hierarchy & delete |
+| API fully functional for core operations | ✅      | 100% complete (48 endpoints)     |
+| Performance comparable to desktop app    | ⏳      | To be measured in Phase 5        |
+| Security audit passes                    | ⏳      | Pending Phase 5                  |
 | Documentation complete                   | 🔄     | Ongoing (OpenAPI updated)        |
-| Can deploy on standard VPS               | ⏳     | Pending Phase 5                  |
-| Existing collections compatible          | ✅     | Uses standard Anki backend       |
+| Can deploy on standard VPS               | ⏳      | Pending Phase 5                  |
+| Existing collections compatible          | ✅      | Uses standard Anki backend       |
 
 **Overall Progress:** Approximately 92% complete (Phases 1-4 COMPLETE, Phase 5 remaining!)
 

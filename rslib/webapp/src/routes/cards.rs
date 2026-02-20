@@ -97,7 +97,13 @@ pub async fn get_card(
 
     let card = col
         .get_card(anki_proto::cards::CardId { cid: card_id })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
+        .map_err(|e: anki::error::AnkiError| {
+            if e.to_string().contains("NotFound") {
+                WebAppError::not_found("Card not found")
+            } else {
+                WebAppError::internal(&e.to_string())
+            }
+        })?;
 
     let info = card_to_info(&card);
 
@@ -163,19 +169,33 @@ pub async fn delete_card(
 
     let mut col = backend.lock().unwrap();
 
+    // Check if card exists
+    if col.get_card(anki_proto::cards::CardId { cid: card_id }).is_err() {
+        drop(col);
+        return Err(WebAppError::not_found("Card not found"));
+    }
+
     // Remove the card
-    let _ = col
+    let result = col
         .remove_cards(anki_proto::cards::RemoveCardsRequest {
             card_ids: vec![card_id],
-        })
-        .map_err(|e: anki::error::AnkiError| WebAppError::internal(&e.to_string()))?;
-
-    drop(col);
-
-    Ok(Json(MessageResponse {
-        success: true,
-        message: "Card deleted successfully".to_string(),
-    }))
+        });
+    
+    match result {
+        Ok(_) => {
+            drop(col);
+            Ok(Json(MessageResponse {
+                success: true,
+                message: "Card deleted successfully".to_string(),
+            }))
+        }
+        Err(e) => {
+            let err_msg = e.to_string();
+            tracing::error!("Failed to remove card {}: {}", card_id, err_msg);
+            drop(col);
+            Err(WebAppError::internal(&err_msg))
+        }
+    }
 }
 
 /// Flag a card

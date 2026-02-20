@@ -6,8 +6,8 @@ AnkiWeb (ankiweb.net) is primarily a **sync hub and thin browser client**, not a
 application. Its browser experience is intentionally minimal — it mainly exists as a sync backend
 for the desktop and mobile apps.
 
-| Feature                             | AnkiWeb                    |
-| ----------------------------------- | -------------------------- |
+| Feature                             | AnkiWeb                   |
+|-------------------------------------|---------------------------|
 | Cloud sync (desktop ↔ mobile ↔ web) | ✅ Core feature            |
 | Basic card review in browser        | ✅ Minimal UI              |
 | Shared decks repository             | ✅ Large community library |
@@ -22,8 +22,8 @@ for the desktop and mobile apps.
 
 ## What Our Webapp Provides or Could Provide
 
-| Feature                              | Status         |
-| ------------------------------------ | -------------- |
+| Feature                              | Status        |
+|--------------------------------------|---------------|
 | Card review with keyboard shortcuts  | ✅ Implemented |
 | Deck browser & management            | ✅ Implemented |
 | Card editor (plain text)             | ✅ Implemented |

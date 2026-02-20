@@ -25,7 +25,7 @@ Phase 3.8 implements a settings interface for the Anki web app, allowing users t
 
 3. **Study Interface**
    - Show answer time (checkbox)
-   - Auto-play audio (checkbox)
+   - Autoplay audio (checkbox)
    - Enable keyboard shortcuts (checkbox)
 
 ### Dashboard Integration
@@ -52,7 +52,7 @@ Changes:
 - Uses browser localStorage for settings storage
 - Key: `anki-webapp-settings`
 - JSON serialization of settings object
-- Auto-loads on component mount
+- Autoloads on component mount
 
 ### Theme System
 
@@ -112,7 +112,7 @@ ts/routes/webapp/+page.svelte (added settings navigation)
 3. **Limited Theme Support** - Dark theme CSS not fully implemented
 4. **No Collection-Specific Settings** - All settings are global
 5. **No Advanced Scheduling** - Only basic limits configurable
-6. **No Import/Export** - Can't backup/restore settings
+6. **No Import/Export** - Can't back up/restore settings
 7. **No Settings Search** - Linear list only
 
 ## Future Enhancements

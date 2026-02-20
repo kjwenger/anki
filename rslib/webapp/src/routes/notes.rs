@@ -169,14 +169,17 @@ pub async fn create_note(
 
     drop(col);
 
-    Ok(Json(CreateNoteResponse {
-        success: true,
-        note_id,
-        message: format!(
-            "Note created successfully ({} cards generated)",
-            output.output
-        ),
-    }))
+    Ok((
+        axum::http::StatusCode::CREATED,
+        Json(CreateNoteResponse {
+            success: true,
+            note_id,
+            message: format!(
+                "Note created successfully ({} cards generated)",
+                output.output
+            ),
+        }),
+    ))
 }
 
 /// Update a note
