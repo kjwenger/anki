@@ -39,12 +39,12 @@ The reviewer now triggers an auxiliary fetch for intervals immediately after a c
 
 ## Acceptance Criteria Status
 
-| Criteria | Status | Notes |
-|----------|--------|-------|
-| Deck Filtering | ✅ | Study sessions now scoped correctly |
-| Interval Descriptions | ✅ | Buttons show next-review timing |
-| API Accuracy | ✅ | OpenAPI docs updated with next-states |
-| Smooth UI | ✅ | Skeleton states prevent layout jump |
+| Criteria              | Status | Notes                                 |
+|-----------------------|--------|---------------------------------------|
+| Deck Filtering        | ✅      | Study sessions now scoped correctly   |
+| Interval Descriptions | ✅      | Buttons show next-review timing       |
+| API Accuracy          | ✅      | OpenAPI docs updated with next-states |
+| Smooth UI             | ✅      | Skeleton states prevent layout jump   |
 
 ---
 

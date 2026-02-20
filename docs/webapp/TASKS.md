@@ -45,7 +45,7 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor-) ✅
   - [4.12 APKG Import](#412-apkg-import-) ✅
   - [4.13 APKG Export](#413-apkg-export)
-  - [4.14 PWA Support](#414-pwa-support) ✅
+  - [4.14 PWA Support](#414-pwa-support-) ✅
 - [Phase 5: Polish & Testing](#phase-5-polish--testing) — Testing, documentation, deployment
   - [5.1 API Testing](#51-api-testing-) ✅
   - [5.2 UI Testing](#52-ui-testing)
