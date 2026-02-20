@@ -1355,7 +1355,7 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 
 - [ ] Create binary release scripts
 - [ ] Create Docker image
-- [ ] Create docker-compose setup
+- [ ] Create docker compose setup
 - [ ] Create systemd service file
 - [ ] Add health check endpoint
 - [ ] Add version endpoint
@@ -1372,7 +1372,7 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 **Acceptance Criteria**:
 
 - Docker image builds
-- docker-compose works out of box
+- docker compose works out of box
 - Service auto-starts on boot
 - Health checks work
 

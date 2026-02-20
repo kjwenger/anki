@@ -1,67 +1,94 @@
-# Multi-stage Dockerfile for production deployment
-# This builds both the API and frontend in a single container with nginx
+# Deployment Dockerfile for Anki Web App
+# This expects pre-built artifacts from ./build-webapp.sh --release
 
-# Stage 1: Build the Rust API
-FROM rust:1.75 AS api-builder
+# Production runtime using Debian for better compatibility with glibc-linked binaries
+FROM debian:bookworm-slim
 
-WORKDIR /build
+# Install nginx and required runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    ca-certificates \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy only dependency files first for better caching
-COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
-COPY rslib/Cargo.toml rslib/
-COPY build/Cargo.toml build/
-COPY proto/ proto/
+# Copy the built API binary (built on host)
+COPY target/release/anki-webapp /usr/local/bin/
 
-# Create dummy source files to build dependencies
-RUN mkdir -p rslib/src build/src && \
-    echo "fn main() {}" > rslib/src/main.rs && \
-    echo "fn main() {}" > build/src/main.rs
-
-# Build dependencies
-RUN cargo build --release --bin anki-api || true
-
-# Now copy the real source code
-COPY rslib/ rslib/
-COPY build/ build/
-
-# Build the actual API
-RUN cargo build --release --bin anki-api
-
-# Stage 2: Build the Svelte frontend
-FROM node:20 AS frontend-builder
-
-WORKDIR /build
-
-# Copy package files
-COPY package.json yarn.lock ./
-
-# Install dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy source code
-COPY ts/ ts/
-COPY tsconfig.json vite.config.ts ./
-
-# Build the frontend
-RUN yarn build
-
-# Stage 3: Production runtime with nginx
-FROM nginx:alpine
-
-# Install required runtime dependencies
-RUN apk add --no-cache ca-certificates
-
-# Copy the built API binary
-COPY --from=api-builder /build/target/release/anki-api /usr/local/bin/
-
-# Copy the built frontend
-COPY --from=frontend-builder /build/dist /usr/share/nginx/html
+# Copy the built frontend assets (built on host)
+COPY out/sveltekit /var/www/html
 
 # Copy nginx configuration
-COPY docs/webapp/nginx.conf /etc/nginx/nginx.conf
+# We use a full nginx.conf structure since we're replacing the main config
+COPY --chmod=644 <<'EOF' /etc/nginx/nginx.conf
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
 
-# Create data directory for SQLite databases
-RUN mkdir -p /data && chmod 777 /data
+events {
+    worker_connections 768;
+}
+
+http {
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    # Ensure .mjs files are served with the correct MIME type
+    types {
+        application/javascript mjs;
+    }
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript 
+               application/x-javascript application/xml+rss 
+               application/json application/javascript;
+
+    server {
+        listen 80;
+        server_name localhost;
+        root /var/www/html;
+        index index.html;
+
+        # Serve static files
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        # Proxy API requests to the backend
+        location /api/ {
+            proxy_pass http://127.0.0.1:8080;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Health check
+        location /health {
+            access_log off;
+            return 200 'OK';
+        }
+    }
+}
+EOF
+
+# Create data directory for user collections
+RUN mkdir -p /data && chown www-data:www-data /data && chmod 777 /data
 
 # Expose ports
 EXPOSE 80 8080
@@ -70,7 +97,13 @@ EXPOSE 80 8080
 COPY --chmod=755 <<'EOF' /start.sh
 #!/bin/sh
 # Start the API in the background
-RUST_LOG=info /usr/local/bin/anki-api &
+# We bind the API to 0.0.0.0 so it's accessible from the host mapping
+ANKI_WEBAPP_HOST=0.0.0.0 \
+ANKI_WEBAPP_PORT=8080 \
+ANKI_WEBAPP_DATA_DIR=/data \
+RUST_LOG=info \
+/usr/local/bin/anki-webapp &
+
 # Start nginx in the foreground
 nginx -g 'daemon off;'
 EOF

@@ -38,6 +38,12 @@ const viteConfig = defineViteConfig({
             ],
         },
         proxy: {
+            "/api": {
+                target: "http://127.0.0.1:8080",
+                changeOrigin: true,
+                autoRewrite: true,
+                configure,
+            },
             "/_anki": {
                 target: "http://127.0.0.1:40000",
                 changeOrigin: true,

@@ -31,7 +31,7 @@ From the repository root directory:
 
 ```bash
 cd docs/webapp
-docker-compose up -d
+docker compose up -d
 ```
 
 This will:
@@ -200,18 +200,18 @@ services:
 ### Check Service Status
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ### View Logs
 
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f api
-docker-compose logs -f frontend
+docker compose logs -f api
+docker compose logs -f frontend
 ```
 
 ### Health Checks
@@ -228,19 +228,19 @@ curl http://localhost
 
 ### Services Won't Start
 
-1. Check logs: `docker-compose logs`
+1. Check logs: `docker compose logs`
 2. Verify ports aren't in use: `netstat -tuln | grep -E '(80|8080)'`
 3. Check disk space: `df -h`
 
 ### API Returns 500 Errors
 
-1. Check API logs: `docker-compose logs api`
+1. Check API logs: `docker compose logs api`
 2. Verify database permissions
 3. Check JWT_SECRET is set
 
 ### Frontend Shows Blank Page
 
-1. Check nginx logs: `docker-compose logs frontend`
+1. Check nginx logs: `docker compose logs frontend`
 2. Verify API is running: `curl http://localhost:8080/health`
 3. Check browser console for errors
 
@@ -254,13 +254,13 @@ curl http://localhost
 
 ```bash
 # Stop services (keeps data)
-docker-compose stop
+docker compose stop
 
 # Stop and remove containers (keeps data)
-docker-compose down
+docker compose down
 
 # Stop, remove containers, and delete data
-docker-compose down -v
+docker compose down -v
 ```
 
 ## Updating
@@ -270,11 +270,11 @@ docker-compose down -v
 git pull
 
 # Rebuild images
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # Restart services
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ## Resource Requirements

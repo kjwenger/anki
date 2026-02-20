@@ -2,26 +2,27 @@ version: '3.8'
 
 services:
   webapp:
+    image: anki/webapp:latest
     build:
-      context: ../..
+      context: ../../
       dockerfile: docs/webapp/Dockerfile
     container_name: anki-webapp
     ports:
-      - "80:80"      # Nginx/frontend
+      - "5173:80"    # Nginx/frontend
       - "8080:8080"  # API
     environment:
       - RUST_LOG=info
-      - DATABASE_PATH=/data
-      - JWT_SECRET=${JWT_SECRET:-change-this-secret-in-production}
+      - ANKI_WEBAPP_DATA_DIR=/data
+      - ANKI_WEBAPP_JWT_SECRET=${ANKI_WEBAPP_JWT_SECRET:-change-this-secret-in-production}
     volumes:
       - anki-data:/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
 volumes:
   anki-data:
-    driver: local
+    driver: local 

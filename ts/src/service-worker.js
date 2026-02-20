@@ -17,6 +17,8 @@ self.addEventListener('install', (event) => {
   }
 
   event.waitUntil(addFilesToCache());
+  // Force the waiting service worker to become the active service worker.
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -27,32 +29,44 @@ self.addEventListener('activate', (event) => {
   }
 
   event.waitUntil(deleteOldCaches());
+  // Become the active service worker for all clients of this scope.
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  if (event.request.method !== 'GET' || event.request.headers.has('range')) return;
+
+  const url = new URL(event.request.url);
+
+  // Skip non-http requests and API calls
+  if (!url.protocol.startsWith('http') || url.pathname.startsWith('/api/')) return;
 
   async function respond() {
-    const url = new URL(event.request.url);
     const cache = await caches.open(CACHE);
 
-    // `build`/`files` can always be served from the cache
+    // 1. For pre-cached assets, try cache first
     if (ASSETS.includes(url.pathname)) {
-      const response = await cache.match(url.pathname);
-      if (response) return response;
+      const cachedResponse = await cache.match(event.request);
+      if (cachedResponse) return cachedResponse;
     }
 
-    // for everything else, try the network first, but fall back to the cache if we're offline
+    // 2. Try the network
     try {
       const response = await fetch(event.request);
 
-      if (response.status === 200) {
+      // Cache successful same-origin responses
+      if (response.status === 200 && response.type === 'basic') {
         cache.put(event.request, response.clone());
       }
 
       return response;
-    } catch {
-      return cache.match(event.request);
+    } catch (err) {
+      // 3. If the network fails, fall back to the cache
+      const cachedResponse = await cache.match(event.request);
+      if (cachedResponse) return cachedResponse;
+
+      // If we have nothing, throw the original error
+      throw err;
     }
   }
 
