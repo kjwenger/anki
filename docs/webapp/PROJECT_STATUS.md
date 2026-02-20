@@ -23,10 +23,23 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 **Duration:** Completed
 **Status:** 9 of 9 tasks complete (100%)
 
+**Detailed Reports:**
+- [PHASE_2.5_COMPLETE.md](PHASE_2.5_COMPLETE.md)
+- [PHASE_2.6_COMPLETE.md](PHASE_2.6_COMPLETE.md)
+
 ### ✅ Phase 3: UI Components (COMPLETE)
 
 **Duration:** Completed
 **Status:** 9 of 9 tasks complete (100%)
+
+**Detailed Reports:**
+- [PHASE_3.4_COMPLETE.md](PHASE_3.4_COMPLETE.md)
+- [PHASE_3.5_COMPLETE.md](PHASE_3.5_COMPLETE.md)
+- [PHASE_3.6_COMPLETE.md](PHASE_3.6_COMPLETE.md)
+- [PHASE_3.7_COMPLETE.md](PHASE_3.7_COMPLETE.md)
+- [PHASE_3.8_COMPLETE.md](PHASE_3.8_COMPLETE.md)
+- [PHASE_3.9_COMPLETE.md](PHASE_3.9_COMPLETE.md)
+- [PHASE_3.10_COMPLETE.md](PHASE_3.10_COMPLETE.md)
 
 ### ✅ Phase 4: Desktop Parity — Quick Wins (COMPLETE!)
 
@@ -46,10 +59,22 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 4.9 Overview Screen                       | ✅      | Deck stats + start study button           |
 | 4.10 Audio Playback                       | ✅      | [sound:...] tag parsing + <audio>         |
 | 4.11 Keyboard Shortcuts (Browse & Editor) | ✅      | Ctrl+Enter, Ctrl+F, Delete, Escape        |
-| 4.12 APKG Import                          | 📋     | REST endpoint + upload UI                 |
+| 4.12 APKG Import                          | ✅      | REST endpoint + upload UI                 |
 | 4.13 APKG Export                          | 📋     | REST endpoint + download trigger          |
 
-**Progress:** 11/13 tasks (85%)
+**Progress:** 12/13 tasks (92%)
+
+**Detailed Reports:**
+- [PHASE_4.3_COMPLETE.md](PHASE_4.3_COMPLETE.md)
+- [PHASE_4.4_COMPLETE.md](PHASE_4.4_COMPLETE.md)
+- [PHASE_4.5_COMPLETE.md](PHASE_4.5_COMPLETE.md)
+- [PHASE_4.6_COMPLETE.md](PHASE_4.6_COMPLETE.md)
+- [PHASE_4.7_COMPLETE.md](PHASE_4.7_COMPLETE.md)
+- [PHASE_4.8_COMPLETE.md](PHASE_4.8_COMPLETE.md)
+- [PHASE_4.9_COMPLETE.md](PHASE_4.9_COMPLETE.md)
+- [PHASE_4.10_COMPLETE.md](PHASE_4.10_COMPLETE.md)
+- [PHASE_4.11_COMPLETE.md](PHASE_4.11_COMPLETE.md)
+- [PHASE_4.12_COMPLETE.md](PHASE_4.12_COMPLETE.md)
 
 ---
 
@@ -66,6 +91,29 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 5.4 Security Audit           | 📋     | 2 days   |
 | 5.5 Documentation            | 📋     | 3 days   |
 | 5.6 Deployment Packaging     | 📋     | 3 days   |
+
+---
+
+## Latest Completion: Phase 4.12 - APKG Import ✅
+
+**Completed:** 2026-02-20
+**Summary:** Implemented the ability to import Anki packages (.apkg and .colpkg) directly through the web interface, closing a major functional gap with the desktop application.
+
+### Features Delivered
+
+1. **Backend Integration**
+   - New `POST /api/v1/import/apkg` endpoint.
+   - Robust multipart file handling using `tempfile` for secure processing.
+   - Direct integration with Anki's Rust core `ImportExportService`.
+
+2. **Frontend UI**
+   - Dedicated `/webapp/import` route.
+   - Modern drag-and-drop file upload zone with accessibility (ARIA) support.
+   - Real-time progress feedback and detailed import result summaries.
+
+3. **Verification**
+   - Comprehensive integration tests in `rslib/webapp/tests/import_test.rs`.
+   - Full theme synchronization (Light/Dark mode) and project-standard styling.
 
 ---
 
@@ -113,15 +161,6 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 4. **Infrastructure Improvements**
    - Authenticated media access via token query parameters.
    - New API endpoints for deck metadata and field validation.
-
-### Documentation
-- ✅ PHASE_4.5_COMPLETE.md
-- ✅ PHASE_4.6_COMPLETE.md
-- ✅ PHASE_4.7_COMPLETE.md
-- ✅ PHASE_4.8_COMPLETE.md
-- ✅ PHASE_4.9_COMPLETE.md
-- ✅ PHASE_4.10_COMPLETE.md
-- ✅ PHASE_4.11_COMPLETE.md
 
 ---
 
