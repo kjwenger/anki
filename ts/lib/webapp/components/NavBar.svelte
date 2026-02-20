@@ -132,12 +132,6 @@
                             >
                                 Settings
                             </button>
-                            <button
-                                class="block w-full px-4 py-3 bg-transparent border-none text-left cursor-pointer text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                on:click={() => navigateTo("/webapp/collections")}
-                            >
-                                Collections
-                            </button>
                             <div class="h-px bg-gray-200 dark:bg-gray-600 my-1"></div>
                             <button
                                 class="block w-full px-4 py-3 bg-transparent border-none text-left cursor-pointer text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"

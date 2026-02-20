@@ -6,10 +6,6 @@
         goto("/webapp/auth/profile");
     }
 
-    function handleCollections() {
-        goto("/webapp/collections");
-    }
-
     function handleDecks() {
         goto("/webapp/decks");
     }
@@ -57,25 +53,6 @@
 
     <main class="max-w-7xl mx-auto p-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div
-                class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group"
-            >
-                <h2
-                    class="m-0 mb-2 text-xl text-gray-800 dark:text-gray-100 font-semibold"
-                >
-                    Collections
-                </h2>
-                <p class="m-0 mb-4 text-gray-500 dark:text-gray-400 text-sm">
-                    Manage your flashcard collections
-                </p>
-                <button
-                    class="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200"
-                    on:click={handleCollections}
-                >
-                    View Collections
-                </button>
-            </div>
-
             <div
                 class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer group"
             >

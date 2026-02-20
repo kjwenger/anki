@@ -2,7 +2,6 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     import { api } from "$lib/webapp/api/client";
-    import { currentCollection } from "$lib/webapp/stores/collection";
     import DeckTree from "$lib/webapp/components/DeckTree.svelte";
     import DeckDialog from "$lib/webapp/components/DeckDialog.svelte";
     import type { DeckNode } from "$lib/webapp/api/client";
@@ -15,13 +14,7 @@
     let deleteConfirmation: { id: number; name: string } | null = null;
     let renameTarget: { id: number; name: string } | null = null;
 
-    $: collection = $currentCollection;
-
     onMount(() => {
-        if (!collection) {
-            goto("/webapp/collections");
-            return;
-        }
         loadDecks();
     });
 
@@ -30,7 +23,6 @@
         error = "";
 
         console.log("=== Loading Decks ===");
-        console.log("Collection:", collection);
 
         try {
             console.log("Calling api.getDecks...");
@@ -146,39 +138,20 @@
     function goToDashboard() {
         goto("/webapp");
     }
-
-    function goToCollections() {
-        goto("/webapp/collections");
-    }
 </script>
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
     <header class="bg-white dark:bg-gray-800 shadow-md px-8 py-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">
-                    Decks
-                </h1>
-                {#if collection}
-                    <span
-                        class="bg-indigo-500 text-white px-4 py-1.5 rounded-full text-sm font-medium"
-                    >
-                        {collection.name}
-                    </span>
-                {/if}
-            </div>
+            <h1 class="m-0 text-3xl text-gray-800 dark:text-gray-100 font-bold">
+                Decks
+            </h1>
             <div class="flex gap-4">
                 <button
                     class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-600"
                     on:click={goToDashboard}
                 >
                     &larr; Dashboard
-                </button>
-                <button
-                    class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    on:click={goToCollections}
-                >
-                    Switch Collection
                 </button>
                 <button
                     class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200"
@@ -200,32 +173,15 @@
             </div>
         {/if}
 
-        {#if !collection}
-            <div
-                class="bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-lg text-amber-800 dark:text-amber-300 p-4 mb-6"
-                role="alert"
-            >
-                <p class="m-0 mb-4">
-                    No collection selected. Please select a collection first.
-                </p>
-                <button
-                    class="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200"
-                    on:click={goToCollections}
-                >
-                    Go to Collections
-                </button>
-            </div>
-        {:else}
-            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
-                <DeckTree
-                    {decks}
-                    {loading}
-                    on:study={handleStudy}
-                    on:rename={handleRenameRequest}
-                    on:delete={handleDeleteRequest}
-                />
-            </div>
-        {/if}
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+            <DeckTree
+                {decks}
+                {loading}
+                on:study={handleStudy}
+                on:rename={handleRenameRequest}
+                on:delete={handleDeleteRequest}
+            />
+        </div>
     </main>
 </div>
 
@@ -247,8 +203,10 @@
         <div
             class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8 max-w-md w-[90%]"
             on:click|stopPropagation
+            on:keydown|stopPropagation
             role="dialog"
             aria-modal="true"
+            tabindex="-1"
         >
             <h2 class="m-0 mb-4 text-xl text-gray-800 dark:text-gray-100 font-semibold">
                 Delete Deck

@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, tick } from "svelte";
 
     export let show = false;
 
     let name = "";
     let error = "";
     let loading = false;
+    let inputEl: HTMLInputElement;
 
     const dispatch = createEventDispatcher();
 
@@ -42,6 +43,7 @@
         name = "";
         error = "";
         loading = false;
+        tick().then(() => inputEl?.focus());
     }
 </script>
 
@@ -54,8 +56,10 @@
         <div
             class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-[90%] max-w-lg max-h-[90vh] overflow-auto"
             on:click|stopPropagation
+            on:keydown|stopPropagation
             role="dialog"
             aria-modal="true"
+            tabindex="-1"
         >
             <div
                 class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700"
@@ -96,7 +100,7 @@
                         on:keydown={handleKeyPress}
                         placeholder="Enter collection name"
                         disabled={loading}
-                        autofocus
+                        bind:this={inputEl}
                         class="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-base transition-colors duration-200 focus:outline-hidden focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed bg-white dark:bg-gray-700 dark:text-gray-100"
                     />
                 </div>
