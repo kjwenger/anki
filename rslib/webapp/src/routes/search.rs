@@ -66,28 +66,24 @@ pub async fn search_cards(
     Extension(auth_user): Extension<AuthUser>,
     Json(request): Json<SearchCardsRequest>,
 ) -> Result<impl IntoResponse> {
-    eprintln!("=== SEARCH_CARDS REQUEST ===");
-    eprintln!("User: {:?}", auth_user.user_id);
-    eprintln!("Request: {:?}", request);
-    
+    tracing::debug!(user_id = auth_user.user_id, query = %request.query, "search_cards request");
+
     let backend = state
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
-    eprintln!("Got collection lock");
 
     // Build sort mode - use NoOrder for simplicity
     let sort_mode = anki::search::SortMode::NoOrder;
-    eprintln!("Searching with query: '{}' and sort_mode: {:?}", request.query, sort_mode);
 
     // Search for cards
     let card_ids = col
         .search_cards(&request.query, sort_mode);
-    
+
     match card_ids {
         Ok(ids) => {
-            eprintln!("Search succeeded, found {} cards", ids.len());
+            tracing::debug!(count = ids.len(), "search_cards succeeded");
             let count = ids.len();
             let ids: Vec<i64> = ids.into_iter().map(|cid| cid.0).collect();
             drop(col);
@@ -109,28 +105,24 @@ pub async fn search_notes(
     Extension(auth_user): Extension<AuthUser>,
     Json(request): Json<SearchNotesRequest>,
 ) -> Result<impl IntoResponse> {
-    eprintln!("=== SEARCH_NOTES REQUEST ===");
-    eprintln!("User: {:?}", auth_user.user_id);
-    eprintln!("Request: {:?}", request);
-    
+    tracing::debug!(user_id = auth_user.user_id, query = %request.query, "search_notes request");
+
     let backend = state
         .backend_manager
         .get_or_create_backend(auth_user.user_id, &auth_user.username)?;
 
     let mut col = backend.lock().unwrap();
-    eprintln!("Got collection lock");
 
     // Build sort mode - use NoOrder for simplicity
     let sort_mode = anki::search::SortMode::NoOrder;
-    eprintln!("Searching with query: '{}' and sort_mode: {:?}", request.query, sort_mode);
 
     // Search for notes
     let note_ids = col
         .search_notes(&request.query, sort_mode);
-    
+
     match note_ids {
         Ok(ids) => {
-            eprintln!("Search succeeded, found {} notes", ids.len());
+            tracing::debug!(count = ids.len(), "search_notes succeeded");
             let count = ids.len();
             let ids: Vec<i64> = ids.into_iter().map(|nid| nid.0).collect();
             drop(col);

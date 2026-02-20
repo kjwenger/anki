@@ -58,7 +58,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 
 | Task                         | Status | Estimate |
 |------------------------------|--------|----------|
-| 5.1 API Testing              | ✅     | 3 days   |
+| 5.1 API Testing              | ✅      | 3 days   |
 | 5.2 UI Testing               | 📋     | 3 days   |
 | 5.3 Performance Optimization | 📋     | 2 days   |
 | 5.4 Security Audit           | 📋     | 2 days   |
@@ -82,7 +82,7 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 2. **Automated Testing Script**
    - Created `test-webapp.sh` to run the entire test suite (Rust unit/integration, Vitest, and svelte-check).
 
-3. **Bug Fixes & Refinement**
+3. **Bugfixes & Refinement**
    - Improved API error reporting to expose internal errors for easier debugging.
    - Fixed `404 Not Found` handling for card and deck retrieval.
    - Standardized authentication flow validation in tests.
