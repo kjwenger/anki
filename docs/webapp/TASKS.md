@@ -43,8 +43,9 @@ This document breaks down the implementation into manageable tasks with prioriti
   - [4.9 Overview Screen Before Study](#49-overview-screen-before-study-) ✅
   - [4.10 Audio Playback During Review](#410-audio-playback-during-review-) ✅
   - [4.11 Keyboard Shortcuts in Browse and Editor](#411-keyboard-shortcuts-in-browse-and-editor-) ✅
-  - [4.12 APKG Import](#412-apkg-import) ✅
+  - [4.12 APKG Import](#412-apkg-import-) ✅
   - [4.13 APKG Export](#413-apkg-export)
+  - [4.14 PWA Support](#414-pwa-support)
 - [Phase 5: Polish & Testing](#phase-5-polish--testing) — Testing, documentation, deployment
   - [5.1 API Testing](#51-api-testing-) ✅
   - [5.2 UI Testing](#52-ui-testing)
@@ -137,7 +138,7 @@ This document breaks down the implementation into manageable tasks with prioriti
 **Acceptance Criteria** (All Met):
 
 - ✅ User can register with username/password
-- ✅ User can login and receive JWT
+- ✅ User can log in and receive JWT
 - ✅ Protected routes require valid JWT
 - ✅ Password is securely hashed with Argon2
 - ✅ Sessions are tracked and can be invalidated
@@ -574,11 +575,11 @@ we would need custom protobuf-to-JSON conversion logic.
 
 **Acceptance Criteria** (All Met):
 
-- ✅ User can login/register
+- ✅ User can log in/register
 - ✅ JWT stored securely in localStorage
 - ✅ Auto-redirect on auth required
 - ✅ Logout works
-- ✅ Protected routes redirect to login
+- ✅ Protected routes redirect to log in
 - ✅ API client includes auth headers
 
 ---
@@ -1111,7 +1112,7 @@ Frontend:
 
 - [x] Parse `[sound:…]` tags in the rendered card HTML inside `CardDisplay.svelte`
 - [x] Replace each tag with an HTML `<audio>` element pointing to `/api/v1/media/{filename}?token=…`
-- [x] Auto-play the first audio file when the card appears; replay button for subsequent files
+- [x] Autoplay the first audio file when the card appears; replay button for subsequent files
 
 **Note**: Auth middleware extended to accept `?token=` query param so `<audio src>` browser
 requests (which cannot send Authorization headers) are authenticated correctly.
@@ -1182,6 +1183,27 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 - User can export a deck or the entire collection as a valid `.apkg` file
 - Export options (like including scheduling) are respected
 - Download starts automatically and contains the correct data/media
+
+---
+
+### 4.14 PWA Support
+
+**Priority**: P2\
+**Estimate**: 2 days\
+**Dependencies**: Navigation (3.9 ✅)\
+**Effort**: Medium — standard PWA implementation\
+**Source**: User request / Mobile Optimization
+
+- [ ] Create `manifest.webmanifest` with Anki branding
+- [ ] Add app icons for various resolutions
+- [ ] Implement a basic Service Worker for asset caching
+- [ ] Add "Install App" prompt/logic in Settings or User Menu
+
+**Acceptance Criteria**:
+
+- App is installable on Chrome (Desktop/Android) and Safari (iOS)
+- App has a dedicated icon and splash screen when launched from home screen
+- Basic UI assets (CSS/JS) are cached for faster subsequent loads
 
 ---
 
@@ -1454,7 +1476,6 @@ requests (which cannot send Authorization headers) are authenticated correctly.
 
 - [ ] Touch gesture support (swipe to reveal / rate)
 - [ ] Mobile-specific layouts
-- [ ] PWA manifest + install prompt
 - [ ] Offline support with service worker
 
 ---

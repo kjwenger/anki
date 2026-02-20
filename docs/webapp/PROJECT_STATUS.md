@@ -61,8 +61,9 @@ Building a web-based REST API and UI for Anki spaced repetition software. The pr
 | 4.11 Keyboard Shortcuts (Browse & Editor) | ✅      | Ctrl+Enter, Ctrl+F, Delete, Escape        |
 | 4.12 APKG Import                          | ✅      | REST endpoint + upload UI                 |
 | 4.13 APKG Export                          | 📋     | REST endpoint + download trigger          |
+| 4.14 PWA Support                          | 📋     | Manifest + Service Worker                 |
 
-**Progress:** 12/13 tasks (92%)
+**Progress:** 12/14 tasks (85%)
 
 **Detailed Reports:**
 - [PHASE_4.3_COMPLETE.md](PHASE_4.3_COMPLETE.md)
