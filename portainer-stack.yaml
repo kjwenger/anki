@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  webapp:
+    image: registry.gertrun.synology.me/anki/webapp:latest
+    container_name: anki-webapp
+    ports:
+      - "5173:80"    # Nginx/frontend (Web Access)
+      - "8080:8080"  # API Access (optional to expose directly)
+    environment:
+      - RUST_LOG=info
+      - ANKI_WEBAPP_DATA_DIR=/data
+      # IMPORTANT: Change this secret in your Portainer environment variables for production!
+      - ANKI_WEBAPP_JWT_SECRET=${ANKI_WEBAPP_JWT_SECRET:-change-this-secret-in-production-for-security}
+    volumes:
+      - anki-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  anki-data:
+    driver: local
